@@ -21,6 +21,9 @@
 #pragma once
 
 #include "Graphics.h"
+#include "Mat3.h"
+#include "Colors.h"
+#include "Vec3.h"
 
 class Game
 {
@@ -32,13 +35,16 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
-	/********************************/
-	/*  User Functions              */
-	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
-	/********************************/
-	/*  User Variables              */
-	/********************************/
+
+	Vec3 v0 = { -0.5f,  0.5f, 0.0f };
+	Vec3 v1 = {  0.5f,  0.5f, 0.0f };
+	Vec3 v2 = {  0.5f, -0.5f, 0.0f };
+	Vec3 v3 = { -0.5f, -0.5f, 0.0f };
+	Vec3 pos = { 400.0f, 300.0f, 0.0f };
+
+	float angle = 0.0f;
+	float scale = 1.0f;
 };

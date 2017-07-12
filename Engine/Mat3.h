@@ -74,10 +74,32 @@ public:
 	}
 	static _Mat3 Scaling( T factor )
 	{
-		return{
+		return
+		{
 			factor,(T)0.0,(T)0.0,
 			(T)0.0,factor,(T)0.0,
 			(T)0.0,(T)0.0,factor 
+		};
+	}
+	static _Mat3 RotationZ( T angle )
+	{
+		T sinAngle = sin( angle );
+		T cosAngle = cos( angle );
+
+		return
+		{
+			cosAngle, -sinAngle, T( 0.0 ),
+			sinAngle, cosAngle, T( 0.0 ),
+			T( 0.0 ), T( 0.0 ), T( 1.0 )
+		};
+	}
+	static _Mat3 Translation( Vec3 pos )
+	{
+		return
+		{
+			T( 1.0 ),T(0.0),pos.x,
+			T( 0.0 ),T(1.0),pos.y,
+			T( 0.0 ),T( 0.0 ),pos.z
 		};
 	}
 public:

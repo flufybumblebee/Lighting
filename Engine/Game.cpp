@@ -38,11 +38,19 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+
+
 }
-#include "Mat3.h"
+
 void Game::ComposeFrame()
 {
-	Vec3 v( 1.0f,1.0f,1.0f );
-	Mat3 m = Mat3::Scaling( 3.0f );
-	v *= m;
+	Mat3 m = Mat3::Scaling( scale ) * Mat3::RotationZ( angle ) * Mat3::Translation( pos );
+	v0 *= m;
+	v1 *= m;
+	v2 *= m;
+	v3 *= m;
+	gfx.DrawLine( v0, v1, Color( 255, 255, 255 ) );
+	gfx.DrawLine( v1, v2, Color( 255, 255, 255 ) );
+	gfx.DrawLine( v2, v3, Color( 255, 255, 255 ) );
+	gfx.DrawLine( v3, v0, Color( 255, 255, 255 ) );
 }

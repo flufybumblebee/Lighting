@@ -99,7 +99,7 @@ namespace Colors
 	{
 		return (r << 16) | (g << 8) | b;
 	}
-	static constexpr Color White = MakeRGB( 255u,255u,255u );
+	static constexpr Color White = MakeRGB( 255u, 255u, 255u );
 	static constexpr Color Black = MakeRGB( 0u,0u,0u );
 	static constexpr Color Gray = MakeRGB( 0x80u,0x80u,0x80u );
 	static constexpr Color LightGray = MakeRGB( 0xD3u,0xD3u,0xD3u );
