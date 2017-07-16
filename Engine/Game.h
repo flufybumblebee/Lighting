@@ -24,6 +24,9 @@
 #include "Mat3.h"
 #include "Colors.h"
 #include "Vec3.h"
+#include "Transformer.h"
+#include "Plane.h"
+#include "Cube.h"
 
 class Game
 {
@@ -39,12 +42,13 @@ private:
 	MainWindow& wnd;
 	Graphics gfx;
 
-	Vec3 v0 = { -0.5f,  0.5f, 0.0f };
-	Vec3 v1 = {  0.5f,  0.5f, 0.0f };
-	Vec3 v2 = {  0.5f, -0.5f, 0.0f };
-	Vec3 v3 = { -0.5f, -0.5f, 0.0f };
-	Vec3 pos = { 400.0f, 300.0f, 0.0f };
+	Plane plane;
+	Cube cube;
+	Transformer trans;
 
-	float angle = 0.0f;
-	float scale = 1.0f;
+	float scale = 2.0f;
+
+	float angleZ = 0.0f;
+	float angleY = 0.0f;
+	float angleX = 0.0f;
 };

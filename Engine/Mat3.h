@@ -88,18 +88,29 @@ public:
 
 		return
 		{
-			cosAngle, -sinAngle, T( 0.0 ),
-			sinAngle, cosAngle, T( 0.0 ),
+			cosAngle, sinAngle, T( 0.0 ),
+			-sinAngle, cosAngle, T( 0.0 ),
 			T( 0.0 ), T( 0.0 ), T( 1.0 )
 		};
 	}
-	static _Mat3 Translation( Vec3 pos )
+	static _Mat3 RotationY( T theta )
 	{
-		return
-		{
-			T( 1.0 ),T(0.0),pos.x,
-			T( 0.0 ),T(1.0),pos.y,
-			T( 0.0 ),T( 0.0 ),pos.z
+		const T sinTheta = sin( theta );
+		const T cosTheta = cos( theta );
+		return{
+			cosTheta, ( T )0.0,-sinTheta,
+			( T )0.0,   ( T )1.0, ( T )0.0,
+			sinTheta, ( T )0.0, cosTheta
+		};
+	}
+	static _Mat3 RotationX( T theta )
+	{
+		const T sinTheta = sin( theta );
+		const T cosTheta = cos( theta );
+		return{
+			( T )1.0, ( T )0.0,   ( T )0.0,
+			( T )0.0, cosTheta, sinTheta,
+			( T )0.0,-sinTheta, cosTheta,
 		};
 	}
 public:
@@ -116,7 +127,8 @@ _Vec3<T>& operator*=( _Vec3<T>& lhs,const _Mat3<T>& rhs )
 template<typename T>
 _Vec3<T> operator*( const _Vec3<T>& lhs,const _Mat3<T>& rhs )
 {
-	return{
+	return
+	{
 		lhs.x * rhs.elements[0][0] + lhs.y * rhs.elements[1][0] + lhs.z * rhs.elements[2][0],
 		lhs.x * rhs.elements[0][1] + lhs.y * rhs.elements[1][1] + lhs.z * rhs.elements[2][1],
 		lhs.x * rhs.elements[0][2] + lhs.y * rhs.elements[1][2] + lhs.z * rhs.elements[2][2]

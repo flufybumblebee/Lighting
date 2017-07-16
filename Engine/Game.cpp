@@ -24,8 +24,11 @@
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
-	gfx( wnd )
+	gfx( wnd ),
+	plane( 1.0f ),
+	cube( 1.0f )
 {
+
 }
 
 void Game::Go()
@@ -38,19 +41,72 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	if( wnd.kbd.KeyIsPressed( 'Q' ) )
+	{
+		angleZ = angleZ - 0.01f;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'A' ) )
+	{
+		angleZ = angleZ + 0.01f;
+	}
 
+	if( wnd.kbd.KeyIsPressed( 'W' ) )
+	{
+		angleY = angleY - 0.01f;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'S' ) )
+	{
+		angleY = angleY + 0.01f;
+	}
 
+	if( wnd.kbd.KeyIsPressed( 'E' ) )
+	{
+		angleX = angleX - 0.01f;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'D' ) )
+	{
+		angleX = angleX + 0.01f;
+	}
+
+	if( wnd.kbd.KeyIsPressed( 'R' ) )
+	{
+		scale = scale += 0.01f;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'F' ) )
+	{
+		scale = scale -= 0.01f;
+	}
 }
 
 void Game::ComposeFrame()
 {
-	Mat3 m = Mat3::Scaling( scale ) * Mat3::RotationZ( angle ) * Mat3::Translation( pos );
-	v0 *= m;
-	v1 *= m;
-	v2 *= m;
-	v3 *= m;
-	gfx.DrawLine( v0, v1, Color( 255, 255, 255 ) );
-	gfx.DrawLine( v1, v2, Color( 255, 255, 255 ) );
-	gfx.DrawLine( v2, v3, Color( 255, 255, 255 ) );
-	gfx.DrawLine( v3, v0, Color( 255, 255, 255 ) );
+	Mat3 rotation = Mat3::RotationZ( angleZ ) * Mat3::RotationY( angleY ) * Mat3::RotationX( angleX );
+
+	auto lines = cube.GetLines();
+
+	for( auto& v : lines.vertices )
+	{
+		v *= rotation;
+		v += { 0.0f, 0.0f, scale };
+		trans.Transform( v );
+	}
+
+	for( auto i = lines.indices.begin(),
+		 end = lines.indices.end();
+		 i != end; std::advance( i, 2 ) )
+	{
+		gfx.DrawLine(
+			lines.vertices[ *i ],
+			lines.vertices[ *std::next( i ) ],
+			Colors::White );
+
+		// optional: makes it easier to understand
+		if( false )
+		{
+			gfx.DrawLine(
+				lines.vertices[*i],
+				Vec2(Graphics::ScreenWidth / 2.0f, Graphics::ScreenHeight / 2.0f),
+				Colors::White);
+		}
+	}
 }
