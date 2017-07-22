@@ -381,3 +381,8 @@ void Graphics::DrawLine( float x1,float y1,float x2,float y2,Color c )
 		}
 	}
 }
+
+void Graphics::DrawTriangle( Vec2 v0, Vec2 v1, Vec2 v2, Color c )
+{
+
+}

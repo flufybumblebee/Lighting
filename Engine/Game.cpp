@@ -25,7 +25,6 @@ Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	plane( 1.0f ),
 	cube( 1.0f )
 {
 
@@ -41,6 +40,9 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	// ---------------------------------------
+	// rotation
+
 	if( wnd.kbd.KeyIsPressed( 'Q' ) )
 	{
 		angleZ = angleZ - 0.01f;
@@ -68,45 +70,103 @@ void Game::UpdateModel()
 		angleX = angleX + 0.01f;
 	}
 
+	//-----------------------------------------
+	// translation
+
+	if (wnd.kbd.KeyIsPressed(VK_LEFT))
+	{
+		x_offset = x_offset -= 0.01f;
+	}
+	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
+	{
+		x_offset = x_offset += 0.01f;
+	}
+
+	if (wnd.kbd.KeyIsPressed(VK_UP))
+	{
+		y_offset = y_offset += 0.01f;
+	}
+	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
+	{
+		y_offset = y_offset -= 0.01f;
+	}
+	
 	if( wnd.kbd.KeyIsPressed( 'R' ) )
 	{
-		scale = scale += 0.01f;
+		z_offset = z_offset += 0.01f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'F' ) )
 	{
-		scale = scale -= 0.01f;
+		z_offset = z_offset -= 0.01f;
 	}
 }
 
 void Game::ComposeFrame()
 {
 	Mat3 rotation = Mat3::RotationZ( angleZ ) * Mat3::RotationY( angleY ) * Mat3::RotationX( angleX );
+	
+	// ----------------------------------
+	// Environment
 
-	auto lines = cube.GetLines();
+	auto linesE = e.GetLines();	
 
-	for( auto& v : lines.vertices )
+	for (auto& v : linesE.vertices)
+	{
+		//v *= rotation;
+		v += { 0.0f, 0.0f, 2.001f };
+		trans.Transform(v);
+	}
+
+	for (auto i = linesE.indices.begin(),
+		end = linesE.indices.end();
+		i != end; std::advance(i, 2))
+	{
+		gfx.DrawLine(
+			linesE.vertices[*i],
+			linesE.vertices[*std::next(i)],
+			Colors::White);
+	}
+
+	// ----------------------------------------
+	// Cube
+
+	auto linesCube = cube.GetLines();
+
+	/*for (auto i = linesCube.vertices.begin(),
+		end = linesCube.vertices.end();
+		i != end; i++)
+	{
+		*i *= rotation;
+		*i += { x_offset, y_offset, z_offset };
+		trans.Transform(*i);
+	}*/
+
+	for( auto& v : linesCube.vertices )
 	{
 		v *= rotation;
-		v += { 0.0f, 0.0f, scale };
+		v += { x_offset, y_offset, z_offset };
 		trans.Transform( v );
 	}
 
-	for( auto i = lines.indices.begin(),
-		 end = lines.indices.end();
+	for(auto i = linesCube.indices.begin(),
+		end = linesCube.indices.end();
+		i != end; i+=2)
+	{
+		gfx.DrawLine(
+			linesCube.vertices[*i],
+			linesCube.vertices[*(i+1)],
+			Colors::White);
+	}
+
+	/*for( auto i = linesCube.indices.begin(),
+		 end = linesCube.indices.end();
 		 i != end; std::advance( i, 2 ) )
 	{
 		gfx.DrawLine(
-			lines.vertices[ *i ],
-			lines.vertices[ *std::next( i ) ],
+			linesCube.vertices[ *i ],
+			linesCube.vertices[ *std::next( i ) ],
 			Colors::White );
+	}*/
 
-		// optional: makes it easier to understand
-		if( false )
-		{
-			gfx.DrawLine(
-				lines.vertices[*i],
-				Vec2(Graphics::ScreenWidth / 2.0f, Graphics::ScreenHeight / 2.0f),
-				Colors::White);
-		}
-	}
+	// ----------------------------------------------
 }

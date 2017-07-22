@@ -25,8 +25,9 @@
 #include "Colors.h"
 #include "Vec3.h"
 #include "Transformer.h"
-#include "Plane.h"
+
 #include "Cube.h"
+#include "Environment.h"
 
 class Game
 {
@@ -42,12 +43,17 @@ private:
 	MainWindow& wnd;
 	Graphics gfx;
 
-	Plane plane;
 	Cube cube;
+	Environment e;
+
 	Transformer trans;
 
-	float scale = 2.0f;
+	// translate
+	float x_offset = 0.0f;
+	float y_offset = 0.0f;
+	float z_offset = 2.0f;
 
+	// rotate
 	float angleZ = 0.0f;
 	float angleY = 0.0f;
 	float angleX = 0.0f;

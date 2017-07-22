@@ -53,14 +53,23 @@ private:
 public:
 	Graphics( class HWNDKey& key );
 	Graphics( const Graphics& ) = delete;
+	~Graphics();
 	Graphics& operator=( const Graphics& ) = delete;
+
 	void EndFrame();
 	void BeginFrame();
+
+	// Draw Lines
 	void DrawLine( const Vec2& p1,const Vec2& p2,Color c )
 	{
 		DrawLine( p1.x,p1.y,p2.x,p2.y,c );
 	}
 	void DrawLine( float x1,float y1,float x2,float y2,Color c );
+
+	// Draw Triangles
+	void DrawTriangle( Vec2 v0, Vec2 v1, Vec2 v2, Color c );
+
+	// Draw Pixels
 	void PutPixel( int x,int y,int r,int g,int b )
 	{
 		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
@@ -69,7 +78,8 @@ public:
 	{
 		sysBuffer.PutPixel( x,y,c );
 	}
-	~Graphics();
+private:
+	void DrawFlatTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color c);
 private:
 	GDIPlusManager										gdipMan;
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;

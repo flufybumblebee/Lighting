@@ -64,6 +64,7 @@ public:
 		}
 		return result;
 	}
+
 	static _Mat3 Identity()
 	{
 		return { 
@@ -72,13 +73,14 @@ public:
 			(T)0.0,(T)0.0,(T)1.0
 		};
 	}
-	static _Mat3 Scaling( T factor )
+
+	static _Mat3 Scaling( T scale )
 	{
 		return
 		{
-			factor,(T)0.0,(T)0.0,
-			(T)0.0,factor,(T)0.0,
-			(T)0.0,(T)0.0,factor 
+			scale,(T)0.0,(T)0.0,
+			(T)0.0,scale,(T)0.0,
+			(T)0.0,(T)0.0,scale
 		};
 	}
 	static _Mat3 RotationZ( T angle )
@@ -93,24 +95,26 @@ public:
 			T( 0.0 ), T( 0.0 ), T( 1.0 )
 		};
 	}
-	static _Mat3 RotationY( T theta )
+	static _Mat3 RotationY( T angle )
 	{
-		const T sinTheta = sin( theta );
-		const T cosTheta = cos( theta );
-		return{
-			cosTheta, ( T )0.0,-sinTheta,
-			( T )0.0,   ( T )1.0, ( T )0.0,
-			sinTheta, ( T )0.0, cosTheta
+		const T sinAngle = sin(angle);
+		const T cosAngle = cos(angle);
+		return
+		{
+			cosAngle, ( T )0.0,-sinAngle,
+			( T )0.0, ( T )1.0, ( T )0.0,
+			sinAngle, ( T )0.0, cosAngle
 		};
 	}
-	static _Mat3 RotationX( T theta )
+	static _Mat3 RotationX( T angle )
 	{
-		const T sinTheta = sin( theta );
-		const T cosTheta = cos( theta );
-		return{
+		const T sinAngle = sin(angle);
+		const T cosAngle = cos(angle);
+		return
+		{
 			( T )1.0, ( T )0.0,   ( T )0.0,
-			( T )0.0, cosTheta, sinTheta,
-			( T )0.0,-sinTheta, cosTheta,
+			( T )0.0, cosAngle, sinAngle,
+			( T )0.0, -sinAngle, cosAngle,
 		};
 	}
 public:

@@ -6,6 +6,6 @@
 struct IndexedLineList
 {
 	std::vector<Vec3> vertices;
-	std::vector<int> indices;
+	std::vector<unsigned int> indices;
 	//std::vector<size_t> indices;
 };
