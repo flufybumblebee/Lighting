@@ -57,7 +57,4 @@ private:
 	float angleZ = 0.0f;
 	float angleY = 0.0f;
 	float angleX = 0.0f;
-
-	bool drawTriangles = true;
-	bool drawLines = true;
 };

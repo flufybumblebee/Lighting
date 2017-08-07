@@ -106,9 +106,9 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	/*for( unsigned int y = 0; y < pic.GetHeight(); y++ )
+	for( unsigned int y = 0; y < pic.GetHeight(); y++ )
 		for (unsigned int x = 0; x < pic.GetWidth(); x++)
-			gfx.PutPixel(x, y, pic.GetPixel(x, y));*/
+			gfx.PutPixel(x, y, pic.GetPixel(x, y));
 
 	const Mat3 rotate =
 		Mat3::RotationZ(angleZ) *
@@ -204,7 +204,7 @@ void Game::ComposeFrame()
 	// ----------------------------------------
 	// Cube ( with Backface Culling )
 	{
-		if (drawTriangles)
+		if (true)
 		{
 			auto cubeTriangles = cube.GetTriangles();
 	
@@ -244,7 +244,7 @@ void Game::ComposeFrame()
 	}
 	////------------------------------------------------------------------
 	
-	if (drawLines)
+	if (false)
 	{
 		auto cubeLines = cube.GetLines();
 	

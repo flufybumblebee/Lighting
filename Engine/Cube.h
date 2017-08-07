@@ -11,6 +11,7 @@ public:
 	Cube( const float size )
 	{
 		const float side = size / 2.0f;
+
 		vertices.emplace_back( -side, -side, -side ); // 0
 		vertices.emplace_back(  side, -side, -side ); // 1
 		vertices.emplace_back( -side,  side, -side ); // 2
