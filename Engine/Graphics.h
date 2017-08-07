@@ -79,7 +79,8 @@ public:
 		sysBuffer.PutPixel( x,y,c );
 	}
 private:
-	void DrawFlatTriangle(Vec2 v0, Vec2 v1, Vec2 v2, Color c);
+	void DrawFlatTopTriangle(const Vec2& v0, const Vec2& v1, const Vec2& v2, Color c);
+	void DrawFlatBottomTriangle(const Vec2& v0, const Vec2& v1, const Vec2& v2, Color c);
 private:
 	GDIPlusManager										gdipMan;
 	Microsoft::WRL::ComPtr<IDXGISwapChain>				pSwapChain;

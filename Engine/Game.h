@@ -27,7 +27,6 @@
 #include "Transformer.h"
 
 #include "Cube.h"
-#include "Environment.h"
 
 class Game
 {
@@ -44,9 +43,10 @@ private:
 	Graphics gfx;
 
 	Cube cube;
-	Environment e;
 
 	Transformer trans;
+
+	Surface pic;
 
 	// translate
 	float x_offset = 0.0f;
@@ -57,4 +57,7 @@ private:
 	float angleZ = 0.0f;
 	float angleY = 0.0f;
 	float angleX = 0.0f;
+
+	bool drawTriangles = true;
+	bool drawLines = true;
 };

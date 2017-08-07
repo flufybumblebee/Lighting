@@ -21,13 +21,16 @@
 #include "MainWindow.h"
 #include "Game.h"
 
+#include "Mat2.h"
+
 Game::Game( MainWindow& wnd )
 	:
 	wnd( wnd ),
 	gfx( wnd ),
-	cube( 1.0f )
+	cube( 1.0f ),
+	pic( Surface::FromFile( L"mario.png" ) )
 {
-
+	
 }
 
 void Game::Go()
@@ -103,70 +106,191 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	Mat3 rotation = Mat3::RotationZ( angleZ ) * Mat3::RotationY( angleY ) * Mat3::RotationX( angleX );
+	/*for( unsigned int y = 0; y < pic.GetHeight(); y++ )
+		for (unsigned int x = 0; x < pic.GetWidth(); x++)
+			gfx.PutPixel(x, y, pic.GetPixel(x, y));*/
+
+	const Mat3 rotate =
+		Mat3::RotationZ(angleZ) *
+		Mat3::RotationY(angleY) *
+		Mat3::RotationX(angleX);
+
+	const Vec3 translate = { x_offset, y_offset, z_offset };
+
+	/*const Color colors[12] =
+	{
+		Colors::Magenta,
+		Colors::Magenta,
+		Colors::Red,
+		Colors::Red,
+		Colors::Blue,
+		Colors::Blue,
+		Colors::Green,
+		Colors::Green,
+		Colors::Yellow,
+		Colors::Yellow,
+		Colors::Cyan,
+		Colors::Cyan
+	};*/
+
+	const Color colors[12] =
+	{
+		Colors::Magenta,
+		Colors::Red,
+		Colors::Cyan,
+		Colors::White,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::Green,
+		Colors::LightGreen,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow
+	};
 	
-	// ----------------------------------
-	// Environment
-
-	auto linesE = e.GetLines();	
-
-	for (auto& v : linesE.vertices)
-	{
-		//v *= rotation;
-		v += { 0.0f, 0.0f, 2.001f };
-		trans.Transform(v);
-	}
-
-	for (auto i = linesE.indices.begin(),
-		end = linesE.indices.end();
-		i != end; std::advance(i, 2))
-	{
-		gfx.DrawLine(
-			linesE.vertices[*i],
-			linesE.vertices[*std::next(i)],
-			Colors::White);
-	}
-
 	// ----------------------------------------
-	// Cube
+	// Landscape
+	//for( unsigned int y = 0; y < 320; y++ )
+	//	for (unsigned int x = 0; x < 640; x++)
+	//		gfx.PutPixel(x, y, Colors::White );
 
-	auto linesCube = cube.GetLines();
+	// Triangle Drawing with Cube ( multi color )
 
-	/*for (auto i = linesCube.vertices.begin(),
-		end = linesCube.vertices.end();
+	auto cubeTri = cube.GetTriangles();
+
+	for (auto i = cubeTri.vertices.begin(),
+	end = cubeTri.vertices.end();
+	i != end; i++)
+	{
+	*i *= rotate;
+	*i += translate;
+	trans.Transform(*i);
+	}
+
+	for (int i = 0, end = cubeTri.indices.size() / 3;
 		i != end; i++)
 	{
-		*i *= rotation;
-		*i += { x_offset, y_offset, z_offset };
+		gfx.DrawTriangle(
+			cubeTri.vertices[cubeTri.indices[i * 3 + 0] ],
+			cubeTri.vertices[cubeTri.indices[i * 3 + 1] ],
+			cubeTri.vertices[cubeTri.indices[i * 3 + 2] ],
+			colors[i]);
+	}
+
+	/*// Triangle Drawing with Cube ( one color )
+
+	auto cubeTri = cube.GetTriangles();
+
+	for (auto i = cubeTri.vertices.begin(),
+		   end = cubeTri.vertices.end();
+		 i != end; i++)
+	{
+		*i *= rotate;
+		*i += translate;
 		trans.Transform(*i);
-	}*/
-
-	for( auto& v : linesCube.vertices )
-	{
-		v *= rotation;
-		v += { x_offset, y_offset, z_offset };
-		trans.Transform( v );
 	}
 
-	for(auto i = linesCube.indices.begin(),
-		end = linesCube.indices.end();
-		i != end; i+=2)
+	for (auto i = cubeTri.indices.begin(),
+		end = cubeTri.indices.end();
+		i != end; std::advance(i, 3))
 	{
-		gfx.DrawLine(
-			linesCube.vertices[*i],
-			linesCube.vertices[*(i+1)],
-			Colors::White);
-	}
-
-	/*for( auto i = linesCube.indices.begin(),
-		 end = linesCube.indices.end();
-		 i != end; std::advance( i, 2 ) )
-	{
-		gfx.DrawLine(
-			linesCube.vertices[ *i ],
-			linesCube.vertices[ *std::next( i ) ],
-			Colors::White );
+		gfx.DrawTriangle( cubeTri.vertices[*i],
+						  cubeTri.vertices[*std::next(i)],
+						  cubeTri.vertices[*std::next(i+1)],
+						  Colors::White);
 	}*/
+	
+	
+	
 
-	// ----------------------------------------------
+	//// ----------------------------------------
+	//// Cube ( with Backface Culling )
+	//{
+	//	if (drawTriangles)
+	//	{
+	//		auto cubeTriangles = cube.GetTriangles();
+	//
+	//		for (auto& v : cubeTriangles.vertices)
+	//		{
+	//			v *= rotate;
+	//			v += translate;
+	//		}
+	//
+	//		// set cullflags
+	//		for (size_t i = 0, end = cubeTriangles.indices.size() / 3;
+	//			i < end; i++)
+	//		{
+	//			const Vec3& v0 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]];
+	//			const Vec3& v1 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]];
+	//			const Vec3& v2 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]];
+	//			cubeTriangles.cullflags[i] = (v1 - v0).Cross(v2 - v0) * v0 > 0;
+	//		}
+	//
+	//		for (auto& v : cubeTriangles.vertices)
+	//		{
+	//			trans.Transform(v);
+	//		}
+	//
+	//		for (size_t i = 0, end = cubeTriangles.indices.size() / 3; i < end; i++)
+	//		{
+	//			if (!cubeTriangles.cullflags[i])
+	//			{
+	//				gfx.DrawTriangle(
+	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]],
+	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]],
+	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]],
+	//					colors[i]);
+	//			}
+	//		}
+	//	}
+	//}
+	////------------------------------------------------------------------
+	
+	if (drawLines)
+	{
+		auto cubeLines = cube.GetLines();
+	
+		for (auto i = cubeLines.vertices.begin(),
+			end = cubeLines.vertices.end();
+			i != end; i++)
+		{
+			*i *= rotate;
+			*i += translate;
+			trans.Transform(*i);
+		}
+	
+		for (auto i = cubeLines.indices.begin(),
+			end = cubeLines.indices.end();
+			i != end; std::advance(i, 2))
+		{
+			gfx.DrawLine(
+				cubeLines.vertices[*i],
+				cubeLines.vertices[*std::next(i)],
+				Colors::Black);
+		}
+	}
+	//---------------------------------------------------------------------
+
+	/*// Triangle Drawing Function Test 2D
+	
+	const Vec2 v0 = { -100.0f, -100.0f };
+	const Vec2 v1 = {  100.0f, -100.0f };
+	const Vec2 v2 = { -100.0f,  100.0f };
+
+	const Vec2 v3 = {  100.0f, -100.0f };
+	const Vec2 v4 = {  100.0f,  100.0f };
+	const Vec2 v5 = { -100.0f,  100.0f };
+
+	gfx.DrawTriangle(
+		(v0 * Mat2::Rotation(angleZ)) + Vec2{ 320, 320 },
+		(v1 * Mat2::Rotation(angleZ)) + Vec2{ 320, 320 },
+		(v2 * Mat2::Rotation(angleZ)) + Vec2{ 320, 320 },
+		Colors::White);
+
+	gfx.DrawTriangle(
+		(v3 * Mat2::Rotation(angleZ) ) + Vec2{ 320, 320 },
+		(v4 * Mat2::Rotation(angleZ) ) + Vec2{ 320, 320 },
+		(v5 * Mat2::Rotation(angleZ) ) + Vec2{ 320, 320 },
+		Colors::Gray);*/
 }
