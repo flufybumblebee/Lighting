@@ -136,13 +136,13 @@ void Game::ComposeFrame()
 	const Color colors[12] =
 	{
 		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
 		Colors::Red,
-		Colors::Cyan,
-		Colors::White,
 		Colors::Blue,
 		Colors::LightBlue,
-		Colors::Green,
 		Colors::LightGreen,
+		Colors::Green,
 		Colors::LightGray,
 		Colors::Gray,
 		Colors::Orange,
@@ -155,8 +155,8 @@ void Game::ComposeFrame()
 	//	for (unsigned int x = 0; x < 640; x++)
 	//		gfx.PutPixel(x, y, Colors::White );
 
-	// Triangle Drawing with Cube ( multi color )
-
+	/*// Triangle Drawing with Cube ( multi color )
+	
 	auto cubeTri = cube.GetTriangles();
 
 	for (auto i = cubeTri.vertices.begin(),
@@ -176,7 +176,7 @@ void Game::ComposeFrame()
 			cubeTri.vertices[cubeTri.indices[i * 3 + 1] ],
 			cubeTri.vertices[cubeTri.indices[i * 3 + 2] ],
 			colors[i]);
-	}
+	}*/
 
 	/*// Triangle Drawing with Cube ( one color )
 
@@ -201,50 +201,47 @@ void Game::ComposeFrame()
 						  Colors::White);
 	}*/
 	
+	// ----------------------------------------
+	// Cube ( with Backface Culling )
+	{
+		if (drawTriangles)
+		{
+			auto cubeTriangles = cube.GetTriangles();
 	
+			for (auto& v : cubeTriangles.vertices)
+			{
+				v *= rotate;
+				v += translate;
+			}
 	
-
-	//// ----------------------------------------
-	//// Cube ( with Backface Culling )
-	//{
-	//	if (drawTriangles)
-	//	{
-	//		auto cubeTriangles = cube.GetTriangles();
-	//
-	//		for (auto& v : cubeTriangles.vertices)
-	//		{
-	//			v *= rotate;
-	//			v += translate;
-	//		}
-	//
-	//		// set cullflags
-	//		for (size_t i = 0, end = cubeTriangles.indices.size() / 3;
-	//			i < end; i++)
-	//		{
-	//			const Vec3& v0 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]];
-	//			const Vec3& v1 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]];
-	//			const Vec3& v2 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]];
-	//			cubeTriangles.cullflags[i] = (v1 - v0).Cross(v2 - v0) * v0 > 0;
-	//		}
-	//
-	//		for (auto& v : cubeTriangles.vertices)
-	//		{
-	//			trans.Transform(v);
-	//		}
-	//
-	//		for (size_t i = 0, end = cubeTriangles.indices.size() / 3; i < end; i++)
-	//		{
-	//			if (!cubeTriangles.cullflags[i])
-	//			{
-	//				gfx.DrawTriangle(
-	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]],
-	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]],
-	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]],
-	//					colors[i]);
-	//			}
-	//		}
-	//	}
-	//}
+			// set cullflags
+			for (size_t i = 0, end = cubeTriangles.indices.size() / 3;
+				i < end; i++)
+			{
+				const Vec3& v0 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]];
+				const Vec3& v1 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]];
+				const Vec3& v2 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]];
+				cubeTriangles.cullflags[i] = (v1 - v0).Cross(v2 - v0) * v0 > 0;
+			}
+	
+			for (auto& v : cubeTriangles.vertices)
+			{
+				trans.Transform(v);
+			}
+	
+			for (size_t i = 0, end = cubeTriangles.indices.size() / 3; i < end; i++)
+			{
+				if (!cubeTriangles.cullflags[i])
+				{
+					gfx.DrawTriangle(
+						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]],
+						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]],
+						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]],
+						colors[i]);
+				}
+			}
+		}
+	}
 	////------------------------------------------------------------------
 	
 	if (drawLines)
