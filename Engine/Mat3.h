@@ -73,7 +73,6 @@ public:
 			(T)0.0,(T)0.0,(T)1.0
 		};
 	}
-
 	static _Mat3 Scaling( T scale )
 	{
 		return

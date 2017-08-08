@@ -44,7 +44,7 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	// ---------------------------------------
-	// rotation
+	// rotate
 
 	if( wnd.kbd.KeyIsPressed( 'Q' ) )
 	{
@@ -74,7 +74,7 @@ void Game::UpdateModel()
 	}
 
 	//-----------------------------------------
-	// translation
+	// translate
 
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
 	{
@@ -106,9 +106,9 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	for( unsigned int y = 0; y < pic.GetHeight(); y++ )
+	/*for( unsigned int y = 0; y < pic.GetHeight(); y++ )
 		for (unsigned int x = 0; x < pic.GetWidth(); x++)
-			gfx.PutPixel(x, y, pic.GetPixel(x, y));
+			gfx.PutPixel(x, y, pic.GetPixel(x, y));*/
 
 	const Mat3 rotate =
 		Mat3::RotationZ(angleZ) *
@@ -221,7 +221,7 @@ void Game::ComposeFrame()
 				const Vec3& v0 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]];
 				const Vec3& v1 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]];
 				const Vec3& v2 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]];
-				cubeTriangles.cullflags[i] = (v1 - v0).Cross(v2 - v0) * v0 > 0;
+				cubeTriangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot( v0 ) > 0;
 			}
 	
 			for (auto& v : cubeTriangles.vertices)
@@ -242,7 +242,8 @@ void Game::ComposeFrame()
 			}
 		}
 	}
-	////------------------------------------------------------------------
+	
+	//------------------------------------------------------------------
 	
 	if (false)
 	{
@@ -267,6 +268,7 @@ void Game::ComposeFrame()
 				Colors::Black);
 		}
 	}
+
 	//---------------------------------------------------------------------
 
 	/*// Triangle Drawing Function Test 2D

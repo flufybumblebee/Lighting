@@ -41,6 +41,7 @@ public:
 	{
 		return{ (T2)x,(T2)y,(T2)z };
 	}
+
 	T		LenSq() const
 	{
 		return sq( *this );
@@ -63,6 +64,7 @@ public:
 		norm.Normalize();
 		return norm;
 	}
+
 	_Vec3	operator-() const
 	{
 		return _Vec3( -x,-y,-z );
@@ -87,11 +89,8 @@ public:
 		y -= rhs.y;
 		z -= rhs.z;
 		return *this;
-	}
-	T		operator*( const _Vec3 &rhs ) const
-	{
-		return x * rhs.x + y * rhs.y + z * rhs.z;
-	}
+	}	
+	
 	_Vec3	operator+( const _Vec3 &rhs ) const
 	{
 		return _Vec3( *this ) += rhs;
@@ -122,6 +121,7 @@ public:
 	{
 		return _Vec3( *this ) /= rhs;
 	}
+
 	bool	operator==( const _Vec3 &rhs ) const
 	{
 		return x == rhs.x && y == rhs.y && rhs.z = z;
@@ -131,7 +131,15 @@ public:
 		return !(*this == rhs);
 	}
 
-	_Vec3 Cross( const _Vec3& rhs) const
+	T		operator*( const _Vec3 &rhs ) const
+	{
+		return x * rhs.x + y * rhs.y + z * rhs.z;
+	}
+	T		Dot(const _Vec3 &rhs) const
+	{
+		return x * rhs.x + y * rhs.y + z * rhs.z;
+	}
+	_Vec3	Cross( const _Vec3& rhs) const
 	{
 		return Vec3( 
 			y * rhs.z - z * rhs.y,
