@@ -29,7 +29,8 @@ Game::Game(MainWindow& wnd)
 	gfx(wnd),
 	cube(1.0f),
 	pic(Surface::FromFile(L"mario.png")),
-	hex(1.0f)
+	hex(1.0f),
+	diamond(1.0)
 {
 	
 }
@@ -180,6 +181,81 @@ void Game::ComposeFrame()
 
 	if (true)
 	{
+		const Color colors[8] =
+		{
+		Colors::Pink,
+		Colors::Red,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow
+		};
+
+		auto diaTri = diamond.GetTriangles();
+
+		for (auto& v : diaTri.vertices)
+		{
+			v *= rotate;
+			v += translate;
+		}
+
+		// set cullflags
+		for (size_t i = 0, end = diaTri.indices.size() / 3;
+			i < end; i++)
+		{
+			const Vec3& v0 = diaTri.vertices[diaTri.indices[i * 3 + 0]];
+			const Vec3& v1 = diaTri.vertices[diaTri.indices[i * 3 + 1]];
+			const Vec3& v2 = diaTri.vertices[diaTri.indices[i * 3 + 2]];
+			diaTri.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+		}
+
+		for (auto& v : diaTri.vertices)
+		{
+			trans.Transform(v);
+		}
+
+		for (size_t i = 0, end = diaTri.indices.size() / 3; i < end; i++)
+		{
+			if (!diaTri.cullflags[i])
+			{
+				gfx.DrawTriangle(
+					diaTri.vertices[diaTri.indices[i * 3 + 0]],
+					diaTri.vertices[diaTri.indices[i * 3 + 1]],
+					diaTri.vertices[diaTri.indices[i * 3 + 2]],
+					colors[i]);
+			}
+		}
+	}
+
+	if (true)
+	{
+		auto diaLine = diamond.GetLines();
+
+		for (auto i = diaLine.vertices.begin(),
+			end = diaLine.vertices.end();
+			i != end; i++)
+		{
+			*i *= rotate;
+			*i += translate;
+			trans.Transform(*i);
+		}
+
+		for (auto i = diaLine.indices.begin(),
+			end = diaLine.indices.end();
+			i != end; std::advance(i, 2))
+		{
+			gfx.DrawLine(
+				diaLine.vertices[*i],
+				diaLine.vertices[*std::next(i)],
+				Colors::Black);
+		}
+	}
+
+
+	if (false)
+	{
 		auto hexPrism = hex.GetTriangles();
 
 		for (auto& v : hexPrism.vertices)
@@ -217,7 +293,7 @@ void Game::ComposeFrame()
 
 	}
 
-	if (true)
+	if (false)
 	{
 		auto hexLines = hex.GetLines();
 

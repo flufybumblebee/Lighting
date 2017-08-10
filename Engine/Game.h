@@ -28,6 +28,7 @@
 
 #include "Cube.h"
 #include "HexPrism.h"
+#include "Diamond.h"
 
 class Game
 {
@@ -45,6 +46,7 @@ private:
 
 	Cube cube;
 	HexPrism hex;
+	Diamond diamond;
 
 	Transformer trans;
 
