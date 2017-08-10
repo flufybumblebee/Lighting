@@ -23,5 +23,5 @@ struct IndexedTriangleList
 	}
 	std::vector< Vec3 > vertices;
 	std::vector< unsigned int > indices;
-	std::vector< bool> cullflags;
+	std::vector< bool > cullflags;
 };

@@ -145,6 +145,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="Graphics.h" />
+    <ClInclude Include="HexPrism.h" />
     <ClInclude Include="IndexedLineList.h" />
     <ClInclude Include="IndexedTriangleList.h" />
     <ClInclude Include="Keyboard.h" />

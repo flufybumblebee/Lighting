@@ -23,12 +23,13 @@
 
 #include "Mat2.h"
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd ),
-	cube( 1.0f ),
-	pic( Surface::FromFile( L"mario.png" ) )
+	wnd(wnd),
+	gfx(wnd),
+	cube(1.0f),
+	pic(Surface::FromFile(L"mario.png")),
+	hex(1.0f)
 {
 	
 }
@@ -133,7 +134,7 @@ void Game::ComposeFrame()
 		Colors::Cyan
 	};*/
 
-	const Color colors[12] =
+	/*const Color colors[12] =
 	{
 		Colors::Magenta,
 		Colors::Purple,
@@ -147,8 +148,100 @@ void Game::ComposeFrame()
 		Colors::Gray,
 		Colors::Orange,
 		Colors::Yellow
+	};*/
+
+	const Color colors[24] =
+	{
+		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
+		Colors::Red,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow,
+		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
+		Colors::Red,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow
 	};
-	
+
+	if (true)
+	{
+		auto hexPrism = hex.GetTriangles();
+
+		for (auto& v : hexPrism.vertices)
+		{
+			v *= rotate;
+			v += translate;
+		}
+
+		// set cullflags
+		for (size_t i = 0, end = hexPrism.indices.size() / 3;
+			i < end; i++)
+		{
+			const Vec3& v0 = hexPrism.vertices[hexPrism.indices[i * 3 + 0]];
+			const Vec3& v1 = hexPrism.vertices[hexPrism.indices[i * 3 + 1]];
+			const Vec3& v2 = hexPrism.vertices[hexPrism.indices[i * 3 + 2]];
+			hexPrism.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+		}
+
+		for (auto& v : hexPrism.vertices)
+		{
+			trans.Transform(v);
+		}
+
+		for (size_t i = 0, end = hexPrism.indices.size() / 3; i < end; i++)
+		{
+			if (!hexPrism.cullflags[i])
+			{
+				gfx.DrawTriangle(
+					hexPrism.vertices[hexPrism.indices[i * 3 + 0]],
+					hexPrism.vertices[hexPrism.indices[i * 3 + 1]],
+					hexPrism.vertices[hexPrism.indices[i * 3 + 2]],
+					colors[i]);
+			}
+		}
+
+	}
+
+	if (true)
+	{
+		auto hexLines = hex.GetLines();
+
+		for (auto i = hexLines.vertices.begin(),
+			end = hexLines.vertices.end();
+			i != end; i++)
+		{
+			*i *= rotate;
+			*i += translate;
+			trans.Transform(*i);
+		}
+
+		for (auto i = hexLines.indices.begin(),
+			end = hexLines.indices.end();
+			i != end; std::advance(i, 2))
+		{
+			gfx.DrawLine(
+				hexLines.vertices[*i],
+				hexLines.vertices[*std::next(i)],
+				Colors::Black);
+		}
+	}
+
+
 	// ----------------------------------------
 	// Landscape
 	//for( unsigned int y = 0; y < 320; y++ )
@@ -204,7 +297,7 @@ void Game::ComposeFrame()
 	// ----------------------------------------
 	// Cube ( with Backface Culling )
 	{
-		if (true)
+		if (false)
 		{
 			auto cubeTriangles = cube.GetTriangles();
 	

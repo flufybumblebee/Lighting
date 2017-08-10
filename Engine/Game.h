@@ -27,6 +27,7 @@
 #include "Transformer.h"
 
 #include "Cube.h"
+#include "HexPrism.h"
 
 class Game
 {
@@ -43,6 +44,7 @@ private:
 	Graphics gfx;
 
 	Cube cube;
+	HexPrism hex;
 
 	Transformer trans;
 
