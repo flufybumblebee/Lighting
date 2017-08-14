@@ -1,10 +1,10 @@
 #pragma once
 
+#include "Model.h"
 #include "Vec3.h"
 #include <vector>
-#include "IndexedLineList.h"
 
-class Plane
+class Plane: public Model
 {
 public:
 	Plane( float size )
@@ -15,7 +15,7 @@ public:
 		vertices.emplace_back(  side, 0.0f, -side ); // 2
 		vertices.emplace_back( -side, 0.0f, -side ); // 3
 	}
-	IndexedLineList GetLines()
+	IndexedLineList GetLines() const
 	{
 		return
 		{

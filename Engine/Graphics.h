@@ -26,6 +26,9 @@
 #include "Surface.h"
 #include "Colors.h"
 #include "Vec2.h"
+#include "Vec3.h"
+#include "Mat3.h"
+#include "Model.h"
 
 #define CHILI_GFX_EXCEPTION( hr,note ) Graphics::Exception( hr,note,_CRT_WIDE(__FILE__),__LINE__ )
 
@@ -68,6 +71,9 @@ public:
 
 	// Draw Triangles
 	void DrawTriangle( Vec2 v0, Vec2 v1, Vec2 v2, Color c );
+
+	void Draw3DModelWireframe( Model* model, Mat3 rotate, Vec3 translate, Color c );
+	void Draw3DModelTriangles( Model* model, Mat3 rotate, Vec3 translate );
 
 	// Draw Pixels
 	void PutPixel( int x,int y,int r,int g,int b )

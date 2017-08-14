@@ -1,11 +1,12 @@
 #pragma once
 
+#include "Model.h"
 #include <vector>
-#include "Vec3.h"
+#include "Vec3.h"/*
 #include "IndexedLineList.h"
-#include "IndexedTriangleList.h"
+#include "IndexedTriangleList.h"*/
 
-class Cube
+class Cube: public Model
 {
 public:
 	Cube( const float size )
@@ -23,7 +24,7 @@ public:
 		vertices.emplace_back(  side,  side, side ); // 7
 	}
 
-	IndexedLineList GetLines() const
+	IndexedLineList GetLines() const override
 	{
 		return
 		{
@@ -34,7 +35,7 @@ public:
 		};
 	}
 
-	IndexedTriangleList GetTriangles() const
+	IndexedTriangleList GetTriangles() const override
 	{
 		return
 		{

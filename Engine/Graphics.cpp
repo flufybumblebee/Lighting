@@ -475,3 +475,100 @@ void Graphics::DrawFlatBottomTriangle(const Vec2& v0, const Vec2& v1, const Vec2
 		}
 	}
 }
+
+void Graphics::Draw3DModelWireframe( Model* model,  Mat3 rotate, Vec3 translate, Color c )
+{
+	auto modelLines = model->GetLines();
+
+	for (auto i = modelLines.vertices.begin(),
+		end = modelLines.vertices.end();
+		i != end; i++)
+	{
+		*i *= rotate;
+		*i += translate;
+	
+		const float zInv = 1.0f / i->z;
+		i->x = (i->x * zInv + 1.0f) * float((ScreenWidth) / 2.0f);
+		i->y = (-(i->y) * zInv + 1.0f) * float((ScreenHeight) / 2.0f);
+	}
+
+	for (auto i = modelLines.indices.begin(),
+		end = modelLines.indices.end();
+		i != end; std::advance(i, 2))
+	{
+		DrawLine(
+			modelLines.vertices[*i],
+			modelLines.vertices[*std::next(i)],
+			c);
+	}
+}
+
+void Graphics::Draw3DModelTriangles( Model* model, Mat3 rotate, Vec3 translate )
+{
+	const Color colors[24] =
+	{
+		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
+		Colors::Red,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow,
+		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
+		Colors::Red,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow
+	};
+
+	auto modelTriangles = model->GetTriangles();
+	
+	for (auto& i : modelTriangles.vertices)
+	{
+		i *= rotate;
+		i += translate;
+	}
+	
+	// set cullflags
+	for (size_t i = 0, end = modelTriangles.indices.size() / 3;
+		i < end; i++)
+	{
+		const Vec3& v0 = modelTriangles.vertices[modelTriangles.indices[i * 3 + 0]];
+		const Vec3& v1 = modelTriangles.vertices[modelTriangles.indices[i * 3 + 1]];
+		const Vec3& v2 = modelTriangles.vertices[modelTriangles.indices[i * 3 + 2]];
+		modelTriangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+	}
+	
+	for (auto i = modelTriangles.vertices.begin(),
+		end = modelTriangles.vertices.end();
+		i != end; i++)
+	{
+		const float zInv = 1.0f / i->z;
+		i->x = (i->x * zInv + 1.0f) * float((ScreenWidth) / 2.0f);
+		i->y = (-(i->y) * zInv + 1.0f) * float((ScreenHeight) / 2.0f);
+	}
+	
+	for (size_t i = 0, end = modelTriangles.indices.size() / 3; i < end; i++)
+	{
+		if (!modelTriangles.cullflags[i])
+		{
+			DrawTriangle(
+				modelTriangles.vertices[modelTriangles.indices[i * 3 + 0]],
+				modelTriangles.vertices[modelTriangles.indices[i * 3 + 1]],
+				modelTriangles.vertices[modelTriangles.indices[i * 3 + 2]],
+				colors[i]);
+		}
+	}		
+}

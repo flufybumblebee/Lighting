@@ -26,6 +26,8 @@
 #include "Vec3.h"
 #include "Transformer.h"
 
+#include "Model.h"
+
 #include "Cube.h"
 #include "HexPrism.h"
 #include "Diamond.h"
@@ -45,19 +47,21 @@ private:
 	MainWindow& wnd;
 	Graphics gfx;
 
-	Cube cube;
+	Model* model;
+
+	/*Cube cube;
 	HexPrism hex;
 	Diamond diamond;
-	Plane plane;
+	Plane plane;*/
 
-	Transformer trans;
+	//Transformer trans;
 
-	Surface pic;
+	/*Surface pic;*/
 
 	// translate
 	float x_offset = 0.0f;
 	float y_offset = 0.0f;
-	float z_offset = 2.0f;
+	float z_offset = 5.0f;
 
 	// rotate
 	float angleZ = 0.0f;
