@@ -26,8 +26,6 @@
 #include "Vec3.h"
 #include "Transformer.h"
 
-#include "Model.h"
-
 #include "Cube.h"
 #include "HexPrism.h"
 #include "Diamond.h"

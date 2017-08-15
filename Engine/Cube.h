@@ -23,7 +23,7 @@ public:
 		vertices.emplace_back(  side,  side, side ); // 7
 	}
 
-	IndexedLineList GetLines() const override
+	IndexedLineList GetLines() const
 	{
 		return
 		{
@@ -34,7 +34,7 @@ public:
 		};
 	}
 
-	IndexedTriangleList GetTriangles() const override
+	IndexedTriangleList GetTriangles() const
 	{
 		return
 		{

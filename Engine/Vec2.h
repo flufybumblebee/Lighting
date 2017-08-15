@@ -41,6 +41,7 @@ public:
 	{
 		return { (T2)x,(T2)y };
 	}
+
 	T		LenSq() const
 	{
 		return sq( *this );
@@ -62,6 +63,7 @@ public:
 		norm.Normalize();
 		return norm;
 	}
+
 	_Vec2	operator-() const
 	{
 		return _Vec2( -x,-y );
