@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Model.h"
 #include <vector>
-#include "Vec3.h"/*
+#include "Vec3.h"
 #include "IndexedLineList.h"
-#include "IndexedTriangleList.h"*/
+#include "IndexedTriangleList.h"
 
-class Cube: public Model
+class Cube
 {
 public:
 	Cube( const float size )

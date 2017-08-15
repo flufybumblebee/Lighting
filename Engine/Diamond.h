@@ -1,11 +1,11 @@
 #pragma once
 
-
-#include "Model.h"
 #include <vector>
 #include "Vec3.h"
+#include "IndexedLineList.h"
+#include "IndexedTriangleList.h"
 
-class Diamond : public Model
+class Diamond
 {
 public:
 	Diamond(const float size)

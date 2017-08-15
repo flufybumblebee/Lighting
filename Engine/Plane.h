@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Model.h"
 #include "Vec3.h"
 #include <vector>
+#include "IndexedLineList.h"
+#include "IndexedTriangleList.h"
 
-class Plane: public Model
+class Plane
 {
 public:
 	Plane( float size )

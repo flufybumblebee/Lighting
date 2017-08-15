@@ -26,14 +26,14 @@
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
-	gfx(wnd)/*,
-	cube(1.0f),
+	gfx(wnd),
+	cube(1.0f)/*,
 	pic(Surface::FromFile(L"mario.png")),
 	hex(1.0f),
 	diamond(1.0f),
 	plane(1.0f)*/
 {
-	model = new HexPrism(1.0f);
+	
 }
 
 void Game::Go()
@@ -118,13 +118,7 @@ void Game::ComposeFrame()
 		Mat3::RotationY(angleY) *
 		Mat3::RotationX(angleX); 
 	
-	Vec3 translate1 = { x_offset + 0.0f,  y_offset + 0.0f,  z_offset };
-	Vec3 translate2 = { x_offset + 0.75f, y_offset + 0.43f, z_offset };
-	Vec3 translate3 = { x_offset + 0.75f, y_offset - 0.43f, z_offset };
-	Vec3 translate4 = { x_offset + 0.0f,  y_offset + 0.86f, z_offset };
-	Vec3 translate5 = { x_offset + 0.0f,  y_offset - 0.86f, z_offset };
-	Vec3 translate6 = { x_offset - 0.75f, y_offset + 0.43f, z_offset };
-	Vec3 translate7 = { x_offset - 0.75f, y_offset - 0.43f, z_offset };
+	Vec3 translate = { x_offset,  y_offset,  z_offset };
 
 	/*const Color colors[12] =
 	{
@@ -142,7 +136,7 @@ void Game::ComposeFrame()
 		Colors::Cyan
 	};*/
 	
-	/*const Color colors[12] =
+	const Color colors[12] =
 	{
 		Colors::Magenta,
 		Colors::Purple,
@@ -156,7 +150,7 @@ void Game::ComposeFrame()
 		Colors::Gray,
 		Colors::Orange,
 		Colors::Yellow
-	};*/
+	};
 
 	/*const Color colors[24] =
 	{
@@ -185,84 +179,73 @@ void Game::ComposeFrame()
 		Colors::Orange,
 		Colors::Yellow
 	};*/
-
-	gfx.Draw3DModelTriangles(model, rotate, translate7 *= rotate);
-	gfx.Draw3DModelTriangles(model, rotate, translate6 *= rotate);
-	gfx.Draw3DModelTriangles(model, rotate, translate5 *= rotate);
-	gfx.Draw3DModelTriangles(model, rotate, translate4 *= rotate);
-	gfx.Draw3DModelTriangles(model, rotate, translate3 *= rotate);
-	gfx.Draw3DModelTriangles(model, rotate, translate2 *= rotate);
-	gfx.Draw3DModelTriangles(model, rotate, translate1 *= rotate);
-	//gfx.Draw3DModelWireframe(model, rotate, translate, Colors::White);
-	//gfx.Draw3DModelWireframe(model, rotate, translate2 *= rotate, Colors::White);
-	//gfx.Draw3DModelWireframe(model, rotate, translate3 *= rotate, Colors::White);
-
-	//if (false /* Cube */ )
-	//{
-	//	if (true)
-	//	{
-	//		auto cubeTriangles = cube.GetTriangles();
-	//
-	//		for (auto& v : cubeTriangles.vertices)
-	//		{
-	//			v *= rotate;
-	//			v += translate;
-	//		}
-	//
-	//		// set cullflags
-	//		for (size_t i = 0, end = cubeTriangles.indices.size() / 3;
-	//			i < end; i++)
-	//		{
-	//			const Vec3& v0 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]];
-	//			const Vec3& v1 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]];
-	//			const Vec3& v2 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]];
-	//			cubeTriangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
-	//		}
-	//
-	//		for (auto& v : cubeTriangles.vertices)
-	//		{
-	//			trans.Transform(v);
-	//		}
-	//
-	//		for (size_t i = 0, end = cubeTriangles.indices.size() / 3; i < end; i++)
-	//		{
-	//			if (!cubeTriangles.cullflags[i])
-	//			{
-	//				gfx.DrawTriangle(
-	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]],
-	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]],
-	//					cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]],
-	//					colors[i]);
-	//			}
-	//		}
-	//	}
-	//
-	//	//------------------------------------------------------------------
-	//
-	//	if (false)
-	//	{
-	//		auto cubeLines = cube.GetLines();
-	//
-	//		for (auto i = cubeLines.vertices.begin(),
-	//			end = cubeLines.vertices.end();
-	//			i != end; i++)
-	//		{
-	//			*i *= rotate;
-	//			*i += translate;
-	//			trans.Transform(*i);
-	//		}
-	//
-	//		for (auto i = cubeLines.indices.begin(),
-	//			end = cubeLines.indices.end();
-	//			i != end; std::advance(i, 2))
-	//		{
-	//			gfx.DrawLine(
-	//				cubeLines.vertices[*i],
-	//				cubeLines.vertices[*std::next(i)],
-	//				Colors::Black);
-	//		}
-	//	}
-	//}
+	
+	if (true /* Cube */ )
+	{
+		if (true)
+		{
+			auto cubeTriangles = cube.GetTriangles();
+	
+			for (auto& v : cubeTriangles.vertices)
+			{
+				v *= rotate;
+				v += translate;
+			}
+	
+			// set cullflags
+			for (size_t i = 0, end = cubeTriangles.indices.size() / 3;
+				i < end; i++)
+			{
+				const Vec3& v0 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]];
+				const Vec3& v1 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]];
+				const Vec3& v2 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]];
+				cubeTriangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+			}
+	
+			for (auto& v : cubeTriangles.vertices)
+			{
+				trans.Transform(v);
+			}
+	
+			for (size_t i = 0, end = cubeTriangles.indices.size() / 3; i < end; i++)
+			{
+				if (!cubeTriangles.cullflags[i])
+				{
+					gfx.DrawTriangle(
+						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]],
+						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]],
+						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]],
+						colors[i]);
+				}
+			}
+		}
+	
+		//------------------------------------------------------------------
+	
+		if (false)
+		{
+			auto cubeLines = cube.GetLines();
+	
+			for (auto i = cubeLines.vertices.begin(),
+				end = cubeLines.vertices.end();
+				i != end; i++)
+			{
+				*i *= rotate;
+				*i += translate;
+				trans.Transform(*i);
+			}
+	
+			for (auto i = cubeLines.indices.begin(),
+				end = cubeLines.indices.end();
+				i != end; std::advance(i, 2))
+			{
+				gfx.DrawLine(
+					cubeLines.vertices[*i],
+					cubeLines.vertices[*std::next(i)],
+					Colors::Black);
+			}
+		}
+	}
 
 	//if (false /* Diamond */ )
 	//{

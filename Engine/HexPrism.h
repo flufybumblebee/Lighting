@@ -1,11 +1,11 @@
 #pragma once
 
-
-#include "Model.h"
 #include "Vec3.h"
 #include <vector>
+#include "IndexedLineList.h"
+#include "IndexedTriangleList.h"
 
-class HexPrism : public Model
+class HexPrism
 {
 public:
 	HexPrism(const float size)

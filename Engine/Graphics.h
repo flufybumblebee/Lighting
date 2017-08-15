@@ -28,7 +28,6 @@
 #include "Vec2.h"
 #include "Vec3.h"
 #include "Mat3.h"
-#include "Model.h"
 
 #define CHILI_GFX_EXCEPTION( hr,note ) Graphics::Exception( hr,note,_CRT_WIDE(__FILE__),__LINE__ )
 
@@ -62,28 +61,26 @@ public:
 	void EndFrame();
 	void BeginFrame();
 
-	// Draw Lines
-	void DrawLine( const Vec2& p1,const Vec2& p2,Color c )
-	{
-		DrawLine( p1.x,p1.y,p2.x,p2.y,c );
-	}
-	void DrawLine( float x1,float y1,float x2,float y2,Color c );
-
-	// Draw Triangles
-	void DrawTriangle( Vec2 v0, Vec2 v1, Vec2 v2, Color c );
-
-	void Draw3DModelWireframe( Model* model, Mat3 rotate, Vec3 translate, Color c );
-	void Draw3DModelTriangles( Model* model, Mat3 rotate, Vec3 translate );
-
 	// Draw Pixels
-	void PutPixel( int x,int y,int r,int g,int b )
-	{
-		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
-	}
 	void PutPixel( int x,int y,Color c )
 	{
 		sysBuffer.PutPixel( x,y,c );
 	}
+	void PutPixel( int x,int y,int r,int g,int b )
+	{
+		PutPixel( x,y,{ unsigned char( r ),unsigned char( g ),unsigned char( b ) } );
+	}
+
+	// Draw Lines
+	void DrawLine( float x1,float y1,float x2,float y2,Color c );
+	void DrawLine( const Vec2& p1,const Vec2& p2,Color c )
+	{
+		DrawLine( p1.x,p1.y,p2.x,p2.y,c );
+	}
+
+	// Draw Triangles
+	void DrawTriangle( Vec2 v0, Vec2 v1, Vec2 v2, Color c );
+	
 private:
 	void DrawFlatTopTriangle(const Vec2& v0, const Vec2& v1, const Vec2& v2, Color c);
 	void DrawFlatBottomTriangle(const Vec2& v0, const Vec2& v1, const Vec2& v2, Color c);
