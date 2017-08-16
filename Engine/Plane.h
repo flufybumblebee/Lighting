@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vec3.h"
+#include "Vec4.h"
 #include <vector>
 #include "IndexedLineList.h"
 #include "IndexedTriangleList.h"
@@ -11,10 +11,10 @@ public:
 	Plane( float size )
 	{
 		const float side = size / 2.0f;
-		vertices.emplace_back( -side, 0.0f,  side ); // 0
-		vertices.emplace_back(  side, 0.0f,  side ); // 1
-		vertices.emplace_back(  side, 0.0f, -side ); // 2
-		vertices.emplace_back( -side, 0.0f, -side ); // 3
+		vertices.emplace_back( -side, 0.0f,  side, 1.0f); // 0
+		vertices.emplace_back(  side, 0.0f,  side, 1.0f); // 1
+		vertices.emplace_back(  side, 0.0f, -side, 1.0f); // 2
+		vertices.emplace_back( -side, 0.0f, -side, 1.0f); // 3
 	}
 	IndexedLineList GetLines() const
 	{
@@ -35,5 +35,5 @@ public:
 		};
 	}
 public:
-	std::vector<Vec3> vertices;
+	std::vector<Vec4> vertices;
 };

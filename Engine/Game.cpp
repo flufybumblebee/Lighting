@@ -21,20 +21,18 @@
 #include "MainWindow.h"
 #include "Game.h"
 
-#include "Mat2.h"
+#include "Vec4.h"
+#include "Mat4.h"
 
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	cube(1.0f)/*,
-	pic(Surface::FromFile(L"mario.png")),
-	hex(1.0f),
-	diamond(1.0f),
-	plane(1.0f)*/
-{
-	
-}
+	cube(    1.0f ),
+	hex(     1.0f ),
+	diamond( 1.0f ),
+	plane(   1.0f )
+{}
 
 void Game::Go()
 {
@@ -47,483 +45,426 @@ void Game::Go()
 void Game::UpdateModel()
 {
 	// ---------------------------------------
-	// rotate
+	// rotation
 
-	if( wnd.kbd.KeyIsPressed( 'Q' ) )
-	{
-		angleZ = angleZ - 0.01f;
-	}
-	else if( wnd.kbd.KeyIsPressed( 'A' ) )
-	{
-		angleZ = angleZ + 0.01f;
-	}
-
-	if( wnd.kbd.KeyIsPressed( 'W' ) )
-	{
-		angleY = angleY - 0.01f;
-	}
-	else if( wnd.kbd.KeyIsPressed( 'S' ) )
-	{
-		angleY = angleY + 0.01f;
-	}
-
+	// rotate around X
 	if( wnd.kbd.KeyIsPressed( 'E' ) )
 	{
-		angleX = angleX - 0.01f;
+		angleX = angleX - 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'D' ) )
 	{
-		angleX = angleX + 0.01f;
+		angleX = angleX + 0.02f;
+	}
+
+	// rotate around Y
+	if( wnd.kbd.KeyIsPressed( 'W' ) )
+	{
+		angleY = angleY - 0.02f;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'S' ) )
+	{
+		angleY = angleY + 0.02f;
+	}
+
+	// rotate around Z
+	if( wnd.kbd.KeyIsPressed( 'Q' ) )
+	{
+		angleZ = angleZ - 0.02f;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'A' ) )
+	{
+		angleZ = angleZ + 0.02f;
+	}
+	
+	//-----------------------------------------
+	// scaling 
+	if (wnd.kbd.KeyIsPressed('T'))
+	{
+		scale = scale - 0.01f;
+		if (scale < 0) { scale = 0; }
+	}
+	else if (wnd.kbd.KeyIsPressed('G'))
+	{
+		scale = scale + 0.01f;
 	}
 
 	//-----------------------------------------
-	// translate
+	// translation
 
+	// translate along X axis
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
 	{
-		x_offset = x_offset -= 0.01f;
+		x_offset = x_offset -= 0.02f;
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
 	{
-		x_offset = x_offset += 0.01f;
+		x_offset = x_offset += 0.02f;
 	}
 
+	// translate along Y axis
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 	{
-		y_offset = y_offset += 0.01f;
+		y_offset = y_offset += 0.02f;
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
 	{
-		y_offset = y_offset -= 0.01f;
+		y_offset = y_offset -= 0.02f;
 	}
-	
+
+	// translate along Z axis
 	if( wnd.kbd.KeyIsPressed( 'R' ) )
 	{
-		z_offset = z_offset += 0.01f;
+		z_offset = z_offset += 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'F' ) )
 	{
-		z_offset = z_offset -= 0.01f;
+		z_offset = z_offset -= 0.02f;
 	}
 }
 
 void Game::ComposeFrame()
 {
-	/*for( unsigned int y = 0; y < pic.GetHeight(); y++ )
-		for (unsigned int x = 0; x < pic.GetWidth(); x++)
-			gfx.PutPixel(x, y, pic.GetPixel(x, y));*/
+	// -------------------------------------------------
 
-	const Mat3 rotate =
-		Mat3::RotationZ(angleZ) *
-		Mat3::RotationY(angleY) *
-		Mat3::RotationX(angleX); 
-	
-	Vec3 translate = { x_offset,  y_offset,  z_offset };
+	Mat4 Transformation =
+		Mat4::RotationZ(angleZ) *
+		Mat4::RotationY(angleY) *
+		Mat4::RotationX(angleX) *
+		Mat4::Scaling( scale )  *
+		Mat4::Translation(x_offset, y_offset, z_offset);	
 
-	/*const Color colors[12] =
-	{
-		Colors::Magenta,
-		Colors::Magenta,
-		Colors::Red,
-		Colors::Red,
-		Colors::Blue,
-		Colors::Blue,
-		Colors::Green,
-		Colors::Green,
-		Colors::Yellow,
-		Colors::Yellow,
-		Colors::Cyan,
-		Colors::Cyan
-	};*/
-	
-	const Color colors[12] =
-	{
-		Colors::Magenta,
-		Colors::Purple,
-		Colors::Pink,
-		Colors::Red,
-		Colors::Blue,
-		Colors::LightBlue,
-		Colors::LightGreen,
-		Colors::Green,
-		Colors::LightGray,
-		Colors::Gray,
-		Colors::Orange,
-		Colors::Yellow
-	};
+	// -------------------------------------------------
 
-	/*const Color colors[24] =
+	if ( false /* cube */ )
 	{
-		Colors::Magenta,
-		Colors::Purple,
-		Colors::Pink,
-		Colors::Red,
-		Colors::Blue,
-		Colors::LightBlue,
-		Colors::LightGreen,
-		Colors::Green,
-		Colors::LightGray,
-		Colors::Gray,
-		Colors::Orange,
-		Colors::Yellow,
-		Colors::Magenta,
-		Colors::Purple,
-		Colors::Pink,
-		Colors::Red,
-		Colors::Blue,
-		Colors::LightBlue,
-		Colors::LightGreen,
-		Colors::Green,
-		Colors::LightGray,
-		Colors::Gray,
-		Colors::Orange,
-		Colors::Yellow
-	};*/
-	
-	if (true /* Cube */ )
-	{
+		const Color colors[12] = {
+			Colors::Magenta,
+			Colors::Purple,
+			Colors::Pink,
+			Colors::Red,
+			Colors::Blue,
+			Colors::LightBlue,
+			Colors::LightGreen,
+			Colors::Green,
+			Colors::LightGray,
+			Colors::Gray,
+			Colors::Orange,
+			Colors::Yellow };
+		
+		/*const Color colors[12] = {
+			Colors::Magenta,
+			Colors::Magenta,
+			Colors::Red,
+			Colors::Red,
+			Colors::Blue,
+			Colors::Blue,
+			Colors::Green,
+			Colors::Green,
+			Colors::Yellow,
+			Colors::Yellow,
+			Colors::Cyan,
+			Colors::Cyan };*/
+
 		if (true)
 		{
-			auto cubeTriangles = cube.GetTriangles();
-	
-			for (auto& v : cubeTriangles.vertices)
+			auto triangles = cube.GetTriangles();
+
+			for (auto& i : triangles.vertices)
 			{
-				v *= rotate;
-				v += translate;
+				i *= Transformation;
+			}
+
+			// set cullflags
+			for (size_t i = 0, end = triangles.indices.size() / 3;
+				i < end; i++)
+			{
+				const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
+				const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
+				const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
+				triangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+			}
+
+			for (auto& i : triangles.vertices)
+			{
+				cam.Transform(i);
+			}
+
+			for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+			{
+				if (!triangles.cullflags[i])
+				{
+					gfx.DrawTriangle(
+						triangles.vertices[triangles.indices[i * 3 + 0]],
+						triangles.vertices[triangles.indices[i * 3 + 1]],
+						triangles.vertices[triangles.indices[i * 3 + 2]],
+						colors[i]);
+				}
+			}
+		}
+
+		// ---------------------------------------------------
+
+		if (false)
+		{
+			auto lines = cube.GetLines();
+
+			for (auto i = lines.vertices.begin(),
+				end = lines.vertices.end();
+				i != end; i++)
+			{
+				*i *= Transformation;
+				cam.Transform(*i);
+			}
+
+			for (auto i = lines.indices.begin(),
+				end = lines.indices.end();
+				i != end; std::advance(i, 2))
+			{
+				gfx.DrawLine(
+					lines.vertices[*i],
+					lines.vertices[*std::next(i)],
+					Colors::White);
+			}
+		}
+	}
+
+	// -------------------------------------------------
+
+	if ( false /* diamond */ )
+	{
+		const Color colors[8] =	{
+				Colors::Pink,
+				Colors::Red,
+				Colors::LightGreen,
+				Colors::Green,
+				Colors::LightGray,
+				Colors::Gray,
+				Colors::Orange,
+				Colors::Yellow };
+
+		if (true)
+		{	
+			auto triangles = diamond.GetTriangles();
+	
+			for (auto& i : triangles.vertices)
+			{
+				i *= Transformation;
 			}
 	
 			// set cullflags
-			for (size_t i = 0, end = cubeTriangles.indices.size() / 3;
+			for (size_t i = 0, end = triangles.indices.size() / 3;
 				i < end; i++)
 			{
-				const Vec3& v0 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]];
-				const Vec3& v1 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]];
-				const Vec3& v2 = cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]];
-				cubeTriangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+				const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
+				const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
+				const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
+				triangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
 			}
 	
-			for (auto& v : cubeTriangles.vertices)
+			for (auto& i : triangles.vertices)
 			{
-				trans.Transform(v);
+				cam.Transform(i);
 			}
 	
-			for (size_t i = 0, end = cubeTriangles.indices.size() / 3; i < end; i++)
+			for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
 			{
-				if (!cubeTriangles.cullflags[i])
+				if (!triangles.cullflags[i])
 				{
 					gfx.DrawTriangle(
-						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 0]],
-						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 1]],
-						cubeTriangles.vertices[cubeTriangles.indices[i * 3 + 2]],
+						triangles.vertices[triangles.indices[i * 3 + 0]],
+						triangles.vertices[triangles.indices[i * 3 + 1]],
+						triangles.vertices[triangles.indices[i * 3 + 2]],
 						colors[i]);
 				}
 			}
 		}
 	
-		//------------------------------------------------------------------
-	
 		if (false)
 		{
-			auto cubeLines = cube.GetLines();
+			auto lines = diamond.GetLines();
 	
-			for (auto i = cubeLines.vertices.begin(),
-				end = cubeLines.vertices.end();
+			for (auto i = lines.vertices.begin(),
+				end = lines.vertices.end();
 				i != end; i++)
 			{
-				*i *= rotate;
-				*i += translate;
-				trans.Transform(*i);
+				*i *= Transformation;
+				cam.Transform(*i);
 			}
 	
-			for (auto i = cubeLines.indices.begin(),
-				end = cubeLines.indices.end();
+			for (auto i = lines.indices.begin(),
+				end = lines.indices.end();
 				i != end; std::advance(i, 2))
 			{
 				gfx.DrawLine(
-					cubeLines.vertices[*i],
-					cubeLines.vertices[*std::next(i)],
+					lines.vertices[*i],
+					lines.vertices[*std::next(i)],
 					Colors::Black);
 			}
 		}
 	}
 
-	//if (false /* Diamond */ )
-	//{
-	//	if (true)
-	//	{
-	//		const Color colors[8] =
-	//		{
-	//		Colors::Pink,
-	//		Colors::Red,
-	//		Colors::LightGreen,
-	//		Colors::Green,
-	//		Colors::LightGray,
-	//		Colors::Gray,
-	//		Colors::Orange,
-	//		Colors::Yellow
-	//		};
-	//
-	//		auto diaTri = diamond.GetTriangles();
-	//
-	//		for (auto& v : diaTri.vertices)
-	//		{
-	//			v *= rotate;
-	//			v += translate;
-	//		}
-	//
-	//		// set cullflags
-	//		for (size_t i = 0, end = diaTri.indices.size() / 3;
-	//			i < end; i++)
-	//		{
-	//			const Vec3& v0 = diaTri.vertices[diaTri.indices[i * 3 + 0]];
-	//			const Vec3& v1 = diaTri.vertices[diaTri.indices[i * 3 + 1]];
-	//			const Vec3& v2 = diaTri.vertices[diaTri.indices[i * 3 + 2]];
-	//			diaTri.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
-	//		}
-	//
-	//		for (auto& v : diaTri.vertices)
-	//		{
-	//			trans.Transform(v);
-	//		}
-	//
-	//		for (size_t i = 0, end = diaTri.indices.size() / 3; i < end; i++)
-	//		{
-	//			if (!diaTri.cullflags[i])
-	//			{
-	//				gfx.DrawTriangle(
-	//					diaTri.vertices[diaTri.indices[i * 3 + 0]],
-	//					diaTri.vertices[diaTri.indices[i * 3 + 1]],
-	//					diaTri.vertices[diaTri.indices[i * 3 + 2]],
-	//					colors[i]);
-	//			}
-	//		}
-	//	}
-	//
-	//	if (true)
-	//	{
-	//		auto diaLine = diamond.GetLines();
-	//
-	//		for (auto i = diaLine.vertices.begin(),
-	//			end = diaLine.vertices.end();
-	//			i != end; i++)
-	//		{
-	//			*i *= rotate;
-	//			*i += translate;
-	//			trans.Transform(*i);
-	//		}
-	//
-	//		for (auto i = diaLine.indices.begin(),
-	//			end = diaLine.indices.end();
-	//			i != end; std::advance(i, 2))
-	//		{
-	//			gfx.DrawLine(
-	//				diaLine.vertices[*i],
-	//				diaLine.vertices[*std::next(i)],
-	//				Colors::Black);
-	//		}
-	//	}
-	//}
+	// -------------------------------------------------
 
-	//if (false /* HexPrism */ )
-	//{		
-	//	Vec3 translate = { x_offset, y_offset + 0.5f, z_offset };
-	//	translate *= rotate;
-	//	
-	//	if (true)
-	//	{
-	//		auto hexPrism = hex.GetTriangles();
-	//
-	//		for (auto& v : hexPrism.vertices)
-	//		{
-	//			v *= rotate;
-	//			v += translate;
-	//		}
-	//
-	//		// set cullflags
-	//		for (size_t i = 0, end = hexPrism.indices.size() / 3;
-	//			i < end; i++)
-	//		{
-	//			const Vec3& v0 = hexPrism.vertices[hexPrism.indices[i * 3 + 0]];
-	//			const Vec3& v1 = hexPrism.vertices[hexPrism.indices[i * 3 + 1]];
-	//			const Vec3& v2 = hexPrism.vertices[hexPrism.indices[i * 3 + 2]];
-	//			hexPrism.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
-	//		}
-	//
-	//		for (auto& v : hexPrism.vertices)
-	//		{
-	//			trans.Transform(v);
-	//		}
-	//
-	//		for (size_t i = 0, end = hexPrism.indices.size() / 3; i < end; i++)
-	//		{
-	//			if (!hexPrism.cullflags[i])
-	//			{
-	//				gfx.DrawTriangle(
-	//					hexPrism.vertices[hexPrism.indices[i * 3 + 0]],
-	//					hexPrism.vertices[hexPrism.indices[i * 3 + 1]],
-	//					hexPrism.vertices[hexPrism.indices[i * 3 + 2]],
-	//					colors[i]);
-	//			}
-	//		}
-	//	}
-	//
-	//	if (false)
-	//	{
-	//		auto hexLines = hex.GetLines();
-	//
-	//		for (auto i = hexLines.vertices.begin(),
-	//			end = hexLines.vertices.end();
-	//			i != end; i++)
-	//		{
-	//			*i *= rotate;
-	//			*i += translate;
-	//			trans.Transform(*i);
-	//		}
-	//
-	//		for (auto i = hexLines.indices.begin(),
-	//			end = hexLines.indices.end();
-	//			i != end; std::advance(i, 2))
-	//		{
-	//			gfx.DrawLine(
-	//				hexLines.vertices[*i],
-	//				hexLines.vertices[*std::next(i)],
-	//				Colors::Black);
-	//		}
-	//	}
-	//}
+	if ( false /* hex prism */ )
+	{	
+		const Color colors[24] = {
+			Colors::Magenta,
+			Colors::Purple,
+			Colors::Pink,
+			Colors::Red,
+			Colors::Blue,
+			Colors::LightBlue,
+			Colors::LightGreen,
+			Colors::Green,
+			Colors::LightGray,
+			Colors::Gray,
+			Colors::Orange,
+			Colors::Yellow,
+			Colors::Magenta,
+			Colors::Purple,
+			Colors::Pink,
+			Colors::Red,
+			Colors::Blue,
+			Colors::LightBlue,
+			Colors::LightGreen,
+			Colors::Green,
+			Colors::LightGray,
+			Colors::Gray,
+			Colors::Orange,
+			Colors::Yellow };
 
-	//if (false  /* Plane */ )
-	//{
-	//	const Vec3 translate = { x_offset, y_offset, z_offset };
-	//
-	//	if (true)
-	//	{
-	//		auto planeTri = plane.GetTriangles();
-	//
-	//		for (auto& v : planeTri.vertices)
-	//		{
-	//			v *= rotate;
-	//			v += translate;
-	//		}
-	//
-	//		// set cullflags
-	//		for (size_t i = 0, end = planeTri.indices.size() / 3;
-	//			i < end; i++)
-	//		{
-	//			const Vec3& v0 = planeTri.vertices[planeTri.indices[i * 3 + 0]];
-	//			const Vec3& v1 = planeTri.vertices[planeTri.indices[i * 3 + 1]];
-	//			const Vec3& v2 = planeTri.vertices[planeTri.indices[i * 3 + 2]];
-	//			planeTri.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
-	//		}
-	//
-	//		for (auto& v : planeTri.vertices)
-	//		{
-	//			trans.Transform(v);
-	//		}
-	//
-	//		for (size_t i = 0, end = planeTri.indices.size() / 3; i < end; i++)
-	//		{
-	//			if (!planeTri.cullflags[i])
-	//			{
-	//				gfx.DrawTriangle(
-	//					planeTri.vertices[planeTri.indices[i * 3 + 0]],
-	//					planeTri.vertices[planeTri.indices[i * 3 + 1]],
-	//					planeTri.vertices[planeTri.indices[i * 3 + 2]],
-	//					colors[i]);
-	//			}
-	//		}
-	//	}
-	//
-	//	if (false)
-	//	{
-	//		auto planeLines = plane.GetLines();
-	//
-	//		for (auto i = planeLines.vertices.begin(),
-	//			end = planeLines.vertices.end();
-	//			i != end; i++)
-	//		{
-	//			*i *= rotate;
-	//			*i += translate;
-	//			trans.Transform(*i);
-	//		}
-	//
-	//		for (auto i = planeLines.indices.begin(),
-	//			end = planeLines.indices.end();
-	//			i != end; std::advance(i, 2))
-	//		{
-	//			gfx.DrawLine(
-	//				planeLines.vertices[*i],
-	//				planeLines.vertices[*std::next(i)],
-	//				Colors::Black);
-	//		}
-	//	}
-	//}
+		if (true)
+		{
+			auto triangles = hex.GetTriangles();
 	
-	/*// Triangle Drawing with Cube ( multi color )
-
-	auto cubeTri = cube.GetTriangles();
-
-	for (auto i = cubeTri.vertices.begin(),
-	end = cubeTri.vertices.end();
-	i != end; i++)
-	{
-	*i *= rotate;
-	*i += translate;
-	trans.Transform(*i);
+			for (auto& i : triangles.vertices)
+			{
+				i *= Transformation;
+			}
+	
+			// set cullflags
+			for (size_t i = 0, end = triangles.indices.size() / 3;
+				i < end; i++)
+			{
+				const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
+				const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
+				const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
+				triangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+			}
+	
+			for (auto& i : triangles.vertices)
+			{
+				cam.Transform(i);
+			}
+	
+			for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+			{
+				if (!triangles.cullflags[i])
+				{
+					gfx.DrawTriangle(
+						triangles.vertices[triangles.indices[i * 3 + 0]],
+						triangles.vertices[triangles.indices[i * 3 + 1]],
+						triangles.vertices[triangles.indices[i * 3 + 2]],
+						colors[i]);
+				}
+			}
+		}
+	
+		if (false)
+		{
+			auto lines = hex.GetLines();
+	
+			for (auto i = lines.vertices.begin(),
+				end = lines.vertices.end();
+				i != end; i++)
+			{
+				*i *= Transformation;
+				cam.Transform(*i);
+			}
+	
+			for (auto i = lines.indices.begin(),
+				end = lines.indices.end();
+				i != end; std::advance(i, 2))
+			{
+				gfx.DrawLine(
+					lines.vertices[*i],
+					lines.vertices[*std::next(i)],
+					Colors::White);
+			}
+		}
 	}
 
-	for (int i = 0, end = cubeTri.indices.size() / 3;
-		i != end; i++)
+	// -------------------------------------------------
+
+	if ( false  /* plane */ )
 	{
-		gfx.DrawTriangle(
-			cubeTri.vertices[cubeTri.indices[i * 3 + 0] ],
-			cubeTri.vertices[cubeTri.indices[i * 3 + 1] ],
-			cubeTri.vertices[cubeTri.indices[i * 3 + 2] ],
-			colors[i]);
-	}*/
+		Color colors[4] = {
+			Colors::Red,
+			Colors::Pink,
+			Colors::Green,
+			Colors::LightGreen };
 
-	/*// Triangle Drawing with Cube ( one color )
-
-	auto cubeTri = cube.GetTriangles();
-
-	for (auto i = cubeTri.vertices.begin(),
-		   end = cubeTri.vertices.end();
-		 i != end; i++)
-	{
-		*i *= rotate;
-		*i += translate;
-		trans.Transform(*i);
-	}
-
-	for (auto i = cubeTri.indices.begin(),
-		end = cubeTri.indices.end();
-		i != end; std::advance(i, 3))
-	{
-		gfx.DrawTriangle( cubeTri.vertices[*i],
-						  cubeTri.vertices[*std::next(i)],
-						  cubeTri.vertices[*std::next(i+1)],
-						  Colors::White);
-	}*/	
-
-	/*// Triangle Drawing Function Test 2D
+		if (true)
+		{
+			auto triangles = plane.GetTriangles();
 	
-	const Vec2 v0 = { -100.0f, -100.0f };
-	const Vec2 v1 = {  100.0f, -100.0f };
-	const Vec2 v2 = { -100.0f,  100.0f };
-
-	const Vec2 v3 = {  100.0f, -100.0f };
-	const Vec2 v4 = {  100.0f,  100.0f };
-	const Vec2 v5 = { -100.0f,  100.0f };
-
-	gfx.DrawTriangle(
-		(v0 * Mat2::Rotation(angleZ)) + Vec2{ 320, 320 },
-		(v1 * Mat2::Rotation(angleZ)) + Vec2{ 320, 320 },
-		(v2 * Mat2::Rotation(angleZ)) + Vec2{ 320, 320 },
-		Colors::White);
-
-	gfx.DrawTriangle(
-		(v3 * Mat2::Rotation(angleZ) ) + Vec2{ 320, 320 },
-		(v4 * Mat2::Rotation(angleZ) ) + Vec2{ 320, 320 },
-		(v5 * Mat2::Rotation(angleZ) ) + Vec2{ 320, 320 },
-		Colors::Gray);*/
+			for (auto& i : triangles.vertices)
+			{
+				i *= Transformation;
+			}
+	
+			// set cullflags
+			for (size_t i = 0, end = triangles.indices.size() / 3;
+				i < end; i++)
+			{
+				const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
+				const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
+				const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
+				triangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+			}
+	
+			for (auto& i : triangles.vertices)
+			{
+				cam.Transform(i);
+			}
+	
+			for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+			{
+				if (!triangles.cullflags[i])
+				{
+					gfx.DrawTriangle(
+						triangles.vertices[triangles.indices[i * 3 + 0]],
+						triangles.vertices[triangles.indices[i * 3 + 1]],
+						triangles.vertices[triangles.indices[i * 3 + 2]],
+						colors[i]);
+				}
+			}
+		}
+	
+		if (false)
+		{
+			auto lines = plane.GetLines();
+	
+			for (auto i = lines.vertices.begin(),
+				end = lines.vertices.end();
+				i != end; i++)
+			{
+				*i *= Transformation;
+				cam.Transform(*i);
+			}
+	
+			for (auto i = lines.indices.begin(),
+				end = lines.indices.end();
+				i != end; std::advance(i, 2))
+			{
+				gfx.DrawLine(
+					lines.vertices[*i],
+					lines.vertices[*std::next(i)],
+					Colors::Black);
+			}
+		}
+	}
+	
+	// -------------------------------------------------
 }

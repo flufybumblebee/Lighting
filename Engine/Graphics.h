@@ -28,6 +28,7 @@
 #include "Vec2.h"
 #include "Vec3.h"
 #include "Mat3.h"
+#include "Vec4.h"
 
 #define CHILI_GFX_EXCEPTION( hr,note ) Graphics::Exception( hr,note,_CRT_WIDE(__FILE__),__LINE__ )
 
@@ -77,10 +78,17 @@ public:
 	{
 		DrawLine( p1.x,p1.y,p2.x,p2.y,c );
 	}
+	//void DrawLine(const Vec4& p0, const Vec4& p1, Color c)
+	//{
+	//	DrawLine( p0.x, p0.y, p1.x, p1.y, c );
+	//}
 
 	// Draw Triangles
 	void DrawTriangle( Vec2 v0, Vec2 v1, Vec2 v2, Color c );
-	
+	/*void DrawTriangle(const Vec4& p0, const Vec4& p1, const Vec4& p2, Color c)
+	{
+		DrawTriangle(Vec2(p0.x, p0.y), Vec2(p1.x, p1.y), Vec2(p2.x, p2.y), c);
+	}*/
 private:
 	void DrawFlatTopTriangle(const Vec2& v0, const Vec2& v1, const Vec2& v2, Color c);
 	void DrawFlatBottomTriangle(const Vec2& v0, const Vec2& v1, const Vec2& v2, Color c);

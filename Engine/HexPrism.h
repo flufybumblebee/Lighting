@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vec3.h"
+#include "Vec4.h"
 #include <vector>
 #include "IndexedLineList.h"
 #include "IndexedTriangleList.h"
@@ -12,31 +12,41 @@ public:
 	{
 		const float side = size / 2.0f;
 		
-		const float hex = sqrt( sq(side) - sq(side / 2) );
-	
+		const float hex = sqrt( sq(side) - sq(side / 2) );	
 
 		//		-(side/2)		(side/2)
 		//
 		//
 		//
-		//	-side			.			side
+		//	-side			X--->		side
 		//
 		//
 		//
 		//		-(side/2)		(side/2)
 
-		Vec3 v0  = {       -side, 0.0f, -side };
-		Vec3 v1  = { -(side / 2),  hex, -side };
-		Vec3 v2  = {  (side / 2),  hex, -side };
-		Vec3 v3  = {        side, 0.0f, -side };
-		Vec3 v4  = {  (side / 2), -hex, -side };
-		Vec3 v5  = { -(side / 2), -hex, -side };
-		Vec3 v6  = {       -side, 0.0f,  side };
-		Vec3 v7  = { -(side / 2),  hex,  side };
-		Vec3 v8  = {  (side / 2),  hex,  side };
-		Vec3 v9  = {        side, 0.0f,  side };
-		Vec3 v10 = {  (side / 2), -hex,  side };
-		Vec3 v11 = { -(side / 2), -hex,  side };
+		//		-hex		hex
+		//
+		//				^
+		//				|
+		//	0.0			Z			0.0
+		//
+		//
+		//
+		//		-hex		hex
+
+		Vec4 v0  = {    -side,  side, 0.0f, 1.0f };
+		Vec4 v1  = { -(side/2), side,  hex, 1.0f };
+		Vec4 v2  = {  (side/2), side,  hex, 1.0f };
+		Vec4 v3  = {      side, side, 0.0f, 1.0f };
+		Vec4 v4  = {  (side/2), side, -hex, 1.0f };
+		Vec4 v5  = { -(side/2), side, -hex, 1.0f };
+
+		Vec4 v6  = {     -side, -side, 0.0f, 1.0f };
+		Vec4 v7  = { -(side/2), -side,  hex, 1.0f };
+		Vec4 v8  = {  (side/2), -side,  hex, 1.0f };
+		Vec4 v9  = {      side, -side, 0.0f, 1.0f };
+		Vec4 v10 = {  (side/2), -side, -hex, 1.0f };
+		Vec4 v11 = { -(side/2), -side, -hex, 1.0f };
 
 		//		1		2
 		//
@@ -99,10 +109,9 @@ public:
 				5,6,0, 5,11,6,
 
 				6,8,7, 6,9,8,
-				6,10,9, 6,11,10			
-			}
+				6,10,9, 6,11,10	}
 		};
 	}
 private:
-	std::vector< Vec3 > vertices;
+	std::vector< Vec4 > vertices;
 };

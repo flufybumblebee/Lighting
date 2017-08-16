@@ -21,6 +21,7 @@
 #pragma once
 
 #include "Vec4.h"
+#include <cmath>
 
 template <typename T>
 class _Mat4
@@ -121,6 +122,43 @@ public:
 			(T)0.0,    (T)0.0,   (T)0.0, (T)1.0
 		};
 	}
+
+	static _Mat4 Translation(T x, T y, T z)
+	{
+		return
+		{
+			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
+			     x,      y,      z, (T)1.0
+		};
+	}
+
+	/*static _Mat4 View( float n, float f, float alpha )
+	{
+		T erm = 1/tan(alpha/2);
+		T eep = (f + n) / (f - n);
+		T arg = (2 * f * n) / (f - n);
+		return {
+			   erm, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0,    erm, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0,    eep, (T)-1.0,
+			(T)0.0, (T)0.0,    arg, (T)0.0
+		};
+	}*/
+	/*static _Mat4 PerspectiveProjection(float n, float f, Vec2 FOV )
+	{
+		T erm = atan(FOV.x / 2);
+		T arp = atan(FOV.y / 2);
+		T eep = -((f + n) / (f - n));
+		T arg = -((2 * (f * n) )/ (f - n));
+		return {
+			   erm, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0,    arp, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0,     eep,   arg,
+			(T)0.0, (T)0.0, (T)-1.0, (T)0.0
+		};
+	}*/
 public:
 	// [ row ][ col ]
 	T elements[4][4];
@@ -132,16 +170,17 @@ _Vec4<T>& operator*=(_Vec4<T>& lhs, const _Mat4<T>& rhs)
 	return lhs = lhs * rhs;
 }
 
-//template<typename T>
-//_Vec4<T> operator*(const _Vec4<T>& lhs, const _Mat4<T>& rhs)
-//{
-//	return
-//	{
-//		lhs.x * rhs.elements[0][0] + lhs.y * rhs.elements[1][0] + lhs.z * rhs.elements[2][0],
-//		lhs.x * rhs.elements[0][1] + lhs.y * rhs.elements[1][1] + lhs.z * rhs.elements[2][1],
-//		lhs.x * rhs.elements[0][2] + lhs.y * rhs.elements[1][2] + lhs.z * rhs.elements[2][2]
-//	};
-//}
+template<typename T>
+_Vec4<T> operator*(const _Vec4<T>& lhs, const _Mat4<T>& rhs)
+{
+	return
+	{
+		lhs.x * rhs.elements[0][0] + lhs.y * rhs.elements[1][0] + lhs.z * rhs.elements[2][0] + lhs.w * rhs.elements[3][0],
+		lhs.x * rhs.elements[0][1] + lhs.y * rhs.elements[1][1] + lhs.z * rhs.elements[2][1] + lhs.w * rhs.elements[3][1],
+		lhs.x * rhs.elements[0][2] + lhs.y * rhs.elements[1][2] + lhs.z * rhs.elements[2][2] + lhs.w * rhs.elements[3][2],
+		lhs.x * rhs.elements[0][3] + lhs.y * rhs.elements[1][3] + lhs.z * rhs.elements[2][3] + lhs.w * rhs.elements[3][3]
+	};
+}
 
 typedef _Mat4<float> Mat4;
 typedef _Mat4<double> Mad4;

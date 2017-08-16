@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "Vec3.h"
+#include "Vec4.h"
 #include "IndexedLineList.h"
 #include "IndexedTriangleList.h"
 
@@ -12,15 +12,15 @@ public:
 	{
 		const float side = size / 2.0f;
 
-		vertices.emplace_back( -side, -side, -side ); // 0
-		vertices.emplace_back(  side, -side, -side ); // 1
-		vertices.emplace_back( -side,  side, -side ); // 2
-		vertices.emplace_back(  side,  side, -side ); // 3
+		vertices.emplace_back( -side, -side, -side, 1.0f ); // 0
+		vertices.emplace_back(  side, -side, -side, 1.0f ); // 1
+		vertices.emplace_back( -side,  side, -side, 1.0f ); // 2
+		vertices.emplace_back(  side,  side, -side, 1.0f ); // 3
 
-		vertices.emplace_back( -side, -side, side ); // 4
-		vertices.emplace_back(  side, -side, side ); // 5
-		vertices.emplace_back( -side,  side, side ); // 6
-		vertices.emplace_back(  side,  side, side ); // 7
+		vertices.emplace_back( -side, -side, side, 1.0f ); // 4
+		vertices.emplace_back(  side, -side, side, 1.0f ); // 5
+		vertices.emplace_back( -side,  side, side, 1.0f ); // 6
+		vertices.emplace_back(  side,  side, side, 1.0f ); // 7
 	}
 
 	IndexedLineList GetLines() const
@@ -48,5 +48,5 @@ public:
 		};
 	}
 private:
-	std::vector< Vec3 > vertices;
+	std::vector< Vec4 > vertices;
 };

@@ -21,15 +21,14 @@
 #pragma once
 
 #include "Graphics.h"
-#include "Mat3.h"
 #include "Colors.h"
-#include "Vec3.h"
-#include "Transformer.h"
 
 #include "Cube.h"
 #include "HexPrism.h"
 #include "Diamond.h"
 #include "Plane.h"
+
+#include "CameraTransform.h"
 
 class Game
 {
@@ -42,25 +41,26 @@ private:
 	void ComposeFrame();
 	void UpdateModel();
 private:
-	MainWindow& wnd;
-	Graphics gfx;
+	MainWindow&	wnd;
+	Graphics	gfx;
 
-	Cube cube;
-	/*HexPrism hex;
-	Diamond diamond;
-	Plane plane;*/
+	Cube		cube;
+	HexPrism	hex;
+	Diamond		diamond;
+	Plane		plane;
 
-	Transformer trans;
-
-	/*Surface pic;*/
-
-	// translate
-	float x_offset = 0.0f;
-	float y_offset = 0.0f;
-	float z_offset = 2.0f;
+	CameraTransform cam;
 
 	// rotate
 	float angleZ = 0.0f;
 	float angleY = 0.0f;
 	float angleX = 0.0f;
+
+	// scale
+	float scale = 1.0f;
+
+	// translate
+	float x_offset = 0.0f;
+	float y_offset = 0.0f;
+	float z_offset = 2.0f;
 };
