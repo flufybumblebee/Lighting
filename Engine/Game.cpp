@@ -131,12 +131,12 @@ void Game::ComposeFrame()
 		Mat4::RotationZ(angleZ) *
 		Mat4::RotationY(angleY) *
 		Mat4::RotationX(angleX) *
-		Mat4::Scaling( scale )  *
-		Mat4::Translation(x_offset, y_offset, z_offset);	
+		Mat4::Scaling(scale)  *
+		Mat4::Translation(x_offset, y_offset, z_offset);
 
 	// -------------------------------------------------
 
-	if ( false /* cube */ )
+	if ( true /* cube */ )
 	{
 		const Color colors[12] = {
 			Colors::Magenta,
@@ -166,7 +166,7 @@ void Game::ComposeFrame()
 			Colors::Cyan,
 			Colors::Cyan };*/
 
-		if (true)
+		if (false)
 		{
 			auto triangles = cube.GetTriangles();
 
@@ -205,7 +205,7 @@ void Game::ComposeFrame()
 
 		// ---------------------------------------------------
 
-		if (false)
+		if (true)
 		{
 			auto lines = cube.GetLines();
 
@@ -214,7 +214,8 @@ void Game::ComposeFrame()
 				i != end; i++)
 			{
 				*i *= Transformation;
-				cam.Transform(*i);
+				//cam.Transform(*i);
+				*i *= Mat4::Viewport(Graphics::ScreenWidth, Graphics::ScreenHeight);
 			}
 
 			for (auto i = lines.indices.begin(),

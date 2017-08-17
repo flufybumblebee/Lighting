@@ -133,32 +133,46 @@ public:
 			     x,      y,      z, (T)1.0
 		};
 	}
+	// -------------------------------------------------------
+	static _Mat4 Viewport(T sW, T sH, T vW, T vH )
+	{
+		T nx = sW  / 2;
+		T ny = sH / 2;
+		return {
+			    nx, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0,    -ny, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
+			    nx+vW,     ny, (T)0.0, (T)1.0 };
+	}
 
-	/*static _Mat4 View( float n, float f, float alpha )
+	static _Mat4 Ortho(T l, T r, T b, T t, T n, T f )
 	{
-		T erm = 1/tan(alpha/2);
-		T eep = (f + n) / (f - n);
-		T arg = (2 * f * n) / (f - n);
+		T tLR = -((l + r) / 2);
+		T tBT = -((b + t) / 2);
+		T tNF = -((n + f) / 2);
+		T sRL = 2 / r - l;
+		T sTB = 2 / t - b;
+		T sFN = 2 / f - n;
+
 		return {
-			   erm, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0,    erm, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0,    eep, (T)-1.0,
-			(T)0.0, (T)0.0,    arg, (T)0.0
-		};
-	}*/
-	/*static _Mat4 PerspectiveProjection(float n, float f, Vec2 FOV )
+			   sRL, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0,    sTB, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0,    sFN, (T)0.0,
+			   tLR,    tBT,    tNF, (T)1.0 };
+	}
+	static _Mat4 Perspective( T n, T f, T alpha )
 	{
-		T erm = atan(FOV.x / 2);
-		T arp = atan(FOV.y / 2);
-		T eep = -((f + n) / (f - n));
-		T arg = -((2 * (f * n) )/ (f - n));
+		T a = (f+n)/(f-n);
+		T b = (T)2.0*(n*f)/(f-n);
 		return {
-			   erm, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0,    arp, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0,     eep,   arg,
-			(T)0.0, (T)0.0, (T)-1.0, (T)0.0
+			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0,      a, (T)-1.0,
+			(T)0.0, (T)0.0,      b, (T)1.0
 		};
-	}*/
+	}
+
+	near
 public:
 	// [ row ][ col ]
 	T elements[4][4];

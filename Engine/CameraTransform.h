@@ -9,6 +9,7 @@ public:
 	Vec4& Transform(Vec4& v) const
 	{
 		const float zInv = 1.0f / v.z;
+
 		v.x = (v.x * zInv + 1.0f) * float((Graphics::ScreenWidth) / 2.0f);
 		v.y = (-v.y * zInv + 1.0f) * float((Graphics::ScreenHeight) / 2.0f);
 

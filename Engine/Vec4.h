@@ -43,18 +43,18 @@ public:
 	{
 		return _Vec4(*this) -= rhs;
 	}
-	T		Dot(const _Vec4 &rhs) const
-	{
-		return x * rhs.x + y * rhs.y + z * rhs.z;// +w * rhs.w;
-	}
-	_Vec4	Cross(const _Vec4& rhs) const
-	{
-		return Vec4(
-			y * rhs.z - z * rhs.y,
-			z * rhs.x - x * rhs.z,
-			x * rhs.y - y * rhs.x,
-			1);
-	}
+	//T		Dot(const _Vec4 &rhs) const
+	//{
+	//	return x * rhs.x + y * rhs.y + z * rhs.z;// +w * rhs.w;
+	//}
+	//_Vec4	Cross(const _Vec4& rhs) const
+	//{
+	//	return Vec4(
+	//		y * rhs.z - z * rhs.y,
+	//		z * rhs.x - x * rhs.z,
+	//		x * rhs.y - y * rhs.x,
+	//		1);
+	//}
 public:
 	T w;
 };
