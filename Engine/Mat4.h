@@ -29,16 +29,16 @@ class _Mat4
 public:
 	_Mat4& operator=(const _Mat4& rhs)
 	{
-		memcpy(elements, rhs.elements, sizeof(elements));
+		memcpy(matrix, rhs.matrix, sizeof(matrix));
 		return *this;
 	}
 	_Mat4& operator*=(T rhs)
 	{
-		for (auto& row : elements)
+		for (auto& row : matrix)
 		{
-			for (T& e : row)
+			for (T& i : row)
 			{
-				e *= rhs;
+				i *= rhs;
 			}
 		}
 		return *this;
@@ -58,13 +58,15 @@ public:
 				T sum = (T)0.0;
 				for (size_t i = 0; i < 4; i++)
 				{
-					sum += elements[j][i] * rhs.elements[i][k];
+					sum += matrix[j][i] * rhs.matrix[i][k];
 				}
-				result.elements[j][k] = sum;
+				result.matrix[j][k] = sum;
 			}
 		}
 		return result;
 	}
+
+	// -------------------------------------------------------
 
 	static _Mat4 Identity()
 	{
@@ -122,7 +124,6 @@ public:
 			(T)0.0,    (T)0.0,   (T)0.0, (T)1.0
 		};
 	}
-
 	static _Mat4 Translation(T x, T y, T z)
 	{
 		return
@@ -133,8 +134,10 @@ public:
 			     x,      y,      z, (T)1.0
 		};
 	}
+
 	// -------------------------------------------------------
-	static _Mat4 Viewport(T sW, T sH, T vW, T vH )
+
+	/*static _Mat4 Viewport(T sW, T sH, T vW, T vH )
 	{
 		T nx = sW  / 2;
 		T ny = sH / 2;
@@ -143,9 +146,8 @@ public:
 			(T)0.0,    -ny, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
 			    nx+vW,     ny, (T)0.0, (T)1.0 };
-	}
-
-	static _Mat4 Ortho(T l, T r, T b, T t, T n, T f )
+	}*/
+	/*static _Mat4 Ortho(T l, T r, T b, T t, T n, T f )
 	{
 		T tLR = -((l + r) / 2);
 		T tBT = -((b + t) / 2);
@@ -159,8 +161,8 @@ public:
 			(T)0.0,    sTB, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0,    sFN, (T)0.0,
 			   tLR,    tBT,    tNF, (T)1.0 };
-	}
-	static _Mat4 Perspective( T n, T f, T alpha )
+	}*/
+	/*static _Mat4 Perspective( T n, T f, T alpha )
 	{
 		T a = (f+n)/(f-n);
 		T b = (T)2.0*(n*f)/(f-n);
@@ -170,12 +172,11 @@ public:
 			(T)0.0, (T)0.0,      a, (T)-1.0,
 			(T)0.0, (T)0.0,      b, (T)1.0
 		};
-	}
+	}*/
 
-	near
 public:
 	// [ row ][ col ]
-	T elements[4][4];
+	T matrix[4][4];
 };
 
 template<typename T>
@@ -189,10 +190,10 @@ _Vec4<T> operator*(const _Vec4<T>& lhs, const _Mat4<T>& rhs)
 {
 	return
 	{
-		lhs.x * rhs.elements[0][0] + lhs.y * rhs.elements[1][0] + lhs.z * rhs.elements[2][0] + lhs.w * rhs.elements[3][0],
-		lhs.x * rhs.elements[0][1] + lhs.y * rhs.elements[1][1] + lhs.z * rhs.elements[2][1] + lhs.w * rhs.elements[3][1],
-		lhs.x * rhs.elements[0][2] + lhs.y * rhs.elements[1][2] + lhs.z * rhs.elements[2][2] + lhs.w * rhs.elements[3][2],
-		lhs.x * rhs.elements[0][3] + lhs.y * rhs.elements[1][3] + lhs.z * rhs.elements[2][3] + lhs.w * rhs.elements[3][3]
+		lhs.x * rhs.matrix[0][0] + lhs.y * rhs.matrix[1][0] + lhs.z * rhs.matrix[2][0] + lhs.w * rhs.matrix[3][0],
+		lhs.x * rhs.matrix[0][1] + lhs.y * rhs.matrix[1][1] + lhs.z * rhs.matrix[2][1] + lhs.w * rhs.matrix[3][1],
+		lhs.x * rhs.matrix[0][2] + lhs.y * rhs.matrix[1][2] + lhs.z * rhs.matrix[2][2] + lhs.w * rhs.matrix[3][2],
+		lhs.x * rhs.matrix[0][3] + lhs.y * rhs.matrix[1][3] + lhs.z * rhs.matrix[2][3] + lhs.w * rhs.matrix[3][3]
 	};
 }
 

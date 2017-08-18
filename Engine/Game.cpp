@@ -166,7 +166,7 @@ void Game::ComposeFrame()
 			Colors::Cyan,
 			Colors::Cyan };*/
 
-		if (false)
+		if (true)
 		{
 			auto triangles = cube.GetTriangles();
 
@@ -205,7 +205,7 @@ void Game::ComposeFrame()
 
 		// ---------------------------------------------------
 
-		if (true)
+		if (false)
 		{
 			auto lines = cube.GetLines();
 
@@ -214,8 +214,7 @@ void Game::ComposeFrame()
 				i != end; i++)
 			{
 				*i *= Transformation;
-				//cam.Transform(*i);
-				*i *= Mat4::Viewport(Graphics::ScreenWidth, Graphics::ScreenHeight);
+				cam.Transform(*i);
 			}
 
 			for (auto i = lines.indices.begin(),
@@ -225,7 +224,7 @@ void Game::ComposeFrame()
 				gfx.DrawLine(
 					lines.vertices[*i],
 					lines.vertices[*std::next(i)],
-					Colors::White);
+					Colors::Black);
 			}
 		}
 	}
