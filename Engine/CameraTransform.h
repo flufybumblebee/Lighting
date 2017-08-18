@@ -10,8 +10,8 @@ public:
 	{
 		const float zInv = 1.0f / v.z;
 
-		v.x = (v.x * zInv + 1.0f) * float((Graphics::ScreenWidth) / 2.0f);
-		v.y = (-v.y * zInv + 1.0f) * float((Graphics::ScreenHeight) / 2.0f);
+		v.x = (v.x * zInv + 1.0f) * (Graphics::ScreenWidth / 2.0f);
+		v.y = (-v.y * zInv + 1.0f) * (Graphics::ScreenHeight / 2.0f);
 
 		/*// no z still but factored out to use simpler formulas
 		v.x = (  v.x + 1.0f ) * float( ( Graphics::ScreenWidth  ) / 2.0f );

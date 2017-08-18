@@ -127,7 +127,7 @@ void Game::ComposeFrame()
 {
 	// -------------------------------------------------
 
-	Mat4 Transformation =
+	const Mat4 Transformation =
 		Mat4::RotationZ(angleZ) *
 		Mat4::RotationY(angleY) *
 		Mat4::RotationX(angleX) *
@@ -136,7 +136,7 @@ void Game::ComposeFrame()
 
 	// -------------------------------------------------
 
-	if ( true /* cube */ )
+	if ( false /* cube */ )
 	{
 		const Color colors[12] = {
 			Colors::Magenta,
@@ -306,7 +306,7 @@ void Game::ComposeFrame()
 
 	// -------------------------------------------------
 
-	if ( false /* hex prism */ )
+	if ( true /* hex prism */ )
 	{	
 		const Color colors[24] = {
 			Colors::Magenta,
