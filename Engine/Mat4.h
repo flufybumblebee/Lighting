@@ -77,13 +77,13 @@ public:
 			(T)0.0, (T)0.0, (T)0.0, (T)1.0
 		};
 	}
-	static _Mat4 Scaling(T scale)
+	static _Mat4 Scaling(T scaleX, T scaleY, T scaleZ )
 	{
 		return
 		{
-			 scale, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0,  scale, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0,  scale, (T)0.0,
+			scaleX, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, scaleY, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, scaleZ, (T)0.0,
 			(T)0.0, (T)0.0, (T)0.0, (T)1.0
 		};
 	}

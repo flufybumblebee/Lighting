@@ -81,14 +81,32 @@ void Game::UpdateModel()
 	// scaling 
 	if (wnd.kbd.KeyIsPressed('T'))
 	{
-		scale = scale - 0.01f;
-		if (scale < 0) { scale = 0; }
+		scaleZ = scaleZ - 0.01f;
+		if (scaleZ < 0) { scaleZ = 0; }
 	}
 	else if (wnd.kbd.KeyIsPressed('G'))
 	{
-		scale = scale + 0.01f;
+		scaleZ = scaleZ + 0.01f;
 	}
 
+	if (wnd.kbd.KeyIsPressed('Y'))
+	{
+		scaleY = scaleY - 0.01f;
+		if (scaleY < 0) { scaleY = 0; }
+	}
+	else if (wnd.kbd.KeyIsPressed('H'))
+	{
+		scaleY = scaleY + 0.01f;
+	}
+	if (wnd.kbd.KeyIsPressed('U'))
+	{
+		scaleX = scaleX - 0.01f;
+		if (scaleX < 0) { scaleX = 0; }
+	}
+	else if (wnd.kbd.KeyIsPressed('J'))
+	{
+		scaleX = scaleX + 0.01f;
+	}
 	//-----------------------------------------
 	// translation
 
@@ -131,7 +149,7 @@ void Game::ComposeFrame()
 		Mat4::RotationZ(angleZ) *
 		Mat4::RotationY(angleY) *
 		Mat4::RotationX(angleX) *
-		Mat4::Scaling(scale)  *
+		Mat4::Scaling(scaleX,scaleY,scaleZ) *
 		Mat4::Translation(x_offset, y_offset, z_offset);
 
 	// -------------------------------------------------

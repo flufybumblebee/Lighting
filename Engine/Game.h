@@ -57,7 +57,9 @@ private:
 	float angleX = 0.0f;
 
 	// scale
-	float scale = 1.0f;
+	float scaleX = 1.0f;
+	float scaleY = 1.0f;
+	float scaleZ = 1.0f;
 
 	// translate
 	float x_offset = 0.0f;
