@@ -40,6 +40,8 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
+
+	Vec4 RotateY();
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;

@@ -134,7 +134,16 @@ public:
 			     x,      y,      z, (T)1.0
 		};
 	}
-
+	static _Mat4 Translation(Vec4& vec)
+	{
+		return
+		{
+			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
+			 vec.x,  vec.y,  vec.z, (T)1.0
+		};
+	}
 	// -------------------------------------------------------
 
 	/*static _Mat4 Viewport(T sW, T sH, T vW, T vH )

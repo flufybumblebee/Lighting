@@ -139,6 +139,8 @@ void Game::UpdateModel()
 	{
 		z_offset = z_offset -= 0.02f;
 	}
+
+
 }
 
 void Game::ComposeFrame()
@@ -150,7 +152,8 @@ void Game::ComposeFrame()
 		Mat4::RotationY(angleY) *
 		Mat4::RotationX(angleX) *
 		Mat4::Scaling(scaleX,scaleY,scaleZ) *
-		Mat4::Translation(x_offset, y_offset, z_offset);
+		Mat4::Translation(RotateY()) * 
+		Mat4::Translation(x_offset, y_offset, z_offset + 2.0f);
 
 	// -------------------------------------------------
 
@@ -485,4 +488,13 @@ void Game::ComposeFrame()
 	}
 	
 	// -------------------------------------------------
+}
+
+Vec4 Game::RotateY()
+{
+	float x = x_offset;
+	float y = y_offset;
+	float z = z_offset;
+	Vec4 vec = { x,y,z,1.0f };
+	return vec * Mat4::RotationY(angleY);
 }
