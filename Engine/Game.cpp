@@ -50,62 +50,62 @@ void Game::UpdateModel()
 	// rotate around X
 	if( wnd.kbd.KeyIsPressed( 'E' ) )
 	{
-		angleX = angleX - 0.02f;
+		angle.x = angle.x - 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'D' ) )
 	{
-		angleX = angleX + 0.02f;
+		angle.x = angle.x + 0.02f;
 	}
 
 	// rotate around Y
 	if( wnd.kbd.KeyIsPressed( 'W' ) )
 	{
-		angleY = angleY - 0.02f;
+		angle.y = angle.y - 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'S' ) )
 	{
-		angleY = angleY + 0.02f;
+		angle.y = angle.y + 0.02f;
 	}
 
 	// rotate around Z
 	if( wnd.kbd.KeyIsPressed( 'Q' ) )
 	{
-		angleZ = angleZ - 0.02f;
+		angle.z = angle.z - 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'A' ) )
 	{
-		angleZ = angleZ + 0.02f;
+		angle.z = angle.z + 0.02f;
 	}
 	
 	//-----------------------------------------
 	// scaling 
 	if (wnd.kbd.KeyIsPressed('T'))
 	{
-		scaleZ = scaleZ - 0.01f;
-		if (scaleZ < 0) { scaleZ = 0; }
+		scale.z = scale.z - 0.01f;
+		if (scale.z < 0) { scale.z = 0; }
 	}
 	else if (wnd.kbd.KeyIsPressed('G'))
 	{
-		scaleZ = scaleZ + 0.01f;
+		scale.z = scale.z + 0.01f;
 	}
 
 	if (wnd.kbd.KeyIsPressed('Y'))
 	{
-		scaleY = scaleY - 0.01f;
-		if (scaleY < 0) { scaleY = 0; }
+		scale.y = scale.y - 0.01f;
+		if (scale.y < 0) { scale.y = 0; }
 	}
 	else if (wnd.kbd.KeyIsPressed('H'))
 	{
-		scaleY = scaleY + 0.01f;
+		scale.y = scale.y + 0.01f;
 	}
 	if (wnd.kbd.KeyIsPressed('U'))
 	{
-		scaleX = scaleX - 0.01f;
-		if (scaleX < 0) { scaleX = 0; }
+		scale.x = scale.x - 0.01f;
+		if (scale.x < 0) { scale.x = 0; }
 	}
 	else if (wnd.kbd.KeyIsPressed('J'))
 	{
-		scaleX = scaleX + 0.01f;
+		scale.x = scale.x + 0.01f;
 	}
 	//-----------------------------------------
 	// translation
@@ -113,34 +113,32 @@ void Game::UpdateModel()
 	// translate along X axis
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
 	{
-		x_offset = x_offset -= 0.02f;
+		position.x = position.x -= 0.02f;
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
 	{
-		x_offset = x_offset += 0.02f;
+		position.x = position.x += 0.02f;
 	}
 
 	// translate along Y axis
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 	{
-		y_offset = y_offset += 0.02f;
+		position.y = position.y += 0.02f;
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
 	{
-		y_offset = y_offset -= 0.02f;
+		position.y = position.y -= 0.02f;
 	}
 
 	// translate along Z axis
 	if( wnd.kbd.KeyIsPressed( 'R' ) )
 	{
-		z_offset = z_offset += 0.02f;
+		position.z = position.z += 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'F' ) )
 	{
-		z_offset = z_offset -= 0.02f;
+		position.z = position.z -= 0.02f;
 	}
-
-
 }
 
 void Game::ComposeFrame()
@@ -148,12 +146,14 @@ void Game::ComposeFrame()
 	// -------------------------------------------------
 
 	const Mat4 Transformation =
-		Mat4::RotationZ(angleZ) *
-		Mat4::RotationY(angleY) *
-		Mat4::RotationX(angleX) *
-		Mat4::Scaling(scaleX,scaleY,scaleZ) *
-		Mat4::Translation(RotateY()) * 
-		Mat4::Translation(x_offset, y_offset, z_offset + 2.0f);
+		Mat4::Rotation( angle ) *
+		Mat4::Scaling( scale ) *
+		Mat4::Translation( position );		
+
+		// for rotation around Y
+		// replace translation with these two
+		//Mat4::Translation(RotateY()) * 
+		//Mat4::Translation(x_offset, y_offset, z_offset + 2.0f);
 
 	// -------------------------------------------------
 
@@ -492,9 +492,5 @@ void Game::ComposeFrame()
 
 Vec4 Game::RotateY()
 {
-	float x = x_offset;
-	float y = y_offset;
-	float z = z_offset;
-	Vec4 vec = { x,y,z,1.0f };
-	return vec * Mat4::RotationY(angleY);
+	return Vec4( position.x,position.y,position.z,1.0f ) * Mat4::RotationY(angle.y);
 }

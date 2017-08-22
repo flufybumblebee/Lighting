@@ -20,6 +20,7 @@
 ******************************************************************************************/
 #pragma once
 
+#include "Vec3.h"
 #include "Vec4.h"
 #include <cmath>
 
@@ -74,75 +75,77 @@ public:
 			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
-			(T)0.0, (T)0.0, (T)0.0, (T)1.0
-		};
+			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
 	}
+
 	static _Mat4 Scaling(T scaleX, T scaleY, T scaleZ )
 	{
-		return
-		{
+		return {
 			scaleX, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0, scaleY, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0, scaleZ, (T)0.0,
-			(T)0.0, (T)0.0, (T)0.0, (T)1.0
-		};
+			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
+	}
+	static _Mat4 RotationX(T angle)
+	{
+		const T sinAngle = sin(angle);
+		const T cosAngle = cos(angle);
+		return {
+			(T)1.0,    (T)0.0,   (T)0.0, (T)0.0,
+			(T)0.0,  cosAngle, sinAngle, (T)0.0,
+			(T)0.0, -sinAngle, cosAngle, (T)0.0,
+			(T)0.0,    (T)0.0,   (T)0.0, (T)1.0	};
+	}
+	static _Mat4 RotationY(T angle)
+	{
+		const T sinAngle = sin(angle);
+		const T cosAngle = cos(angle);
+
+		return {
+			cosAngle, (T)0.0,-sinAngle, (T)0.0,
+			  (T)0.0, (T)1.0,   (T)0.0, (T)0.0,
+			sinAngle, (T)0.0, cosAngle, (T)0.0,
+			(T)0.0,   (T)0.0,   (T)0.0, (T)1.0 };
 	}
 	static _Mat4 RotationZ(T angle)
 	{
 		T sinAngle = sin(angle);
 		T cosAngle = cos(angle);
 
-		return
-		{
+		return {
 			 cosAngle, sinAngle, (T)0.0, (T)0.0,
 			-sinAngle, cosAngle, (T)0.0, (T)0.0,
 			   (T)0.0,   (T)0.0, (T)1.0, (T)0.0,
-			   (T)0.0,   (T)0.0, (T)0.0, (T)1.0
-		};
-	}
-	static _Mat4 RotationY(T angle)
-	{
-		const T sinAngle = sin(angle);
-		const T cosAngle = cos(angle);
-		return
-		{
-			cosAngle, (T)0.0,-sinAngle, (T)0.0,
-			  (T)0.0, (T)1.0,   (T)0.0, (T)0.0,
-			sinAngle, (T)0.0, cosAngle, (T)0.0,
-			(T)0.0,   (T)0.0,   (T)0.0, (T)1.0
-		};
-	}
-	static _Mat4 RotationX(T angle)
-	{
-		const T sinAngle = sin(angle);
-		const T cosAngle = cos(angle);
-		return
-		{
-			(T)1.0,    (T)0.0,   (T)0.0, (T)0.0,
-			(T)0.0,  cosAngle, sinAngle, (T)0.0,
-			(T)0.0, -sinAngle, cosAngle, (T)0.0,
-			(T)0.0,    (T)0.0,   (T)0.0, (T)1.0
-		};
+			   (T)0.0,   (T)0.0, (T)0.0, (T)1.0	};
 	}
 	static _Mat4 Translation(T x, T y, T z)
 	{
-		return
-		{
+		return {
 			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
-			     x,      y,      z, (T)1.0
-		};
+			     x,      y,      z, (T)1.0 };
 	}
-	static _Mat4 Translation(Vec4& vec)
+
+	static _Mat4 Scaling( const _Vec3<T>& scale )
 	{
-		return
-		{
+		return {
+			scale.x,  (T)0.0,  (T)0.0, (T)0.0,
+			 (T)0.0, scale.y,  (T)0.0, (T)0.0,
+			 (T)0.0,  (T)0.0, scale.z, (T)0.0,
+			 (T)0.0,  (T)0.0,  (T)0.0, (T)1.0 };
+	}
+	static _Mat4 Rotation(const _Vec3<T>& angle)
+	{
+		return _Mat4(RotationX(angle.x) * RotationY(angle.y) * RotationZ(angle.z));
+	}
+	static _Mat4 Translation(const _Vec3<T>& pos)
+	{
+		return {
 			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
-			 vec.x,  vec.y,  vec.z, (T)1.0
-		};
+			 pos.x,  pos.y,  pos.z, (T)1.0 };
 	}
 	// -------------------------------------------------------
 
@@ -171,16 +174,16 @@ public:
 			(T)0.0, (T)0.0,    sFN, (T)0.0,
 			   tLR,    tBT,    tNF, (T)1.0 };
 	}*/
-	/*static _Mat4 Perspective( T n, T f, T alpha )
+
+	// results in ( w = -z ) which can then be used to multiply
+	// x,y,z values
+	/*static _Mat4 Perspective()
 	{
-		T a = (f+n)/(f-n);
-		T b = (T)2.0*(n*f)/(f-n);
 		return {
 			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0,      a, (T)-1.0,
-			(T)0.0, (T)0.0,      b, (T)1.0
-		};
+			(T)0.0, (T)0.0, (T)1.0, (T)-1.0,
+			(T)0.0, (T)0.0, (T)0.0, (T)0.0 };
 	}*/
 
 public:

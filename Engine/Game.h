@@ -53,18 +53,7 @@ private:
 
 	CameraTransform cam;
 
-	// rotate
-	float angleZ = 0.0f;
-	float angleY = 0.0f;
-	float angleX = 0.0f;
-
-	// scale
-	float scaleX = 1.0f;
-	float scaleY = 1.0f;
-	float scaleZ = 1.0f;
-
-	// translate
-	float x_offset = 0.0f;
-	float y_offset = 0.0f;
-	float z_offset = 2.0f;
+	Vec3 angle    = Vec3(0.0f, 0.0f, 0.0f);
+	Vec3 scale    = Vec3(1.0f, 1.0f, 1.0f);
+	Vec3 position = Vec3(0.0f, 0.0f, 2.0f);
 };
