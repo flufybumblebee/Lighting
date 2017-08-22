@@ -147,17 +147,21 @@ void Game::ComposeFrame()
 
 	const Mat4 Transformation =
 		Mat4::Rotation( angle ) *
-		Mat4::Scaling( scale ) *
+		Mat4::Scaling( scale ) *		
 		Mat4::Translation( position );		
 
-		// for rotation around Y
-		// replace translation with these two
+		// for y rotation around a point
+		// replace translation with:
 		//Mat4::Translation(RotateY()) * 
-		//Mat4::Translation(x_offset, y_offset, z_offset + 2.0f);
+		//Mat4::Translation(position.x, position.y, position.z + 2.0f);
 
+		// for x,y,z rotation around a point 
+		// replace  translation with:
+		//Mat4::Translation(Rotate()) *
+		//Mat4::Translation(position.x, position.y, position.z + 2.0f);
 	// -------------------------------------------------
 
-	if ( false /* cube */ )
+	if ( true /* cube */ )
 	{
 		const Color colors[12] = {
 			Colors::Magenta,
@@ -205,7 +209,7 @@ void Game::ComposeFrame()
 				const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
 				triangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
 			}
-
+			
 			for (auto& i : triangles.vertices)
 			{
 				cam.Transform(i);
@@ -327,7 +331,7 @@ void Game::ComposeFrame()
 
 	// -------------------------------------------------
 
-	if ( true /* hex prism */ )
+	if ( false /* hex prism */ )
 	{	
 		const Color colors[24] = {
 			Colors::Magenta,
@@ -493,4 +497,9 @@ void Game::ComposeFrame()
 Vec4 Game::RotateY()
 {
 	return Vec4( position.x,position.y,position.z,1.0f ) * Mat4::RotationY(angle.y);
+}
+
+Vec4 Game::Rotate()
+{
+	return Vec4(position.x, position.y, position.z, 1.0f) * Mat4::Rotation(angle);
 }

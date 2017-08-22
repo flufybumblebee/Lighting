@@ -159,21 +159,19 @@ public:
 			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
 			    nx+vW,     ny, (T)0.0, (T)1.0 };
 	}*/
-	/*static _Mat4 Ortho(T l, T r, T b, T t, T n, T f )
+	static _Mat4 Pespective( T nearDist, T farDist, T fov, T ratio )
 	{
-		T tLR = -((l + r) / 2);
-		T tBT = -((b + t) / 2);
-		T tNF = -((n + f) / 2);
-		T sRL = 2 / r - l;
-		T sTB = 2 / t - b;
-		T sFN = 2 / f - n;
+		T A = (T)1.0 / tan( fov / (T)2.0 );
+		T B = ratio / tan( fov / (T)2.0 );
+		T C = nearDist + farDist / nearDist - farDist;
+		T D = (T)2.0 * (nearDist * farDist) / (nearDist - farDist);
 
 		return {
-			   sRL, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0,    sTB, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0,    sFN, (T)0.0,
-			   tLR,    tBT,    tNF, (T)1.0 };
-	}*/
+			     A, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0,	     B, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0,		 C, (T)-1.0,
+			(T)0.0, (T)0.0,      D, (T)0.0 };
+	}
 
 	// results in ( w = -z ) which can then be used to multiply
 	// x,y,z values
