@@ -33,7 +33,11 @@ Game::Game(MainWindow& wnd)
 	diamond( 1.0f ),
 	plane(   1.0f ),
 	grid(	 1.0f )
-{}
+{
+	gridVar.SetRotation( PI / 3, 0.0f, 0.0f );
+	gridVar.SetScale(1.0f, 1.0f, 1.0f);
+	gridVar.SetPosition(0.0f, 0.0f, 2.0f);
+}
 
 void Game::Go()
 {
@@ -145,13 +149,16 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	// -------------------------------------------------
-	const Mat4 Transformation =
-		Mat4::Transformation( angle, scale, position );
-
 	/*const Mat4 Transformation =
+		Mat4::Transformation( angle, scale, position ) * 		
+		Mat4::Translation(RotateY() *
+		Mat4::Translation(position.x, position.y, position.z + 2.0f));*/
+
+	const Mat4 Transformation =
 		Mat4::Rotation( angle ) *
 		Mat4::Scaling( scale ) *		
-		Mat4::Translation( position );*/
+		Mat4::Translation(Vec4( position ) * Mat4::Rotation(angle)) *
+		Mat4::Translation(position.x, position.y, position.z + 2.0f);
 	
 	// for y rotation around a point
 	// replace translation with:
@@ -196,7 +203,9 @@ void Game::ComposeFrame()
 			Colors::Cyan };*/
 
 		const Mat4 Transformation =
-			Mat4::Transformation(angle, scale/10.0f, position );
+			Mat4::Rotation(angle) *
+			Mat4::Scaling(scale * 0.1f ) *
+			Mat4::Translation(position);
 
 		if (true)
 		{
@@ -502,6 +511,12 @@ void Game::ComposeFrame()
 
 	if ( true   /* grid */)
 	{
+		/*const Mat4 Transformation =
+			Mat4::Rotation(gridVar.angle) *
+			Mat4::Scaling(gridVar.scale) *
+			Mat4::Translation(Vec4(gridVar.position) * Mat4::Rotation(angle)) *
+			Mat4::Translation(position.x, position.y, position.z + 2.0f);*/
+
 		auto lines = grid.GetLines();
 
 		for (auto i = lines.vertices.begin(),
@@ -519,17 +534,9 @@ void Game::ComposeFrame()
 			gfx.DrawLine(
 				lines.vertices[*i],
 				lines.vertices[*std::next(i)],
-				Colors::White);
+				Colors::LightGray);
 		}
-	}	
-}
+	}
 
-Vec4 Game::RotateY()
-{
-	return Vec4( position.x,position.y,position.z,1.0f ) * Mat4::RotationY(angle.y);
-}
-
-Vec4 Game::Rotate()
-{
-	return Vec4(position.x, position.y, position.z, 1.0f) * Mat4::Rotation(angle);
+	// -------------------------------------------------
 }

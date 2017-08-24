@@ -31,6 +31,8 @@
 
 #include "CameraTransform.h"
 
+#include "TransformVariables.h"
+
 class Game
 {
 public:
@@ -41,9 +43,6 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
-
-	Vec4 RotateY();
-	Vec4 Rotate();
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;
@@ -60,6 +59,8 @@ private:
 	Vec3 scale    = Vec3(1.0f, 1.0f, 1.0f);
 	Vec3 position = Vec3(0.0f, 0.0f, 2.0f);
 	
+	TransformVariables gridVar;
+
 	/*float fov = PI / 2.0f;
 	float ratio = Graphics::ScreenWidth / Graphics::ScreenHeight;
 	float nearDist = 1.0f;
