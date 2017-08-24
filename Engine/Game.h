@@ -27,6 +27,7 @@
 #include "HexPrism.h"
 #include "Diamond.h"
 #include "Plane.h"
+#include "Grid.h"
 
 #include "CameraTransform.h"
 
@@ -51,6 +52,7 @@ private:
 	HexPrism	hex;
 	Diamond		diamond;
 	Plane		plane;
+	Grid		grid;
 
 	CameraTransform cam;
 

@@ -99,6 +99,9 @@
     <ClInclude Include="CameraTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">

@@ -31,7 +31,8 @@ Game::Game(MainWindow& wnd)
 	cube(    1.0f ),
 	hex(     1.0f ),
 	diamond( 1.0f ),
-	plane(   1.0f )
+	plane(   1.0f ),
+	grid(	 1.0f )
 {}
 
 void Game::Go()
@@ -193,6 +194,9 @@ void Game::ComposeFrame()
 			Colors::Yellow,
 			Colors::Cyan,
 			Colors::Cyan };*/
+
+		const Mat4 Transformation =
+			Mat4::Transformation(angle, scale/10.0f, position );
 
 		if (true)
 		{
@@ -495,6 +499,29 @@ void Game::ComposeFrame()
 	}
 	
 	// -------------------------------------------------
+
+	if ( true   /* grid */)
+	{
+		auto lines = grid.GetLines();
+
+		for (auto i = lines.vertices.begin(),
+			end = lines.vertices.end();
+			i != end; i++)
+		{
+			*i *= Transformation;
+			cam.Transform(*i);
+		}
+
+		for (auto i = lines.indices.begin(),
+			end = lines.indices.end();
+			i != end; std::advance(i, 2))
+		{
+			gfx.DrawLine(
+				lines.vertices[*i],
+				lines.vertices[*std::next(i)],
+				Colors::White);
+		}
+	}	
 }
 
 Vec4 Game::RotateY()
