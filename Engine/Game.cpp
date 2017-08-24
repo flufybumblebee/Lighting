@@ -144,21 +144,24 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	// -------------------------------------------------
-
 	const Mat4 Transformation =
+		Mat4::Transformation( angle, scale, position );
+
+	/*const Mat4 Transformation =
 		Mat4::Rotation( angle ) *
 		Mat4::Scaling( scale ) *		
-		Mat4::Translation( position );		
+		Mat4::Translation( position );*/
+	
+	// for y rotation around a point
+	// replace translation with:
+	//Mat4::Translation(RotateY()) * 
+	//Mat4::Translation(position.x, position.y, position.z + 2.0f);
 
-		// for y rotation around a point
-		// replace translation with:
-		//Mat4::Translation(RotateY()) * 
-		//Mat4::Translation(position.x, position.y, position.z + 2.0f);
+	// for x,y,z rotation around a point 
+	// replace  translation with:
+	//Mat4::Translation(Rotate()) *
+	//Mat4::Translation(position.x, position.y, position.z + 2.0f);
 
-		// for x,y,z rotation around a point 
-		// replace  translation with:
-		//Mat4::Translation(Rotate()) *
-		//Mat4::Translation(position.x, position.y, position.z + 2.0f);
 	// -------------------------------------------------
 
 	if ( true /* cube */ )

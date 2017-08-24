@@ -78,14 +78,6 @@ public:
 			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
 	}
 
-	static _Mat4 Scaling(T scaleX, T scaleY, T scaleZ )
-	{
-		return {
-			scaleX, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0, scaleY, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0, scaleZ, (T)0.0,
-			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
-	}
 	static _Mat4 RotationX(T angle)
 	{
 		const T sinAngle = sin(angle);
@@ -118,6 +110,14 @@ public:
 			   (T)0.0,   (T)0.0, (T)1.0, (T)0.0,
 			   (T)0.0,   (T)0.0, (T)0.0, (T)1.0	};
 	}
+	static _Mat4 Scaling(T scaleX, T scaleY, T scaleZ )
+	{
+		return {
+			scaleX, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, scaleY, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, scaleZ, (T)0.0,
+			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
+	}
 	static _Mat4 Translation(T x, T y, T z)
 	{
 		return {
@@ -127,6 +127,10 @@ public:
 			     x,      y,      z, (T)1.0 };
 	}
 
+	static _Mat4 Rotation(const _Vec3<T>& angle)
+	{
+		return _Mat4(RotationX(angle.x) * RotationY(angle.y) * RotationZ(angle.z));
+	}
 	static _Mat4 Scaling( const _Vec3<T>& scale )
 	{
 		return {
@@ -134,10 +138,6 @@ public:
 			 (T)0.0, scale.y,  (T)0.0, (T)0.0,
 			 (T)0.0,  (T)0.0, scale.z, (T)0.0,
 			 (T)0.0,  (T)0.0,  (T)0.0, (T)1.0 };
-	}
-	static _Mat4 Rotation(const _Vec3<T>& angle)
-	{
-		return _Mat4(RotationX(angle.x) * RotationY(angle.y) * RotationZ(angle.z));
 	}
 	static _Mat4 Translation(const _Vec3<T>& pos)
 	{
@@ -147,19 +147,27 @@ public:
 			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
 			 pos.x,  pos.y,  pos.z, (T)1.0 };
 	}
+
+	static _Mat4 Transformation( const _Vec3<T> angle, const _Vec3<T>& scale, const _Vec3<T> pos)
+	{
+		return _Mat4(Rotation(angle) * Scaling(scale) * Translation(pos));
+	}
+
 	// -------------------------------------------------------
 
-	/*static _Mat4 Viewport(T sW, T sH, T vW, T vH )
+	// Camera & Perspective Matrixes (unfinished)
+	
+	/*static _Mat4 Camera( const _Vec3<T>& pos, const _Vec3<T>& up, const _Vec3<T>& direction )
 	{
-		T nx = sW  / 2;
-		T ny = sH / 2;
+		// stuff
 		return {
-			    nx, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0,    -ny, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
-			    nx+vW,     ny, (T)0.0, (T)1.0 };
+			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, (T)1.0, (T)1.0,
+			(T)0.0, (T)0.0, (T)0.0, (T)0.0 };
 	}*/
-	static _Mat4 Pespective( T nearDist, T farDist, T fov, T ratio )
+
+	/*static _Mat4 Pespective( T nearDist, T farDist, T fov, T ratio )
 	{
 		T A = (T)1.0 / tan( fov / (T)2.0 );
 		T B = ratio / tan( fov / (T)2.0 );
@@ -171,18 +179,9 @@ public:
 			(T)0.0,	     B, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0,		 C, (T)-1.0,
 			(T)0.0, (T)0.0,      D, (T)0.0 };
-	}
-
-	// results in ( w = -z ) which can then be used to multiply
-	// x,y,z values
-	/*static _Mat4 Perspective()
-	{
-		return {
-			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0, (T)1.0, (T)-1.0,
-			(T)0.0, (T)0.0, (T)0.0, (T)0.0 };
 	}*/
+
+	// -------------------------------------------------------
 
 public:
 	// [ row ][ col ]
