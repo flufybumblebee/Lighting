@@ -34,8 +34,12 @@ Game::Game(MainWindow& wnd)
 	plane(   1.0f ),
 	grid(	 1.0f )
 {
-	gridVar.SetRotation( PI / 3, 0.0f, 0.0f );
-	gridVar.SetScale(1.0f, 1.0f, 1.0f);
+	cubeVar.SetRotation(0.0f, 0.0f, 0.0f);
+	cubeVar.SetScale(scale);
+	cubeVar.SetPosition(0.0f, 0.5f, 2.0f);
+
+	gridVar.SetRotation(0.0f, 0.0f, 0.0f );
+	gridVar.SetScale(3.0f,3.0f,3.0f);
 	gridVar.SetPosition(0.0f, 0.0f, 2.0f);
 }
 
@@ -49,127 +53,151 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	
+	//-----------------------------------------
+	// scaling 
+
+	// scale x
+	if (wnd.kbd.KeyIsPressed('T'))
+	{
+		cubeVar.scale.x = cubeVar.scale.x + 0.01f;
+	}
+	else if (wnd.kbd.KeyIsPressed('G'))
+	{	
+		cubeVar.scale.x = cubeVar.scale.x - 0.01f;
+		if (cubeVar.scale.x < 0.0f) { cubeVar.scale.x = 0.0f; }
+	}
+
+	// scale y
+	if (wnd.kbd.KeyIsPressed('Y'))
+	{
+		cubeVar.scale.y = cubeVar.scale.y + 0.01f;
+	}
+	else if (wnd.kbd.KeyIsPressed('H'))
+	{
+		cubeVar.scale.y = cubeVar.scale.y - 0.01f;
+		if (cubeVar.scale.y < 0.0f) { cubeVar.scale.y = 0.0f; }
+	}
+
+	// scale z
+	if (wnd.kbd.KeyIsPressed('U'))
+	{
+		cubeVar.scale.z = cubeVar.scale.z + 0.01f;
+	}
+	else if (wnd.kbd.KeyIsPressed('J'))
+	{
+		cubeVar.scale.z = cubeVar.scale.z - 0.01f;
+		if (cubeVar.scale.z < 0.0f) { cubeVar.scale.z = 0.0f; }
+	}
 	// ---------------------------------------
 	// rotation
 
 	// rotate around X
-	if( wnd.kbd.KeyIsPressed( 'E' ) )
+	if( wnd.kbd.KeyIsPressed( 'Q' ) )
 	{
-		angle.x = angle.x - 0.02f;
+		angle.x -= 0.02f;
 	}
-	else if( wnd.kbd.KeyIsPressed( 'D' ) )
+	else if( wnd.kbd.KeyIsPressed( 'A' ) )
 	{
-		angle.x = angle.x + 0.02f;
+		angle.x += 0.02f;
 	}
 
 	// rotate around Y
 	if( wnd.kbd.KeyIsPressed( 'W' ) )
 	{
-		angle.y = angle.y - 0.02f;
+		angle.y -= 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'S' ) )
 	{
-		angle.y = angle.y + 0.02f;
+		angle.y += 0.02f;
 	}
 
 	// rotate around Z
-	if( wnd.kbd.KeyIsPressed( 'Q' ) )
+	if( wnd.kbd.KeyIsPressed( 'E' ) )
 	{
-		angle.z = angle.z - 0.02f;
+		angle.z -= 0.02f;
 	}
-	else if( wnd.kbd.KeyIsPressed( 'A' ) )
+	else if( wnd.kbd.KeyIsPressed( 'D' ) )
 	{
-		angle.z = angle.z + 0.02f;
-	}
-	
-	//-----------------------------------------
-	// scaling 
-	if (wnd.kbd.KeyIsPressed('T'))
-	{
-		scale.z = scale.z - 0.01f;
-		if (scale.z < 0) { scale.z = 0; }
-	}
-	else if (wnd.kbd.KeyIsPressed('G'))
-	{
-		scale.z = scale.z + 0.01f;
-	}
+		angle.z += 0.02f;
+	}	
 
-	if (wnd.kbd.KeyIsPressed('Y'))
-	{
-		scale.y = scale.y - 0.01f;
-		if (scale.y < 0) { scale.y = 0; }
-	}
-	else if (wnd.kbd.KeyIsPressed('H'))
-	{
-		scale.y = scale.y + 0.01f;
-	}
-	if (wnd.kbd.KeyIsPressed('U'))
-	{
-		scale.x = scale.x - 0.01f;
-		if (scale.x < 0) { scale.x = 0; }
-	}
-	else if (wnd.kbd.KeyIsPressed('J'))
-	{
-		scale.x = scale.x + 0.01f;
-	}
 	//-----------------------------------------
 	// translation
 
 	// translate along X axis
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
 	{
-		position.x = position.x -= 0.02f;
+		cameraPos.x -= 0.02f;
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
 	{
-		position.x = position.x += 0.02f;
+		cameraPos.x += 0.02f;
 	}
 
 	// translate along Y axis
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 	{
-		position.y = position.y += 0.02f;
+		cameraPos.y += 0.02f;
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
 	{
-		position.y = position.y -= 0.02f;
+		cameraPos.y -= 0.02f;
 	}
 
 	// translate along Z axis
 	if( wnd.kbd.KeyIsPressed( 'R' ) )
 	{
-		position.z = position.z += 0.02f;
+		cameraPos.z += 0.02f;
 	}
 	else if( wnd.kbd.KeyIsPressed( 'F' ) )
 	{
-		position.z = position.z -= 0.02f;
+		cameraPos.z -= 0.02f;
+	}	
+
+	const float lookSpeed = 0.05f;
+	// cameraLookAt position
+	if (wnd.kbd.KeyIsPressed('Z'))
+	{
+		cameraLookAt.x -= lookSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('X'))
+	{
+		cameraLookAt.x += lookSpeed;
+	}
+
+	if (wnd.kbd.KeyIsPressed('C'))
+	{
+		cameraLookAt.y += lookSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('V'))
+	{
+		cameraLookAt.y -= lookSpeed;
+	}
+
+	if (wnd.kbd.KeyIsPressed('B'))
+	{
+		cameraLookAt.z += lookSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('N'))
+	{
+		cameraLookAt.z -= lookSpeed;
 	}
 }
 
 void Game::ComposeFrame()
 {
 	// -------------------------------------------------
-	/*const Mat4 Transformation =
-		Mat4::Transformation( angle, scale, position ) * 		
-		Mat4::Translation(RotateY() *
-		Mat4::Translation(position.x, position.y, position.z + 2.0f));*/
-
 	const Mat4 Transformation =
+		Mat4::Transformation( scale, angle, position );
+
+	/*const Mat4 Transformation =
 		Mat4::Rotation( angle ) *
-		Mat4::Scaling( scale ) *		
-		Mat4::Translation(Vec4( position ) * Mat4::Rotation(angle)) *
-		Mat4::Translation(position.x, position.y, position.z + 2.0f);
-	
-	// for y rotation around a point
-	// replace translation with:
-	//Mat4::Translation(RotateY()) * 
-	//Mat4::Translation(position.x, position.y, position.z + 2.0f);
-
-	// for x,y,z rotation around a point 
-	// replace  translation with:
-	//Mat4::Translation(Rotate()) *
-	//Mat4::Translation(position.x, position.y, position.z + 2.0f);
-
+		Mat4::Scaling( scale ) *
+		Mat4::Translation(position) *
+		Mat4::Camera( cameraPos, cameraUp, cameraLookAt );*/
+	/*Mat4::Translation(Vec4( position ) * Mat4::Rotation(angle)) *
+		Mat4::Translation(position)*/
 	// -------------------------------------------------
 
 	if ( true /* cube */ )
@@ -203,9 +231,11 @@ void Game::ComposeFrame()
 			Colors::Cyan };*/
 
 		const Mat4 Transformation =
-			Mat4::Rotation(angle) *
-			Mat4::Scaling(scale * 0.1f ) *
-			Mat4::Translation(position);
+			Mat4::Rotation(cubeVar.angle) *
+			Mat4::Scaling(cubeVar.scale) *
+			Mat4::Translation(cubeVar.position) *
+			Mat4::Camera(cameraPos, cameraUp, cameraLookAt)/* *
+			Mat4::Pespective(width, height, nearDist, farDist)*/;
 
 		if (true)
 		{
@@ -509,13 +539,13 @@ void Game::ComposeFrame()
 	
 	// -------------------------------------------------
 
-	if ( true   /* grid */)
+	if (true   /* grid */ )
 	{
-		/*const Mat4 Transformation =
-			Mat4::Rotation(gridVar.angle) *
+		const Mat4 Transformation =
 			Mat4::Scaling(gridVar.scale) *
-			Mat4::Translation(Vec4(gridVar.position) * Mat4::Rotation(angle)) *
-			Mat4::Translation(position.x, position.y, position.z + 2.0f);*/
+			Mat4::Rotation(gridVar.angle) *
+			Mat4::Translation(gridVar.position) *
+			Mat4::Camera(cameraPos, cameraUp, cameraLookAt);
 
 		auto lines = grid.GetLines();
 
@@ -539,4 +569,9 @@ void Game::ComposeFrame()
 	}
 
 	// -------------------------------------------------
+	// cross hair ( center of screen )
+	const float midX = float(Graphics::ScreenWidth / 2);
+	const float midY = float(Graphics::ScreenHeight / 2);
+	gfx.DrawLine({ midX, midY - 10 }, { midX, midY + 10 }, Colors::Black);
+	gfx.DrawLine({ midX - 10, midY }, { midX + 10, midY }, Colors::Black);
 }

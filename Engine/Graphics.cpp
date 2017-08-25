@@ -336,7 +336,10 @@ void Graphics::DrawLine( float x1,float y1,float x2,float y2,Color c )
 
 	if( dy == 0.0f && dx == 0.0f )
 	{
-		PutPixel( int( x1 ),int( y1 ),c );
+		if (x1 >= 0 && x1 < ScreenWidth && y1 >= 0 && y1 < ScreenHeight)
+		{
+			PutPixel(int(x1), int(y1), c);
+		}
 	}
 	else if( abs( dy ) > abs( dx ) )
 	{
@@ -352,11 +355,17 @@ void Graphics::DrawLine( float x1,float y1,float x2,float y2,Color c )
 		for( float x = x1; y < y2; y += 1.0f,x += m )
 		{
 			lastIntY = int( y );
-			PutPixel( int( x ),lastIntY,c );
+			if (x >= 0 && x < ScreenWidth && lastIntY >= 0 && lastIntY < ScreenHeight)
+			{
+				PutPixel(int(x), lastIntY, c);
+			}
 		}
 		if( int( y2 ) > lastIntY )
 		{
-			PutPixel( int( x2 ),int( y2 ),c );
+			if (x2 >= 0 && x2 < ScreenWidth && y2 >= 0 && y2 < ScreenHeight)
+			{
+				PutPixel(int(x2), int(y2), c);
+			}
 		}
 	}
 	else
@@ -373,11 +382,17 @@ void Graphics::DrawLine( float x1,float y1,float x2,float y2,Color c )
 		for( float y = y1; x < x2; x += 1.0f,y += m )
 		{
 			lastIntX = int( x );
-			PutPixel( lastIntX,int( y ),c );
+			if (lastIntX >= 0 && lastIntX < ScreenWidth && y >= 0 && y < ScreenHeight)
+			{
+				PutPixel(lastIntX, int(y), c);
+			}
 		}
 		if( int( x2 ) > lastIntX )
 		{
-			PutPixel( int( x2 ),int( y2 ),c );
+			if (x2 >= 0 && x2 < ScreenWidth && y2 >= 0 && y2 < ScreenHeight)
+			{
+				PutPixel(int(x2), int(y2), c);
+			}
 		}
 	}
 }
@@ -444,7 +459,10 @@ void Graphics::DrawFlatTopTriangle( const Vec2& v0, const Vec2& v1, const Vec2& 
 
 		for (int x = xStart; x < xEnd; x++)
 		{
-			PutPixel(x, y, c);
+			if (x >= 0 && x < ScreenWidth && y >= 0 && y < ScreenHeight)
+			{
+				PutPixel(x, y, c);
+			}
 		}
 	}
 }
@@ -470,8 +488,11 @@ void Graphics::DrawFlatBottomTriangle(const Vec2& v0, const Vec2& v1, const Vec2
 		const int xEnd = int(ceil(px1 - 0.5f));
 
 		for (int x = xStart; x < xEnd; x++)
-		{			
-			PutPixel(x, y, c);			
+		{
+			if (x >= 0 && x < ScreenWidth && y >= 0 && y < ScreenHeight)
+			{
+				PutPixel(x, y, c);
+			}
 		}
 	}
 }

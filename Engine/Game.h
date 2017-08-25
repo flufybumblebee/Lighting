@@ -36,9 +36,9 @@
 class Game
 {
 public:
-	Game( class MainWindow& wnd );
-	Game( const Game& ) = delete;
-	Game& operator=( const Game& ) = delete;
+	Game(class MainWindow& wnd);
+	Game(const Game&) = delete;
+	Game& operator=(const Game&) = delete;
 	void Go();
 private:
 	void ComposeFrame();
@@ -55,14 +55,20 @@ private:
 
 	CameraTransform cam;
 
-	Vec3 angle    = Vec3(0.0f, 0.0f, 0.0f);
-	Vec3 scale    = Vec3(1.0f, 1.0f, 1.0f);
-	Vec3 position = Vec3(0.0f, 0.0f, 2.0f);
-	
-	TransformVariables gridVar;
+	//float scale	  = 1.0f;
+	Vec3 scale = { 1.0f,1.0f,1.0f };
+	Vec3 angle = { 0.0f, 0.0f, 0.0f };
+	Vec3 position = { 0.0f, 0.0f, 2.0f };
 
-	/*float fov = PI / 2.0f;
-	float ratio = Graphics::ScreenWidth / Graphics::ScreenHeight;
+	TransformVariables cubeVar;
+	TransformVariables gridVar;
+		
+	Vec3 cameraPos    = { 0.0f, 0.0f, 0.0f };
+	Vec3 cameraLookAt = { 0.0f, 0.0f, 2.0f };
+	Vec3 cameraUp     = { 0.0f, 1.0f, 0.0f };
+	
+	float width = 2.0f;
+	float height = 2.0f;
 	float nearDist = 1.0f;
-	float farDist = 10.0f;*/
+	float farDist = 100.0f;	
 };

@@ -79,6 +79,14 @@ public:
 			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
 	}
 
+	static _Mat4 Scaling(T scale)
+	{
+		return {
+			 scale, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0,  scale, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0,  scale, (T)0.0,
+			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
+	}
 	static _Mat4 RotationX(T angle)
 	{
 		const T sinAngle = sin(angle);
@@ -111,14 +119,6 @@ public:
 			   (T)0.0,   (T)0.0, (T)1.0, (T)0.0,
 			   (T)0.0,   (T)0.0, (T)0.0, (T)1.0	};
 	}
-	static _Mat4 Scaling(T scaleX, T scaleY, T scaleZ )
-	{
-		return {
-			scaleX, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0, scaleY, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0, scaleZ, (T)0.0,
-			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
-	}
 	static _Mat4 Translation(T x, T y, T z)
 	{
 		return {
@@ -128,17 +128,17 @@ public:
 			     x,      y,      z, (T)1.0 };
 	}
 
+	static _Mat4 Scaling(const _Vec3<T>& scale)
+	{
+		return {
+			scale.x, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, scale.y, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, scale.z, (T)0.0,
+			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
+	}
 	static _Mat4 Rotation(const _Vec3<T>& angle)
 	{
 		return _Mat4(RotationX(angle.x) * RotationY(angle.y) * RotationZ(angle.z));
-	}
-	static _Mat4 Scaling( const _Vec3<T>& scale )
-	{
-		return {
-			scale.x,  (T)0.0,  (T)0.0, (T)0.0,
-			 (T)0.0, scale.y,  (T)0.0, (T)0.0,
-			 (T)0.0,  (T)0.0, scale.z, (T)0.0,
-			 (T)0.0,  (T)0.0,  (T)0.0, (T)1.0 };
 	}
 	static _Mat4 Translation(const _Vec3<T>& pos)
 	{
@@ -149,38 +149,41 @@ public:
 			 pos.x,  pos.y,  pos.z, (T)1.0 };
 	}
 
-	static _Mat4 Transformation( const _Vec3<T> angle, const _Vec3<T>& scale, const _Vec3<T> pos)
+	static _Mat4 Transformation(_Vec3<T> scale, const _Vec3<T> angle, const _Vec3<T> pos)
 	{
-		return _Mat4(Rotation(angle) * Scaling(scale) * Translation(pos));
+		return _Mat4(Scaling(scale) * Rotation(angle) * Translation(pos));
 	}
 
 	// -------------------------------------------------------
 
 	// Camera & Perspective Matrixes (unfinished)
 	
-	/*static _Mat4 Camera( const _Vec3<T>& pos, const _Vec3<T>& up, const _Vec3<T>& direction )
+	static _Mat4 Camera( const _Vec3<T>& cameraPos, const _Vec3<T>& cameraUp, const _Vec3<T>& cameraLookAt )
 	{
-		// stuff
+		_Vec3<T> zAxis = (cameraLookAt - cameraPos).Normalize();
+		_Vec3<T> xAxis = (cameraUp.Cross( zAxis )).Normalize();
+		_Vec3<T> yAxis = zAxis.Cross( xAxis );
+		
 		return {
-			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0, (T)1.0, (T)1.0,
-			(T)0.0, (T)0.0, (T)0.0, (T)0.0 };
-	}*/
+			xAxis.x, yAxis.x, zAxis.x, (T)0.0,
+			xAxis.y, yAxis.y, zAxis.y, (T)0.0,
+			xAxis.z, yAxis.z, zAxis.z, (T)0.0,
+			-(xAxis.Dot( cameraPos )), -(yAxis.Dot(cameraPos)), -(zAxis.Dot(cameraPos)), (T)1.0, };
+	}
 
-	/*static _Mat4 Pespective( T nearDist, T farDist, T fov, T ratio )
+	static _Mat4 Pespective( T width, T height, T nearDist, T farDist )
 	{
-		T A = (T)1.0 / tan( fov / (T)2.0 );
-		T B = ratio / tan( fov / (T)2.0 );
-		T C = nearDist + farDist / nearDist - farDist;
-		T D = (T)2.0 * (nearDist * farDist) / (nearDist - farDist);
+		T A = 2*nearDist/width;
+		T B = 2 * nearDist / height;
+		T C = farDist / (farDist - nearDist);
+		T D = (nearDist * farDist) / (nearDist - farDist);
 
 		return {
 			     A, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0,	     B, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0,		 C, (T)-1.0,
+			(T)0.0, (T)0.0,		 C, (T)1.0,
 			(T)0.0, (T)0.0,      D, (T)0.0 };
-	}*/
+	}
 
 	// -------------------------------------------------------
 
