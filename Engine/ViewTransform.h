@@ -3,7 +3,7 @@
 #include "Vec4.h"
 #include "Graphics.h"
 
-class CameraTransform
+class ViewTransform
 {
 public:
 	Vec4& Transform(Vec4& v) const

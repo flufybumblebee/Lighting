@@ -156,33 +156,61 @@ public:
 
 	// -------------------------------------------------------
 
-	// Camera & Perspective Matrixes (unfinished)
+	// Camera, Perspective, & Viewport Matrixes
 	
-	static _Mat4 Camera( const _Vec3<T>& cameraPos, const _Vec3<T>& cameraUp, const _Vec3<T>& cameraLookAt )
+	static _Mat4 Camera( const _Vec3<T>& position, const _Vec3<T>& lookAt, const _Vec3<T>& up )
 	{
-		_Vec3<T> zAxis = (cameraLookAt - cameraPos).Normalize();
-		_Vec3<T> xAxis = (cameraUp.Cross( zAxis )).Normalize();
+		_Vec3<T> zAxis = (lookAt - position).Normalize();
+		_Vec3<T> xAxis = (up.Cross( zAxis )).Normalize();
 		_Vec3<T> yAxis = zAxis.Cross( xAxis );
 		
 		return {
 			xAxis.x, yAxis.x, zAxis.x, (T)0.0,
 			xAxis.y, yAxis.y, zAxis.y, (T)0.0,
 			xAxis.z, yAxis.z, zAxis.z, (T)0.0,
-			-(xAxis.Dot( cameraPos )), -(yAxis.Dot(cameraPos)), -(zAxis.Dot(cameraPos)), (T)1.0, };
+			-(xAxis.Dot(position)), -(yAxis.Dot(position)), -(zAxis.Dot(position)), (T)1.0, };
 	}
 
-	static _Mat4 Pespective( T width, T height, T nearDist, T farDist )
+	/*static _Mat4 Pespective( T width, T height, T nearDist, T farDist )
 	{
-		T A = 2*nearDist/width;
+		T A = 2 * nearDist / width;
 		T B = 2 * nearDist / height;
 		T C = farDist / (farDist - nearDist);
-		T D = (nearDist * farDist) / (nearDist - farDist);
+		T D = -C / (nearDist - farDist);
 
 		return {
 			     A, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0,	     B, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0,		 C, (T)1.0,
 			(T)0.0, (T)0.0,      D, (T)0.0 };
+	}*/
+
+	static _Mat4 Pespective(T fovX, T fovY, T nearDist, T farDist)
+	{
+		T x = (T)1 / tan(fovX*(T)0.5);
+		T y = (T)1 / tan(fovY*(T)0.5);
+		T z = farDist / (farDist - nearDist);
+		T w = -z * nearDist;
+
+		return {
+			     x, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0,	     y, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0,		 z, (T)1.0,
+			(T)0.0, (T)0.0, w, (T)0.0 };
+	}
+
+	static _Mat4 Viewport( T x, T y, T width, T height )
+	{
+		float Ax = width / 2;
+		float Ay = height / 2;
+		float Bx = x + Ax;
+		float By = y + Ay;
+		return {
+			  Ax, 0.0f, 0.0f, 0.0f,
+			0.0f,  -Ay, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			  Bx,   By, 0.0f, 1.0f,
+		};
 	}
 
 	// -------------------------------------------------------

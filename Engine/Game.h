@@ -23,15 +23,19 @@
 #include "Graphics.h"
 #include "Colors.h"
 
-#include "Cube.h"
-#include "HexPrism.h"
-#include "Diamond.h"
-#include "Plane.h"
-#include "Grid.h"
-
-#include "CameraTransform.h"
-
 #include "TransformVariables.h"
+
+#include "ViewTransform.h"
+
+#include "Camera.h"
+#include "Perspective.h"
+#include "Viewport.h"
+
+#include "CubeModel.h"
+#include "PlaneModel.h"
+#include "GridModel.h"
+
+#include "Grid.h"
 
 class Game
 {
@@ -47,28 +51,43 @@ private:
 	MainWindow&	wnd;
 	Graphics	gfx;
 
-	Cube		cube;
-	HexPrism	hex;
-	Diamond		diamond;
-	Plane		plane;
-	Grid		grid;
+	// camera matrix variables
+	Vec3 cameraPos;
+	Vec3 cameraLookAt;
+	Vec3 cameraUp;
 
-	CameraTransform cam;
+	// matrixes
+	/*Camera cam;
+	Perspective per;
+	Viewport port;*/
 
-	//float scale	  = 1.0f;
+	ViewTransform view;
+
+	Grid grid;
+
+	// models
+	//CubeModel	cube;
+	//CubeModel	cube2;
+	//PlaneModel	plane;
+	//GridModel	grid;
+
 	Vec3 scale = { 1.0f,1.0f,1.0f };
 	Vec3 angle = { 0.0f, 0.0f, 0.0f };
 	Vec3 position = { 0.0f, 0.0f, 2.0f };
 
-	TransformVariables cubeVar;
-	TransformVariables gridVar;
-		
-	Vec3 cameraPos    = { 0.0f, 0.0f, 0.0f };
-	Vec3 cameraLookAt = { 0.0f, 0.0f, 2.0f };
-	Vec3 cameraUp     = { 0.0f, 1.0f, 0.0f };
+	/*TransformVariables cubeVar;
+	TransformVariables cube2Var;
+	TransformVariables gridVar;	*/	
 	
-	float width = 2.0f;
-	float height = 2.0f;
-	float nearDist = 1.0f;
-	float farDist = 100.0f;	
+	// perspective matrix variables
+	float fovX = PI/4;
+	float fovY = PI/4;
+	float nearDist = 0.1f;
+	float farDist = 10.0f;
+
+	// viewport matrix variables
+	float x = 0.0f;
+	float y = 0.0f;
+	float width = (float)Graphics::ScreenWidth / 1 - 1;
+	float height = (float)Graphics::ScreenHeight / 1 - 1;
 };

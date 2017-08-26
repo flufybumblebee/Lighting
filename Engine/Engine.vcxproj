@@ -136,12 +136,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="CameraTransform.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="GridModel.h" />
+    <ClInclude Include="Orthographic.h" />
+    <ClInclude Include="Perspective.h" />
+    <ClInclude Include="PlaneModel.h" />
+    <ClInclude Include="Viewport.h" />
+    <ClInclude Include="ViewTransform.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliMath.h" />
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="CubeModel.h" />
     <ClInclude Include="Diamond.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Game.h" />
@@ -156,6 +163,7 @@
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="Mat3.h" />
     <ClInclude Include="Mat4.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Rect.h" />

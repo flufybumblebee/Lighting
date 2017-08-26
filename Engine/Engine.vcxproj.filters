@@ -96,13 +96,37 @@
     <ClInclude Include="Vec4.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="CameraTransform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Grid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TransformVariables.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaneModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GridModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Viewport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Perspective.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Orthographic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
