@@ -28,14 +28,14 @@ class _Vec3 : public _Vec2<T>
 {
 public:
 	_Vec3() {}
-	_Vec3( T x,T y,T z )
+	_Vec3(T x, T y, T z)
 		:
-		_Vec2( x,y ),
-		z( z )
+		_Vec2(x, y),
+		z(z)
 	{}
-	_Vec3( const _Vec3& vec )
+	_Vec3(const _Vec3& vec)
 		:
-		_Vec3( vec.x,vec.y,vec.z )
+		_Vec3(vec.x, vec.y, vec.z)
 	{}
 	template <typename T2>
 	explicit operator _Vec3<T2>() const
@@ -45,11 +45,11 @@ public:
 
 	T		LenSq() const
 	{
-		return sq( *this );
+		return sq(*this);
 	}
 	T		Len() const
 	{
-		return sqrt( LenSq() );
+		return sqrt(LenSq());
 	}
 	_Vec3&	Normalize()
 	{
@@ -68,71 +68,71 @@ public:
 
 	_Vec3	operator-() const
 	{
-		return _Vec3( -x,-y,-z );
+		return _Vec3(-x, -y, -z);
 	}
-	_Vec3&	operator=( const _Vec3 &rhs )
+	_Vec3&	operator=(const _Vec3 &rhs)
 	{
 		x = rhs.x;
 		y = rhs.y;
 		z = rhs.z;
 		return *this;
 	}
-	_Vec3&	operator+=( const _Vec3 &rhs )
+	_Vec3&	operator+=(const _Vec3 &rhs)
 	{
 		x += rhs.x;
 		y += rhs.y;
 		z += rhs.z;
 		return *this;
 	}
-	_Vec3&	operator-=( const _Vec3 &rhs )
+	_Vec3&	operator-=(const _Vec3 &rhs)
 	{
 		x -= rhs.x;
 		y -= rhs.y;
 		z -= rhs.z;
 		return *this;
-	}	
-	
-	_Vec3	operator+( const _Vec3 &rhs ) const
-	{
-		return _Vec3( *this ) += rhs;
 	}
-	_Vec3	operator-( const _Vec3 &rhs ) const
+
+	_Vec3	operator+(const _Vec3 &rhs) const
 	{
-		return _Vec3( *this ) -= rhs;
+		return _Vec3(*this) += rhs;
 	}
-	_Vec3&	operator*=( const T &rhs )
+	_Vec3	operator-(const _Vec3 &rhs) const
+	{
+		return _Vec3(*this) -= rhs;
+	}
+	_Vec3&	operator*=(const T &rhs)
 	{
 		x *= rhs;
 		y *= rhs;
 		z *= rhs;
 		return *this;
 	}
-	_Vec3	operator*( const T &rhs ) const
+	_Vec3	operator*(const T &rhs) const
 	{
-		return _Vec3( *this ) *= rhs;
+		return _Vec3(*this) *= rhs;
 	}
-	_Vec3&	operator/=( const T &rhs )
+	_Vec3&	operator/=(const T &rhs)
 	{
 		x /= rhs;
 		y /= rhs;
 		z /= rhs;
 		return *this;
 	}
-	_Vec3	operator/( const T &rhs ) const
+	_Vec3	operator/(const T &rhs) const
 	{
-		return _Vec3( *this ) /= rhs;
+		return _Vec3(*this) /= rhs;
 	}
 
-	bool	operator==( const _Vec3 &rhs ) const
+	bool	operator==(const _Vec3 &rhs) const
 	{
 		return x == rhs.x && y == rhs.y && rhs.z = z;
 	}
-	bool	operator!=( const _Vec3 &rhs ) const
+	bool	operator!=(const _Vec3 &rhs) const
 	{
 		return !(*this == rhs);
 	}
 
-	T		operator*( const _Vec3 &rhs ) const
+	T		operator*(const _Vec3 &rhs) const
 	{
 		return x * rhs.x + y * rhs.y + z * rhs.z;
 	}
@@ -140,16 +140,32 @@ public:
 	{
 		return x * rhs.x + y * rhs.y + z * rhs.z;
 	}
-	_Vec3	Cross( const _Vec3& rhs) const
+	_Vec3	Cross(const _Vec3& rhs) const
 	{
-		return Vec3( 
+		return _Vec3(
 			y * rhs.z - z * rhs.y,
 			z * rhs.x - x * rhs.z,
-			x * rhs.y - y * rhs.x );
+			x * rhs.y - y * rhs.x);
 	}
+
 public:
 	T z;
 };
+
+//template<typename T>
+//T Dot(const _Vec3<T>& lhs, const _Vec3<T>& rhs) const
+//{
+//	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+//}
+
+template<typename T>
+_Vec3<T> Cross(const _Vec3<T>& lhs, const _Vec3<T>& rhs)
+{
+	return _Vec3(
+		lhs.y * rhs.z - lhs.z * rhs.y,
+		lhs.z * rhs.x - lhs.x * rhs.z,
+		lhs.x * rhs.y - lhs.y * rhs.x);
+}
 
 typedef _Vec3<float> Vec3;
 typedef _Vec3<double> Ved3;

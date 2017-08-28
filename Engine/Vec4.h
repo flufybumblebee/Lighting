@@ -59,6 +59,8 @@ public:
 	//		x * rhs.y - y * rhs.x,
 	//		1);
 	//}
+
+
 public:
 	T w;
 };

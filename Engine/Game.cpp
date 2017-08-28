@@ -200,6 +200,26 @@ void Game::UpdateModel()
 	cube2.Update(cube2Var.scale, cube2Var.angle, cube2Var.position);
 	plane.Update(gridVar.scale, gridVar.angle, gridVar.position);
 	grid.Update(gridVar.scale, gridVar.angle, gridVar.position);*/
+	if (wnd.mouse.IsInWindow() && wnd.mouse.LeftIsPressed())
+	{
+		if (wnd.mouse.GetPosX() < 320)
+		{
+			cameraPos.x -= 0.01f;
+		}
+		else if (wnd.mouse.GetPosX() > 320)
+		{
+			cameraPos.x += 0.01f;
+		}
+
+		if (wnd.mouse.GetPosY() < 320)
+		{
+			cameraPos.y += 0.01f;
+		}
+		else if (wnd.mouse.GetPosY() > 320)
+		{
+			cameraPos.y -= 0.01f;
+		}
+	}
 }
 
 void Game::ComposeFrame()
@@ -248,18 +268,24 @@ void Game::ComposeFrame()
 	}
 
 	// -------------------------------------------------
-	// cross hair ( center of screen )
-	const float midX = float(Graphics::ScreenWidth / 2);
-	const float midY = float(Graphics::ScreenHeight / 2);
-	gfx.DrawLine({ midX, midY - 10 }, { midX, midY + 10 }, Colors::Black);
-	gfx.DrawLine({ midX - 10, midY }, { midX + 10, midY }, Colors::Black);
 
-	// viewport window border
-	const Color c = Colors::Yellow;
-	// horizontal lines
-	gfx.DrawLine({ x, y }, { x + width, y }, c);
-	gfx.DrawLine({ x, y + height }, { x + width, y + height }, c);
-	// verticle lines
-	gfx.DrawLine({ x, y }, { x, y + height }, c);
-	gfx.DrawLine({ x + width, y }, { x + width, y + height }, c);
+	if (true /* cross hair */)
+	{
+		const Color c = Colors::Yellow;
+		const float midX = float(Graphics::ScreenWidth / 2);
+		const float midY = float(Graphics::ScreenHeight / 2);
+		gfx.DrawLine({ midX, midY - 10 }, { midX, midY + 10 }, c);
+		gfx.DrawLine({ midX - 10, midY }, { midX + 10, midY }, c);
+	}
+
+	if (true /* viewport window */)
+	{
+		const Color c = Colors::Yellow;
+		// horizontal lines
+		gfx.DrawLine({ x, y }, { x + width, y }, c);
+		gfx.DrawLine({ x, y + height }, { x + width, y + height }, c);
+		// verticle lines
+		gfx.DrawLine({ x, y }, { x, y + height }, c);
+		gfx.DrawLine({ x + width, y }, { x + width, y + height }, c);
+	}
 };
