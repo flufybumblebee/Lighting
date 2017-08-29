@@ -23,19 +23,10 @@
 #include "Graphics.h"
 #include "Colors.h"
 
-#include "TransformVariables.h"
-
 #include "ViewTransform.h"
 
-#include "Camera.h"
-#include "Perspective.h"
-#include "Viewport.h"
-
-#include "CubeModel.h"
-#include "PlaneModel.h"
-#include "GridModel.h"
-
 #include "Grid.h"
+#include "Frustum.h"
 
 class Game
 {
@@ -56,38 +47,26 @@ private:
 	Vec3 cameraLookAt;
 	Vec3 cameraUp;
 
-	// matrixes
-	/*Camera cam;
-	Perspective per;
-	Viewport port;*/
-
 	ViewTransform view;
 
 	Grid grid;
+	Frustum frustum;
 
-	// models
-	//CubeModel	cube;
-	//CubeModel	cube2;
-	//PlaneModel	plane;
-	//GridModel	grid;
-
-	Vec3 scale = { 1.0f,1.0f,1.0f };
-	Vec3 angle = { 0.0f, 0.0f, 0.0f };
+	Vec3 scale    = { 1.0f, 1.0f, 1.0f };
+	Vec3 angle    = { 0.0f, 0.0f, 0.0f };
 	Vec3 position = { 0.0f, 0.0f, 2.0f };
 
-	/*TransformVariables cubeVar;
-	TransformVariables cube2Var;
-	TransformVariables gridVar;	*/	
-	
 	// perspective matrix variables
-	float fovX = PI/4;
-	float fovY = PI/4;
-	float nearDist = 0.1f;
-	float farDist = 10.0f;
+	const float fovX = PI/4;
+	const float fovY = PI/4;
+	const float nZ = 1.0f;
+	const float fZ = 10.0f;
+	const float nW = 2 * (nZ * tan(fovX / 2));
+	const float nH = 2 * (nZ * tan(fovY / 2));
 
 	// viewport matrix variables
-	float x = 0.0f;
-	float y = 0.0f;
-	float width = (float)Graphics::ScreenWidth / 1 - 1;
-	float height = (float)Graphics::ScreenHeight / 1 - 1;
+	const float vX = 0.0f;
+	const float vY = 0.0f;
+	const float vW = (float)Graphics::ScreenWidth / 1 - 1;
+	const float vH = (float)Graphics::ScreenHeight / 1 - 1;
 };

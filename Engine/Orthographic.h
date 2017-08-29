@@ -7,24 +7,24 @@
 class OrthoGraphic
 {
 public:
-	OrthoGraphic(const float& fovX, const float& fovY, const float& nearDist, const float& farDist)
+	OrthoGraphic(const float& nW, const float& nH, const float& nZ, const float& fZ)
 		:
-		fovX(fovX),
-		fovY(fovY),
-		nearDist(nearDist),
-		farDist(farDist)
+		nW(nW),
+		nH(nH),
+		nZ(nZ),
+		fZ(fZ)
 	{}
 	Mat4 Transform()
 	{
 		return {
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f,	1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f };
+			2/nW, 0.0f, 0.0f, 0.0f,
+			0.0f, 2/nH, 0.0f, 0.0f,
+			0.0f, 0.0f,	1/(fZ-nZ), 0.0f,
+			0.0f, 0.0f, nZ/(nZ-fZ), 1.0f };
 	}
 private:
-	float fovX;
-	float fovY;
-	float nearDist;
-	float farDist;
+	float nW;
+	float nH;
+	float nZ;
+	float fZ;
 };

@@ -156,7 +156,7 @@ public:
 
 	// -------------------------------------------------------
 
-	// Camera, Perspective, & Viewport Matrixes
+	// Camera, Perspective, Orthographic, & Viewport Matrixes
 	
 	static _Mat4 Camera( const _Vec3<T>& position, const _Vec3<T>& lookAt, const _Vec3<T>& up )
 	{
@@ -171,32 +171,27 @@ public:
 			-(xAxis.Dot(position)), -(yAxis.Dot(position)), -(zAxis.Dot(position)), (T)1.0, };
 	}
 
-	/*static _Mat4 Pespective( T width, T height, T nearDist, T farDist )
+	static _Mat4 Pespective(T fovX, T fovY, T nZ, T fZ)
 	{
-		T A = 2 * nearDist / width;
-		T B = 2 * nearDist / height;
-		T C = farDist / (farDist - nearDist);
-		T D = -C / (nearDist - farDist);
-
-		return {
-			     A, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0,	     B, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0,		 C, (T)1.0,
-			(T)0.0, (T)0.0,      D, (T)0.0 };
-	}*/
-
-	static _Mat4 Pespective(T fovX, T fovY, T nearDist, T farDist)
-	{
-		T x = (T)1 / tan(fovX*(T)0.5);
-		T y = (T)1 / tan(fovY*(T)0.5);
-		T z = farDist / (farDist - nearDist);
-		T w = -z * nearDist;
+		T x = (T)1.0 / tan(fovX*(T)0.5);
+		T y = (T)1.0 / tan(fovY*(T)0.5);
+		T z = fZ / (fZ - nZ);
+		T w = -z * nZ;
 
 		return {
 			     x, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0,	     y, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0,		 z, (T)1.0,
-			(T)0.0, (T)0.0, w, (T)0.0 };
+			(T)0.0, (T)0.0,      w, (T)0.0 };
+	}
+
+	static _Mat4 Orthographic( const float& nW, const float& nH, const float& nZ, const float& fZ )
+	{
+		return {
+			2 / nW, 0.0f, 0.0f, 0.0f,
+			0.0f, 2 / nH, 0.0f, 0.0f,
+			0.0f, 0.0f,	1 / (fZ - nZ), 0.0f,
+			0.0f, 0.0f, nZ / (nZ - fZ), 1.0f };
 	}
 
 	static _Mat4 Viewport( T x, T y, T width, T height )

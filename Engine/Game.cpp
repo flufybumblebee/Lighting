@@ -21,16 +21,19 @@
 #include "MainWindow.h"
 #include "Game.h"
 
+#include "Mat4.h"
+
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	cameraPos( 0.0f, 0.0f, 0.0f ),
-	cameraLookAt( 0.0f, 0.0f, 2.0f ),
-	cameraUp( 0.0f, 1.0f, 0.0f ),
-	grid( 1.0f )/*,
+	cameraPos(		0.0f, 0.0f, 0.0f ),
+	cameraLookAt(	0.0f, 0.0f, 2.0f ),
+	cameraUp(		0.0f, 1.0f, 0.0f ),
+	grid( 1.0f ),
+	frustum( fovX, fovY, nZ, fZ )/*,
 	cam(cameraPos, cameraLookAt, cameraUp),
-	per( fovX, fovY, nearDist, farDist),
+	per( fovX, fovY, nZ, fZ),
 	port( x, y, width, height ),
 	cube(	false,	true ),
 	cube2(	false,	true ),
@@ -237,9 +240,10 @@ void Game::ComposeFrame()
 		Mat4::Rotation(angle) *
 		Mat4::Translation(position) *
 		Mat4::Camera( cameraPos, cameraLookAt, cameraUp ) *
-		Mat4::Pespective( fovX, fovY, nearDist, farDist ) *
-		Mat4::Viewport( x, y, width, height );
-
+		Mat4::Pespective( fovX, fovY, nZ, fZ ) * 
+		Mat4::Orthographic( nW, nH, nZ, fZ ) *
+		Mat4::Viewport( vX, vY, vW, vH );
+	
 	// ---------------------------------------------------
 
 	if (true)
@@ -269,23 +273,23 @@ void Game::ComposeFrame()
 
 	// -------------------------------------------------
 
+	const Color c = Colors::Yellow;
+
 	if (true /* cross hair */)
 	{
-		const Color c = Colors::Yellow;
-		const float midX = float(Graphics::ScreenWidth / 2);
-		const float midY = float(Graphics::ScreenHeight / 2);
+		const float midX = vX + (vW * 0.5f);
+		const float midY = vY + (vH * 0.5f);
 		gfx.DrawLine({ midX, midY - 10 }, { midX, midY + 10 }, c);
 		gfx.DrawLine({ midX - 10, midY }, { midX + 10, midY }, c);
 	}
 
 	if (true /* viewport window */)
-	{
-		const Color c = Colors::Yellow;
+	{		
 		// horizontal lines
-		gfx.DrawLine({ x, y }, { x + width, y }, c);
-		gfx.DrawLine({ x, y + height }, { x + width, y + height }, c);
+		gfx.DrawLine({ vX, vY }, { vX + vW, vY }, c);
+		gfx.DrawLine({ vX, vY + vH }, { vX + vW, vY + vH }, c);
 		// verticle lines
-		gfx.DrawLine({ x, y }, { x, y + height }, c);
-		gfx.DrawLine({ x + width, y }, { x + width, y + height }, c);
+		gfx.DrawLine({ vX, vY }, { vX, vY + vH }, c);
+		gfx.DrawLine({ vX + vW, vY }, { vX + vW, vY + vH }, c);
 	}
 };
