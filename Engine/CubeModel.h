@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Model.h"
+#include "Object.h"
 #include "Cube.h"
 #include "Vec4.h"
 #include "Mat4.h"
 #include "ViewTransform.h"
 
-class CubeModel : public Model
+class CubeModel : public Object
 {
 public:
 	CubeModel( bool drawLines, bool drawTriangles )

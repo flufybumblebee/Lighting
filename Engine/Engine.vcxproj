@@ -139,6 +139,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GridModel.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Orthographic.h" />
     <ClInclude Include="Perspective.h" />
     <ClInclude Include="PlaneModel.h" />
@@ -164,7 +165,7 @@
     <ClInclude Include="Mat2.h" />
     <ClInclude Include="Mat3.h" />
     <ClInclude Include="Mat4.h" />
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="Object.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Rect.h" />

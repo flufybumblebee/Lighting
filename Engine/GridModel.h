@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Model.h"
+#include "Object.h"
 #include "Grid.h"
 #include "Vec4.h"
 #include "Mat4.h"
 #include "ViewTransform.h"
 
-class GridModel : public Model
+class GridModel : public Object
 {
 public:
 	GridModel(bool drawLines, bool drawTriangles)

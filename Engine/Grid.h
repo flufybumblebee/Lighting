@@ -2,10 +2,11 @@
 
 #include "Vec4.h"
 #include <vector>
-#include "IndexedLineList.h"
-#include "IndexedTriangleList.h"
+#include "Model.h"
+//#include "IndexedLineList.h"
+//#include "IndexedTriangleList.h"
 
-class Grid
+class Grid : public Model
 {
 public:
 	Grid(float size)
@@ -80,7 +81,7 @@ public:
 		vertices.emplace_back( (bSize * 5), 0.0f,  (bSize * 5), 1.0f); // 42
 		vertices.emplace_back( (bSize * 5), 0.0f, -(bSize * 5), 1.0f); // 43
 	}
-	IndexedLineList GetLines() const
+	IndexedLineList GetLines() const override
 	{
 		return
 		{
@@ -109,6 +110,10 @@ public:
 				40,41,
 				42,43 }
 		};
+	}
+	IndexedTriangleList GetTriangles() const override
+	{
+		return IndexedTriangleList(vertices, { 0,1,2 });
 	}
 
 public:

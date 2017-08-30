@@ -2,10 +2,11 @@
 
 #include <vector>
 #include "Vec4.h"
-#include "IndexedLineList.h"
-#include "IndexedTriangleList.h"
+//#include "IndexedLineList.h"
+//#include "IndexedTriangleList.h"
+#include "Model.h"
 
-class Cube
+class Cube : public Model
 {
 public:
 	Cube( const float size )
@@ -23,7 +24,7 @@ public:
 		vertices.emplace_back(  side,  side, side, 1.0f ); // 7
 	}
 
-	IndexedLineList GetLines() const
+	IndexedLineList GetLines() const override
 	{
 		return
 		{
@@ -34,7 +35,7 @@ public:
 		};
 	}
 
-	IndexedTriangleList GetTriangles() const
+	IndexedTriangleList GetTriangles() const override
 	{
 		return
 		{

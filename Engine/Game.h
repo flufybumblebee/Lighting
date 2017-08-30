@@ -25,8 +25,13 @@
 
 #include "ViewTransform.h"
 
+#include "Model.h"
+
 #include "Grid.h"
 #include "Frustum.h"
+#include "Cube.h"
+
+#include "Mat4.h"
 
 class Game
 {
@@ -38,6 +43,7 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
+	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& c);
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;
@@ -47,20 +53,31 @@ private:
 	Vec3 cameraLookAt;
 	Vec3 cameraUp;
 
-	ViewTransform view;
+	Vec3 cameraPos0;
+	Vec3 cameraLookAt0;
+	Vec3 cameraUp0;
 
-	Grid grid;
-	Frustum frustum;
+	Vec3 cameraPos1;
+	Vec3 cameraLookAt1;
+	Vec3 cameraUp1;
 
+	bool isCam0 = false;
+	bool keyIsPressed = false;
+
+	// --------------------------------------------
+
+	ViewTransform view;	
+
+	// model transform variables
 	Vec3 scale    = { 1.0f, 1.0f, 1.0f };
 	Vec3 angle    = { 0.0f, 0.0f, 0.0f };
-	Vec3 position = { 0.0f, 0.0f, 2.0f };
+	Vec3 position = { 0.0f, 0.0f, 0.0f };
 
 	// perspective matrix variables
 	const float fovX = PI/4;
 	const float fovY = PI/4;
-	const float nZ = 1.0f;
-	const float fZ = 10.0f;
+	const float nZ = 0.1f;
+	const float fZ = 1.0f;
 	const float nW = 2 * (nZ * tan(fovX / 2));
 	const float nH = 2 * (nZ * tan(fovY / 2));
 
@@ -69,4 +86,9 @@ private:
 	const float vY = 0.0f;
 	const float vW = (float)Graphics::ScreenWidth / 1 - 1;
 	const float vH = (float)Graphics::ScreenHeight / 1 - 1;
+	
+	// models
+	Grid grid;
+	Frustum frustum;
+	Cube cube;
 };

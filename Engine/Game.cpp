@@ -21,17 +21,23 @@
 #include "MainWindow.h"
 #include "Game.h"
 
-#include "Mat4.h"
-
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	cameraPos(		0.0f, 0.0f, 0.0f ),
-	cameraLookAt(	0.0f, 0.0f, 2.0f ),
-	cameraUp(		0.0f, 1.0f, 0.0f ),
+	cameraPos(		0.0f,  0.0f,  0.0f),
+	cameraLookAt(	0.0f,  0.0f,  0.0f),
+	cameraUp(		0.0f,  0.0f,  0.0f),
+	cameraPos0(		0.0f,  0.0f, -5.0f),
+	cameraLookAt0(	0.0f,  0.0f,  0.0f),
+	cameraUp0(		0.0f,  1.0f,  0.0f),
+	cameraPos1(		3.0f,  3.0f, -3.0f),
+	cameraLookAt1(	0.0f,  0.0f,  0.0f),
+	cameraUp1(		0.0f,  1.0f,  0.0f),
 	grid( 1.0f ),
-	frustum( fovX, fovY, nZ, fZ )/*,
+	frustum( fovX, fovY, nZ, fZ ),
+	cube( 1.0f )
+	/*,
 	cam(cameraPos, cameraLookAt, cameraUp),
 	per( fovX, fovY, nZ, fZ),
 	port( x, y, width, height ),
@@ -51,6 +57,8 @@ Game::Game(MainWindow& wnd)
 	gridVar.SetScale(   10.0f, 10.0f, 10.0f);
 	gridVar.SetRotation(0.0f, 0.0f, 0.0f);
 	gridVar.SetPosition(0.0f, 0.0f, 2.0f);*/
+
+	
 }
 
 void Game::Go()
@@ -63,7 +71,27 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	
+	if (!keyIsPressed)
+	{
+		if (wnd.kbd.KeyIsPressed(VK_RETURN) && isCam0)
+		{
+			keyIsPressed = true;
+			isCam0 = false;
+		}
+		else if (wnd.kbd.KeyIsPressed(VK_RETURN) && !isCam0)
+		{
+			keyIsPressed = true;
+			isCam0 = true;
+		}
+	}
+	else
+	{
+		if (!wnd.kbd.KeyIsPressed(VK_RETURN))
+		{
+			keyIsPressed = false;
+		}
+	}
+
 	////-----------------------------------------
 	//// scaling 
 	//
@@ -134,35 +162,77 @@ void Game::UpdateModel()
 
 	//-----------------------------------------
 	// camera translation
-
+	
 	// translate along X axis
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
 	{
-		cameraPos.x -= 0.02f;
+		if (isCam0)
+		{
+			cameraPos0.x -= 0.02f;
+		}
+		else
+		{
+			cameraPos1.x -= 0.02f;
+		}
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
 	{
-		cameraPos.x += 0.02f;
+		if (isCam0)
+		{
+			cameraPos0.x += 0.02f;
+		}
+		else
+		{
+			cameraPos1.x += 0.02f;
+		}
 	}
 
 	// translate along Y axis
 	if (wnd.kbd.KeyIsPressed(VK_UP))
 	{
-		cameraPos.y += 0.02f;
+		if (isCam0)
+		{
+			cameraPos0.y += 0.02f;
+		}
+		else
+		{
+			cameraPos1.y += 0.02f;
+		}
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
 	{
-		cameraPos.y -= 0.02f;
+		if (isCam0)
+		{
+			cameraPos0.y -= 0.02f;
+		}
+		else
+		{
+			cameraPos1.y -= 0.02f;
+		}
 	}
 
 	// translate along Z axis
 	if( wnd.kbd.KeyIsPressed( 'R' ) )
 	{
-		cameraPos.z += 0.02f;
+		if (isCam0)
+		{
+			cameraPos0.z += 0.02f;
+		}
+		else
+		{
+			cameraPos1.z += 0.02f;
+		}
 	}
 	else if( wnd.kbd.KeyIsPressed( 'F' ) )
 	{
-		cameraPos.z -= 0.02f;
+		if (isCam0)
+		{
+			cameraPos0.z -= 0.02f;
+		}
+		else
+		{
+			cameraPos1.z -= 0.02f;
+		}
 	}	
 
 	// ----------------------------------------
@@ -170,39 +240,86 @@ void Game::UpdateModel()
 	const float lookSpeed = 0.05f;
 
 	// cameraLookAt position
+
+	// X
 	if (wnd.kbd.KeyIsPressed('Z'))
 	{
-		cameraLookAt.x -= lookSpeed;
+		if (isCam0)
+		{
+			cameraLookAt0.x -= lookSpeed;
+		}
+		else
+		{
+			cameraLookAt1.x -= lookSpeed;
+		}
 	}
 	else if (wnd.kbd.KeyIsPressed('X'))
 	{
-		cameraLookAt.x += lookSpeed;
+		if (isCam0)
+		{
+			cameraLookAt0.x += lookSpeed;
+		}
+		else
+		{
+			cameraLookAt1.x += lookSpeed;
+		}
 	}
 
+	// Y
 	if (wnd.kbd.KeyIsPressed('C'))
 	{
-		cameraLookAt.y += lookSpeed;
+		if (isCam0)
+		{
+			cameraLookAt0.y += lookSpeed;
+		}
+		else
+		{
+			cameraLookAt1.y += lookSpeed;
+		}
 	}
 	else if (wnd.kbd.KeyIsPressed('V'))
 	{
-		cameraLookAt.y -= lookSpeed;
+		if (isCam0)
+		{
+			cameraLookAt0.y -= lookSpeed;
+		}
+		else
+		{
+			cameraLookAt1.y -= lookSpeed;
+		}
 	}
 
+	// Z
 	if (wnd.kbd.KeyIsPressed('B'))
 	{
-		cameraLookAt.z += lookSpeed;
+		if (isCam0)
+		{
+			cameraLookAt0.z += lookSpeed;
+		}
+		else
+		{
+			cameraLookAt1.z += lookSpeed;
+		}
 	}
 	else if (wnd.kbd.KeyIsPressed('N'))
 	{
-		cameraLookAt.z -= lookSpeed;
+		if (isCam0)
+		{
+			cameraLookAt0.z -= lookSpeed;
+		}
+		else
+		{
+			cameraLookAt1.z -= lookSpeed;
+		}
 	}
 
-	//cubeVar.angle = angle;
-	//cam.Update(cameraPos, cameraLookAt, cameraUp);
-	/*cube.Update(cubeVar.scale, cubeVar.angle, cubeVar.position);
+	/*cubeVar.angle = angle;
+	cam.Update(cameraPos, cameraLookAt, cameraUp);
+	cube.Update(cubeVar.scale, cubeVar.angle, cubeVar.position);
 	cube2.Update(cube2Var.scale, cube2Var.angle, cube2Var.position);
 	plane.Update(gridVar.scale, gridVar.angle, gridVar.position);
 	grid.Update(gridVar.scale, gridVar.angle, gridVar.position);*/
+
 	if (wnd.mouse.IsInWindow() && wnd.mouse.LeftIsPressed())
 	{
 		if (wnd.mouse.GetPosX() < 320)
@@ -223,53 +340,69 @@ void Game::UpdateModel()
 			cameraPos.y -= 0.01f;
 		}
 	}
+
+	//-------------------------------------------------
+
+	if (isCam0)
+	{
+		cameraPos = cameraPos0;
+		cameraLookAt = cameraLookAt0;
+		cameraUp = cameraUp0;
+	}
+	else
+	{
+		cameraPos = cameraPos1;
+		cameraLookAt = cameraLookAt1;
+		cameraUp = cameraUp1;
+	}
 }
 
 void Game::ComposeFrame()
 {
-	//plane.Draw(cam, gfx);
-	//grid.Draw(cam, per, view, gfx);
-	//cube2.Draw(cam, per, view, gfx);
-	//cube.Draw(cam, gfx);
-	
-	/*Mat4::Translation(Vec4( position ) * Mat4::Rotation(angle)) *
-		Mat4::Translation(position)*/
-
-	const Mat4 Transformation =
+	const Mat4 transformation =
 		Mat4::Scaling(scale) *
 		Mat4::Rotation(angle) *
 		Mat4::Translation(position) *
 		Mat4::Camera( cameraPos, cameraLookAt, cameraUp ) *
 		Mat4::Pespective( fovX, fovY, nZ, fZ ) * 
-		Mat4::Orthographic( nW, nH, nZ, fZ ) *
+		//Mat4::Orthographic( nW, nH, nZ, fZ ) *
 		Mat4::Viewport( vX, vY, vW, vH );
 	
+	const Mat4 trans2 =
+		Mat4::Scaling(scale) *
+		Mat4::Rotation(angle) *
+		Mat4::Translation(position) *
+		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+
 	// ---------------------------------------------------
 
-	if (true)
-	{
-		auto lines = grid.GetLines();
+	DrawModel(false, false, transformation, grid, Colors::White);
+	DrawModel(false, false, transformation, frustum, Colors::White);
+	DrawModel(false, true, trans2, cube, Colors::White);
+	//if (true)
+	//{
+	//	auto lines = grid.GetLines();
 
-		for (auto i = lines.vertices.begin(),
-			end = lines.vertices.end();
-			i != end; i++)
-		{
-			*i *= Transformation;
-			//view.Transform(*i);
-			i->x *= 1 / i->z;
-			i->y *= 1 / i->z;
-		}
+	//	for (auto i = lines.vertices.begin(),
+	//		end = lines.vertices.end();
+	//		i != end; i++)
+	//	{
+	//		*i *= Transformation;
+	//		//view.Transform(*i);
+	//		i->x *= 1 / i->z;
+	//		i->y *= 1 / i->z;
+	//	}
 
-		for (auto i = lines.indices.begin(),
-			end = lines.indices.end();
-			i != end; std::advance(i, 2))
-		{
-			gfx.DrawLine(
-				lines.vertices[*i],
-				lines.vertices[*std::next(i)],
-				Colors::Gray);
-		}
-	}
+	//	for (auto i = lines.indices.begin(),
+	//		end = lines.indices.end();
+	//		i != end; std::advance(i, 2))
+	//	{
+	//		gfx.DrawLine(
+	//			lines.vertices[*i],
+	//			lines.vertices[*std::next(i)],
+	//			Colors::Gray);
+	//	}
+	//}
 
 	// -------------------------------------------------
 
@@ -293,3 +426,84 @@ void Game::ComposeFrame()
 		gfx.DrawLine({ vX + vW, vY }, { vX + vW, vY + vH }, c);
 	}
 };
+
+void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& lineColor )
+{
+	const Color colors[12] = {
+		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
+		Colors::Red,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow };
+
+	if (lines)
+	{
+		auto lines = model.GetLines();
+
+		for (auto i = lines.vertices.begin(),
+			end = lines.vertices.end();
+			i != end; i++)
+		{
+			*i *= trans;
+			view.Transform(*i);
+			//i->x *= 1 / i->w;
+			//i->y *= 1 / i->w;
+		}
+
+		for (auto i = lines.indices.begin(),
+			end = lines.indices.end();
+			i != end; std::advance(i, 2))
+		{
+			gfx.DrawLine(
+				lines.vertices[*i],
+				lines.vertices[*std::next(i)],
+				lineColor);
+		}
+	}
+
+	if (triangles)
+	{
+		auto triangles = model.GetTriangles();
+
+		for (auto& i : triangles.vertices)
+		{
+			i *= trans;
+		}
+
+		// set cullflags
+		for (size_t i = 0, end = triangles.indices.size() / 3;
+			i < end; i++)
+		{
+			const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
+			const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
+			const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
+			triangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+		}
+
+		for (auto& i : triangles.vertices)
+		{
+			view.Transform(i);
+			//i.x *= 1 / i.w;
+			//i.y *= 1 / i.w;
+		}
+
+		for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+		{
+			if (!triangles.cullflags[i])
+			{
+				gfx.DrawTriangle(
+					triangles.vertices[triangles.indices[i * 3 + 0]],
+					triangles.vertices[triangles.indices[i * 3 + 1]],
+					triangles.vertices[triangles.indices[i * 3 + 2]],
+					colors[i]);
+			}
+		}
+	}
+}

@@ -4,10 +4,11 @@
 #include <vector>
 
 #include "Vec4.h"
-#include "IndexedLineList.h"
-#include "IndexedTriangleList.h"
+#include "Model.h"
+//#include "IndexedLineList.h"
+//#include "IndexedTriangleList.h"
 
-class Frustum
+class Frustum : public Model
 {
 public:
 	Frustum(const float& fovX, const float& fovY, const float& nZ, const float& fZ )
@@ -33,7 +34,7 @@ public:
 		vertices.emplace_back(-fX, -fY, fZ, 1.0f); // 8
 	}
 
-	IndexedLineList GetLines() const
+	IndexedLineList GetLines() const override
 	{
 		return
 		{
@@ -45,19 +46,13 @@ public:
 		};
 	}
 
-	//IndexedTriangleList GetTriangles() const
-	//{
-	//	return
-	//	{
-	//		vertices,{
-	//			0,2,1, 2,3,1,
-	//			1,3,5, 3,7,5,
-	//			2,6,3, 3,6,7,
-	//			4,5,7, 4,7,6,
-	//			0,4,6, 0,6,2,
-	//			0,5,4, 0,1,5 }
-	//	};
-	//}
+	IndexedTriangleList GetTriangles() const override
+	{
+		return
+		{
+			vertices,{ 0,1,2 }
+		};
+	}
 private:
 	std::vector< Vec4 > vertices;
 };

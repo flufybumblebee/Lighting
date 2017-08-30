@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Model.h"
+#include "Object.h"
 #include "Plane.h"
 #include "Vec4.h"
 #include "Mat4.h"
 #include "ViewTransform.h"
 
-class PlaneModel : public Model
+class PlaneModel : public Object
 {
 public:
 	PlaneModel(bool drawLines, bool drawTriangles)
