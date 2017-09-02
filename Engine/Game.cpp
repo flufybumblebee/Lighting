@@ -28,10 +28,10 @@ Game::Game(MainWindow& wnd)
 	cameraPos(		0.0f,  0.0f,  0.0f),
 	cameraLookAt(	0.0f,  0.0f,  0.0f),
 	cameraUp(		0.0f,  0.0f,  0.0f),
-	cameraPos0(		0.0f,  0.0f, -5.0f),
+	cameraPos0(		0.0f,  0.0f, -10.0f),
 	cameraLookAt0(	0.0f,  0.0f,  0.0f),
 	cameraUp0(		0.0f,  1.0f,  0.0f),
-	cameraPos1(		3.0f,  3.0f, -3.0f),
+	cameraPos1(		3.0f,  3.0f, -10.0f),
 	cameraLookAt1(	0.0f,  0.0f,  0.0f),
 	cameraUp1(		0.0f,  1.0f,  0.0f),
 	grid( 1.0f ),
@@ -359,26 +359,35 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
-	const Mat4 transformation =
-		Mat4::Scaling(scale) *
-		Mat4::Rotation(angle) *
-		Mat4::Translation(position) *
-		Mat4::Camera( cameraPos, cameraLookAt, cameraUp ) *
-		Mat4::Pespective( fovX, fovY, nZ, fZ ) * 
-		//Mat4::Orthographic( nW, nH, nZ, fZ ) *
-		Mat4::Viewport( vX, vY, vW, vH );
-	
-	const Mat4 trans2 =
-		Mat4::Scaling(scale) *
+	const Mat4 gridTrans =
+		Mat4::Scaling(10.0f) *
 		Mat4::Rotation(angle) *
 		Mat4::Translation(position) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
+	const Mat4 frustumTrans =
+		Mat4::Scaling(1.0f) *
+		Mat4::Rotation(angle) *
+		Mat4::Translation(position) *
+		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+	
+	const Mat4 cube0Trans =
+		Mat4::Scaling(scale) *
+		Mat4::Rotation(0.0f, 0.0f, 0.0f) *
+		Mat4::Translation(-0.5f, 0.0f, 5.0f) *
+		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+	const Mat4 cube1Trans =
+		Mat4::Scaling(scale) *
+		Mat4::Rotation(angle) *
+		Mat4::Translation(0.5f, 0.0f, 5.0f) *
+		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+
 	// ---------------------------------------------------
 
-	DrawModel(false, false, transformation, grid, Colors::White);
-	DrawModel(false, false, transformation, frustum, Colors::White);
-	DrawModel(false, true, trans2, cube, Colors::White);
+	DrawModel(true, false, gridTrans, grid, Colors::White);
+	DrawModel(true, false, frustumTrans, frustum, Colors::White);
+	DrawModel(false, true, cube0Trans, cube, Colors::White);
+	DrawModel(false, true, cube1Trans, cube, Colors::White);
 	//if (true)
 	//{
 	//	auto lines = grid.GetLines();

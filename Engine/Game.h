@@ -74,10 +74,10 @@ private:
 	Vec3 position = { 0.0f, 0.0f, 0.0f };
 
 	// perspective matrix variables
-	const float fovX = PI/4;
-	const float fovY = PI/4;
-	const float nZ = 0.1f;
-	const float fZ = 1.0f;
+	const float fovX = PI/2;
+	const float fovY = PI/2;
+	const float nZ = 1.0f;
+	const float fZ = 10.0f;
 	const float nW = 2 * (nZ * tan(fovX / 2));
 	const float nH = 2 * (nZ * tan(fovY / 2));
 

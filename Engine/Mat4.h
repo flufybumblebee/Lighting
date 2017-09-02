@@ -22,6 +22,7 @@
 
 #include "Vec3.h"
 #include "Vec4.h"
+
 #include <cmath>
 
 template <typename T>
@@ -79,7 +80,7 @@ public:
 			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
 	}
 
-	static _Mat4 Scaling(T scale)
+	static _Mat4 Scaling(const T scale)
 	{
 		return {
 			 scale, (T)0.0, (T)0.0, (T)0.0,
@@ -87,7 +88,24 @@ public:
 			(T)0.0, (T)0.0,  scale, (T)0.0,
 			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
 	}
-	static _Mat4 RotationX(T angle)
+	static _Mat4 Scaling(const T scaleX, const T scaleY, const T scaleZ)
+	{
+		return {
+			scaleX, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, scaleY, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, scaleZ, (T)0.0,
+			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
+	}
+	static _Mat4 Scaling(const _Vec3<T>& scale)
+	{
+		return {
+			scale.x, (T)0.0, (T)0.0, (T)0.0,
+			(T)0.0, scale.y, (T)0.0, (T)0.0,
+			(T)0.0, (T)0.0, scale.z, (T)0.0,
+			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
+	}
+
+	static _Mat4 RotationX(const T angle)
 	{
 		const T sinAngle = sin(angle);
 		const T cosAngle = cos(angle);
@@ -97,7 +115,7 @@ public:
 			(T)0.0, -sinAngle, cosAngle, (T)0.0,
 			(T)0.0,    (T)0.0,   (T)0.0, (T)1.0	};
 	}
-	static _Mat4 RotationY(T angle)
+	static _Mat4 RotationY(const T angle)
 	{
 		const T sinAngle = sin(angle);
 		const T cosAngle = cos(angle);
@@ -108,10 +126,10 @@ public:
 			sinAngle, (T)0.0, cosAngle, (T)0.0,
 			(T)0.0,   (T)0.0,   (T)0.0, (T)1.0 };
 	}
-	static _Mat4 RotationZ(T angle)
+	static _Mat4 RotationZ(const T angle)
 	{
-		T sinAngle = sin(angle);
-		T cosAngle = cos(angle);
+		const T sinAngle = sin(angle);
+		const T cosAngle = cos(angle);
 
 		return {
 			 cosAngle, sinAngle, (T)0.0, (T)0.0,
@@ -119,26 +137,22 @@ public:
 			   (T)0.0,   (T)0.0, (T)1.0, (T)0.0,
 			   (T)0.0,   (T)0.0, (T)0.0, (T)1.0	};
 	}
-	static _Mat4 Translation(T x, T y, T z)
+	static _Mat4 Rotation(const T angleX, const T angleY, const T angleZ)
+	{
+		return _Mat4(RotationX(angleX) * RotationY(angleY) * RotationZ(angleZ));
+	}
+	static _Mat4 Rotation(const _Vec3<T>& angle)
+	{
+		return _Mat4(RotationX(angle.x) * RotationY(angle.y) * RotationZ(angle.z));
+	}
+
+	static _Mat4 Translation(const T x, const  T y, const  T z)
 	{
 		return {
 			(T)1.0, (T)0.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)1.0, (T)0.0, (T)0.0,
 			(T)0.0, (T)0.0, (T)1.0, (T)0.0,
 			     x,      y,      z, (T)1.0 };
-	}
-
-	static _Mat4 Scaling(const _Vec3<T>& scale)
-	{
-		return {
-			scale.x, (T)0.0, (T)0.0, (T)0.0,
-			(T)0.0, scale.y, (T)0.0, (T)0.0,
-			(T)0.0, (T)0.0, scale.z, (T)0.0,
-			(T)0.0, (T)0.0, (T)0.0, (T)1.0 };
-	}
-	static _Mat4 Rotation(const _Vec3<T>& angle)
-	{
-		return _Mat4(RotationX(angle.x) * RotationY(angle.y) * RotationZ(angle.z));
 	}
 	static _Mat4 Translation(const _Vec3<T>& pos)
 	{
@@ -160,9 +174,9 @@ public:
 	
 	static _Mat4 Camera( const _Vec3<T>& position, const _Vec3<T>& lookAt, const _Vec3<T>& up )
 	{
-		_Vec3<T> zAxis = (lookAt - position).Normalize();
-		_Vec3<T> xAxis = (up.Cross( zAxis )).Normalize();
-		_Vec3<T> yAxis = zAxis.Cross( xAxis );
+		const _Vec3<T> zAxis = (lookAt - position).Normalize();
+		const _Vec3<T> xAxis = (up.Cross( zAxis )).Normalize();
+		const _Vec3<T> yAxis = zAxis.Cross( xAxis );
 		
 		return {
 			xAxis.x, yAxis.x, zAxis.x, (T)0.0,
@@ -170,13 +184,12 @@ public:
 			xAxis.z, yAxis.z, zAxis.z, (T)0.0,
 			-(xAxis.Dot(position)), -(yAxis.Dot(position)), -(zAxis.Dot(position)), (T)1.0, };
 	}
-
-	static _Mat4 Pespective(T fovX, T fovY, T nZ, T fZ)
+	static _Mat4 Pespective(const T fovX, const T fovY, const T nZ, const T fZ)
 	{
-		T x = (T)1.0 / tan(fovX*(T)0.5);
-		T y = (T)1.0 / tan(fovY*(T)0.5);
-		T z = fZ / (fZ - nZ);
-		T w = -z * nZ;
+		const T x = (T)1.0 / tan(fovX*(T)0.5);
+		const T y = (T)1.0 / tan(fovY*(T)0.5);
+		const T z = fZ / (fZ - nZ);
+		const T w = -z * nZ;
 
 		return {
 			     x, (T)0.0, (T)0.0, (T)0.0,
@@ -184,7 +197,6 @@ public:
 			(T)0.0, (T)0.0,		 z, (T)1.0,
 			(T)0.0, (T)0.0,      w, (T)0.0 };
 	}
-
 	static _Mat4 Orthographic( const float& nW, const float& nH, const float& nZ, const float& fZ )
 	{
 		return {
@@ -193,13 +205,12 @@ public:
 			0.0f, 0.0f,	1 / (fZ - nZ), 0.0f,
 			0.0f, 0.0f, nZ / (nZ - fZ), 1.0f };
 	}
-
-	static _Mat4 Viewport( T x, T y, T width, T height )
+	static _Mat4 Viewport(const T x, const T y, const T width, const T height )
 	{
-		float Ax = width / 2;
-		float Ay = height / 2;
-		float Bx = x + Ax;
-		float By = y + Ay;
+		const T Ax = width / 2;
+		const T Ay = height / 2;
+		const T Bx = x + Ax;
+		const T By = y + Ay;
 		return {
 			  Ax, 0.0f, 0.0f, 0.0f,
 			0.0f,  -Ay, 0.0f, 0.0f,
