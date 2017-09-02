@@ -49,75 +49,77 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	//-------------------------------------------
+	// MODEL TRANSFORMS
 	
-
-	////-----------------------------------------
-	//// scaling 
-	//
-	//// scale x
-	//if (wnd.kbd.KeyIsPressed('T'))
-	//{
-	//	cubeVar.scale.x = cubeVar.scale.x + 0.01f;
-	//}
-	//else if (wnd.kbd.KeyIsPressed('G'))
-	//{	
-	//	cubeVar.scale.x = cubeVar.scale.x - 0.01f;
-	//	if (cubeVar.scale.x < 0.0f) { cubeVar.scale.x = 0.0f; }
-	//}
-	//
-	//// scale y
-	//if (wnd.kbd.KeyIsPressed('Y'))
-	//{
-	//	cubeVar.scale.y = cubeVar.scale.y + 0.01f;
-	//}
-	//else if (wnd.kbd.KeyIsPressed('H'))
-	//{
-	//	cubeVar.scale.y = cubeVar.scale.y - 0.01f;
-	//	if (cubeVar.scale.y < 0.0f) { cubeVar.scale.y = 0.0f; }
-	//}
-	//
-	//// scale z
-	//if (wnd.kbd.KeyIsPressed('U'))
-	//{
-	//	cubeVar.scale.z = cubeVar.scale.z + 0.01f;
-	//}
-	//else if (wnd.kbd.KeyIsPressed('J'))
-	//{
-	//	cubeVar.scale.z = cubeVar.scale.z - 0.01f;
-	//	if (cubeVar.scale.z < 0.0f) { cubeVar.scale.z = 0.0f; }
-	//}
-	//// ---------------------------------------
-	//// rotation
-	//
-	//// rotate around X
-	//if( wnd.kbd.KeyIsPressed( 'Q' ) )
-	//{
-	//	angle.x -= 0.02f;
-	//}
-	//else if( wnd.kbd.KeyIsPressed( 'A' ) )
-	//{
-	//	angle.x += 0.02f;
-	//}
-	//
-	//// rotate around Y
-	//if( wnd.kbd.KeyIsPressed( 'W' ) )
-	//{
-	//	angle.y -= 0.02f;
-	//}
-	//else if( wnd.kbd.KeyIsPressed( 'S' ) )
-	//{
-	//	angle.y += 0.02f;
-	//}
-	//
-	//// rotate around Z
-	//if( wnd.kbd.KeyIsPressed( 'E' ) )
-	//{
-	//	angle.z -= 0.02f;
-	//}
-	//else if( wnd.kbd.KeyIsPressed( 'D' ) )
-	//{
-	//	angle.z += 0.02f;
-	//}	
+	// scaling 
+	
+	const float scaleSpeed = 0.01f;
+	// scale x
+	if (wnd.kbd.KeyIsPressed('T'))
+	{
+		scale.x = scale.x + scaleSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('G'))
+	{	
+		scale.x = scale.x - scaleSpeed;
+		if (scale.x < 0.0f) { scale.x = 0.0f; }
+	}
+	
+	// scale y
+	if (wnd.kbd.KeyIsPressed('Y'))
+	{
+		scale.y = scale.y + scaleSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('H'))
+	{
+		scale.y = scale.y - scaleSpeed;
+		if (scale.y < 0.0f) { scale.y = 0.0f; }
+	}
+	
+	// scale z
+	if (wnd.kbd.KeyIsPressed('U'))
+	{
+		scale.z = scale.z + scaleSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('J'))
+	{
+		scale.z = scale.z - scaleSpeed;
+		if (scale.z < 0.0f) { scale.z = 0.0f; }
+	}
+	// ---------------------------------------
+	// rotation
+	
+	 const float rotSpeed = 0.02f;
+	// rotate around X
+	if( wnd.kbd.KeyIsPressed( 'Q' ) )
+	{
+		angle.x -= rotSpeed;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'A' ) )
+	{
+		angle.x += rotSpeed;
+	}
+	
+	// rotate around Y
+	if( wnd.kbd.KeyIsPressed( 'W' ) )
+	{
+		angle.y -= rotSpeed;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'S' ) )
+	{
+		angle.y += rotSpeed;
+	}
+	
+	// rotate around Z
+	if( wnd.kbd.KeyIsPressed( 'E' ) )
+	{
+		angle.z -= rotSpeed;
+	}
+	else if( wnd.kbd.KeyIsPressed( 'D' ) )
+	{
+		angle.z += rotSpeed;
+	}	
 
 	//------------------------------------------------
 	// CAMERA CONTROLS	
@@ -340,19 +342,19 @@ void Game::ComposeFrame()
 {
 	const Mat4 gridTrans =
 		Mat4::Scaling(10.0f) *
-		Mat4::Rotation(angle) *
+		Mat4::Rotation(0.0f,0.0f,0.0f) *
 		Mat4::Translation(position) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
 	const Mat4 frustumTrans =
 		Mat4::Scaling(1.0f) *
-		Mat4::Rotation(angle) *
+		Mat4::Rotation(0.0f,0.0f,0.0f) *
 		Mat4::Translation(position) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 	
 	const Mat4 cube0Trans =
 		Mat4::Scaling(scale) *
-		Mat4::Rotation(0.0f, 0.0f, 0.0f) *
+		Mat4::Rotation(angle) *
 		Mat4::Translation(-0.5f, 0.0f, 3.0f) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
@@ -364,10 +366,10 @@ void Game::ComposeFrame()
 
 	// ---------------------------------------------------
 
-	DrawModel(true, false, gridTrans, grid, Colors::White);
-	DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	DrawModel(false, true, cube0Trans, cube, Colors::White);
 	DrawModel(false, true, cube1Trans, cube, Colors::White);
+	DrawModel(true, false, gridTrans, grid, Colors::White);
+	DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	
 	// -------------------------------------------------
 
