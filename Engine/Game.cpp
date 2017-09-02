@@ -37,29 +37,7 @@ Game::Game(MainWindow& wnd)
 	grid( 1.0f ),
 	frustum( fovX, fovY, nZ, fZ ),
 	cube( 1.0f )
-	/*,
-	cam(cameraPos, cameraLookAt, cameraUp),
-	per( fovX, fovY, nZ, fZ),
-	port( x, y, width, height ),
-	cube(	false,	true ),
-	cube2(	false,	true ),
-	plane(	false,	true ),
-	grid(	true,	true )*/
-{
-	/*cubeVar.SetScale(   0.5f, 0.5f, 0.5f);
-	cubeVar.SetRotation(0.0f, 0.0f, 0.0f);
-	cubeVar.SetPosition(0.0f, 0.75f, 2.0f);
-	
-	cube2Var.SetScale(   0.5f, 0.5f,  0.5f);
-	cube2Var.SetRotation(0.0f, 0.0f,  0.0f);
-	cube2Var.SetPosition(0.0f, 0.25f, 2.0f);
-
-	gridVar.SetScale(   10.0f, 10.0f, 10.0f);
-	gridVar.SetRotation(0.0f, 0.0f, 0.0f);
-	gridVar.SetPosition(0.0f, 0.0f, 2.0f);*/
-
-	
-}
+{}
 
 void Game::Go()
 {
@@ -71,26 +49,7 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	if (!keyIsPressed)
-	{
-		if (wnd.kbd.KeyIsPressed(VK_RETURN) && isCam0)
-		{
-			keyIsPressed = true;
-			isCam0 = false;
-		}
-		else if (wnd.kbd.KeyIsPressed(VK_RETURN) && !isCam0)
-		{
-			keyIsPressed = true;
-			isCam0 = true;
-		}
-	}
-	else
-	{
-		if (!wnd.kbd.KeyIsPressed(VK_RETURN))
-		{
-			keyIsPressed = false;
-		}
-	}
+	
 
 	////-----------------------------------------
 	//// scaling 
@@ -160,30 +119,56 @@ void Game::UpdateModel()
 	//	angle.z += 0.02f;
 	//}	
 
+	//------------------------------------------------
+	// CAMERA CONTROLS	
+
+	// change between cameras
+	if (!keyIsPressed)
+	{
+		if (wnd.kbd.KeyIsPressed(VK_RETURN) && isCam0)
+		{
+			keyIsPressed = true;
+			isCam0 = false;
+		}
+		else if (wnd.kbd.KeyIsPressed(VK_RETURN) && !isCam0)
+		{
+			keyIsPressed = true;
+			isCam0 = true;
+		}
+	}
+	else
+	{
+		if (!wnd.kbd.KeyIsPressed(VK_RETURN))
+		{
+			keyIsPressed = false;
+		}
+	}
+
 	//-----------------------------------------
 	// camera translation
 	
+	const float transSpeed = 0.02f;
 	// translate along X axis
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
 	{
 		if (isCam0)
 		{
-			cameraPos0.x -= 0.02f;
+			cameraPos0.x -= transSpeed;
 		}
 		else
 		{
-			cameraPos1.x -= 0.02f;
+			cameraPos1.x -= transSpeed;
 		}
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_RIGHT))
 	{
 		if (isCam0)
 		{
-			cameraPos0.x += 0.02f;
+			cameraPos0.x += transSpeed;
 		}
 		else
 		{
-			cameraPos1.x += 0.02f;
+			cameraPos1.x += transSpeed;
 		}
 	}
 
@@ -192,22 +177,22 @@ void Game::UpdateModel()
 	{
 		if (isCam0)
 		{
-			cameraPos0.y += 0.02f;
+			cameraPos0.y += transSpeed;
 		}
 		else
 		{
-			cameraPos1.y += 0.02f;
+			cameraPos1.y += transSpeed;
 		}
 	}
 	else if (wnd.kbd.KeyIsPressed(VK_DOWN))
 	{
 		if (isCam0)
 		{
-			cameraPos0.y -= 0.02f;
+			cameraPos0.y -= transSpeed;
 		}
 		else
 		{
-			cameraPos1.y -= 0.02f;
+			cameraPos1.y -= transSpeed;
 		}
 	}
 
@@ -216,22 +201,22 @@ void Game::UpdateModel()
 	{
 		if (isCam0)
 		{
-			cameraPos0.z += 0.02f;
+			cameraPos0.z += transSpeed;
 		}
 		else
 		{
-			cameraPos1.z += 0.02f;
+			cameraPos1.z += transSpeed;
 		}
 	}
 	else if( wnd.kbd.KeyIsPressed( 'F' ) )
 	{
 		if (isCam0)
 		{
-			cameraPos0.z -= 0.02f;
+			cameraPos0.z -= transSpeed;
 		}
 		else
 		{
-			cameraPos1.z -= 0.02f;
+			cameraPos1.z -= transSpeed;
 		}
 	}	
 
@@ -313,13 +298,6 @@ void Game::UpdateModel()
 		}
 	}
 
-	/*cubeVar.angle = angle;
-	cam.Update(cameraPos, cameraLookAt, cameraUp);
-	cube.Update(cubeVar.scale, cubeVar.angle, cubeVar.position);
-	cube2.Update(cube2Var.scale, cube2Var.angle, cube2Var.position);
-	plane.Update(gridVar.scale, gridVar.angle, gridVar.position);
-	grid.Update(gridVar.scale, gridVar.angle, gridVar.position);*/
-
 	if (wnd.mouse.IsInWindow() && wnd.mouse.LeftIsPressed())
 	{
 		if (wnd.mouse.GetPosX() < 320)
@@ -343,6 +321,7 @@ void Game::UpdateModel()
 
 	//-------------------------------------------------
 
+	// Set the default camera variables to whatever camera is enabled
 	if (isCam0)
 	{
 		cameraPos = cameraPos0;
@@ -374,12 +353,13 @@ void Game::ComposeFrame()
 	const Mat4 cube0Trans =
 		Mat4::Scaling(scale) *
 		Mat4::Rotation(0.0f, 0.0f, 0.0f) *
-		Mat4::Translation(-0.5f, 0.0f, 5.0f) *
+		Mat4::Translation(-0.5f, 0.0f, 3.0f) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+
 	const Mat4 cube1Trans =
 		Mat4::Scaling(scale) *
 		Mat4::Rotation(angle) *
-		Mat4::Translation(0.5f, 0.0f, 5.0f) *
+		Mat4::Translation(0.5f, 0.0f, 3.0f) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
 	// ---------------------------------------------------
@@ -388,31 +368,7 @@ void Game::ComposeFrame()
 	DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	DrawModel(false, true, cube0Trans, cube, Colors::White);
 	DrawModel(false, true, cube1Trans, cube, Colors::White);
-	//if (true)
-	//{
-	//	auto lines = grid.GetLines();
-
-	//	for (auto i = lines.vertices.begin(),
-	//		end = lines.vertices.end();
-	//		i != end; i++)
-	//	{
-	//		*i *= Transformation;
-	//		//view.Transform(*i);
-	//		i->x *= 1 / i->z;
-	//		i->y *= 1 / i->z;
-	//	}
-
-	//	for (auto i = lines.indices.begin(),
-	//		end = lines.indices.end();
-	//		i != end; std::advance(i, 2))
-	//	{
-	//		gfx.DrawLine(
-	//			lines.vertices[*i],
-	//			lines.vertices[*std::next(i)],
-	//			Colors::Gray);
-	//	}
-	//}
-
+	
 	// -------------------------------------------------
 
 	const Color c = Colors::Yellow;
@@ -462,8 +418,6 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		{
 			*i *= trans;
 			view.Transform(*i);
-			//i->x *= 1 / i->w;
-			//i->y *= 1 / i->w;
 		}
 
 		for (auto i = lines.indices.begin(),
@@ -499,8 +453,6 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		for (auto& i : triangles.vertices)
 		{
 			view.Transform(i);
-			//i.x *= 1 / i.w;
-			//i.y *= 1 / i.w;
 		}
 
 		for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
