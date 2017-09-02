@@ -36,7 +36,8 @@ Game::Game(MainWindow& wnd)
 	cameraUp1(		0.0f,  1.0f,  0.0f),
 	grid( 1.0f ),
 	frustum( fovX, fovY, nZ, fZ ),
-	cube( 1.0f )
+	cube( 1.0f ),
+	terrain( 10,10 )
 {}
 
 void Game::Go()
@@ -366,10 +367,11 @@ void Game::ComposeFrame()
 
 	// ---------------------------------------------------
 
-	DrawModel(false, true, cube0Trans, cube, Colors::White);
-	DrawModel(false, true, cube1Trans, cube, Colors::White);
-	DrawModel(true, false, gridTrans, grid, Colors::White);
-	DrawModel(true, false, frustumTrans, frustum, Colors::White);
+	//DrawModel(false, true, cube0Trans, cube, Colors::White);
+	//DrawModel(false, true, cube1Trans, cube, Colors::White);
+	//(true, false, gridTrans, grid, Colors::White);
+	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
+	DrawModel(true, false, frustumTrans, terrain, Colors::White);
 	
 	// -------------------------------------------------
 

@@ -13,7 +13,7 @@
 
 struct IndexedTriangleList
 {
-	IndexedTriangleList(std::vector<Vec4> vertices_in, std::vector<unsigned int> indices_in)
+	IndexedTriangleList(std::vector<Vec4> vertices_in, std::vector<size_t> indices_in)
 		:
 		vertices( std::move(vertices_in) ),
 		indices( std::move(indices_in) )
@@ -23,6 +23,6 @@ struct IndexedTriangleList
 		cullflags.resize( indices.size() / 3 , false );
 	}
 	std::vector< Vec4 > vertices;
-	std::vector< unsigned int > indices;
+	std::vector< size_t > indices;
 	std::vector< bool > cullflags;
 };

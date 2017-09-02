@@ -30,6 +30,7 @@
 #include "Grid.h"
 #include "Frustum.h"
 #include "Cube.h"
+#include "Terrain.h"
 
 #include "Mat4.h"
 
@@ -91,4 +92,5 @@ private:
 	Grid grid;
 	Frustum frustum;
 	Cube cube;
+	Terrain terrain;
 };
