@@ -10,6 +10,7 @@ class Terrain : public Model
 public:
 	Terrain(const int xSize, const int zSize )
 	{
+		// add array of heights and add in the loop
 		int i = 0;
 		for (int z = -(zSize/2); z <= zSize/2; z++)
 		{
