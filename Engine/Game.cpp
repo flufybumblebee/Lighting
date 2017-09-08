@@ -37,7 +37,7 @@ Game::Game(MainWindow& wnd)
 	grid( 1.0f ),
 	frustum( fovX, fovY, nZ, fZ ),
 	cube( 1.0f ),
-	terrain( 10,10 )
+	terrain( 100,100 )
 {}
 
 void Game::Go()
@@ -216,7 +216,7 @@ void Game::UpdateModel()
 		if (isCam0)
 		{
 			cameraPos0.z -= transSpeed;
-		}
+	 	}
 		else
 		{
 			cameraPos1.z -= transSpeed;
@@ -348,7 +348,7 @@ void Game::ComposeFrame()
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
 	const Mat4 frustumTrans =
-		Mat4::Scaling(1.0f) *
+		Mat4::Scaling(0.1f) *
 		Mat4::Rotation(0.0f,0.0f,0.0f) *
 		Mat4::Translation(position) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
@@ -371,7 +371,7 @@ void Game::ComposeFrame()
 	//DrawModel(false, true, cube1Trans, cube, Colors::White);
 	//(true, false, gridTrans, grid, Colors::White);
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
-	DrawModel(true, false, frustumTrans, terrain, Colors::White);
+	DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	
 	// -------------------------------------------------
 

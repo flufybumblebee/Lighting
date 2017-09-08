@@ -11,7 +11,6 @@ public:
 	Terrain(const int xSize, const int zSize )
 	{
 		int i = 0;
-		int j = 0;
 		for (int z = -(zSize/2); z <= zSize/2; z++)
 		{
 			for (int x = -(xSize/2); x <= xSize/2; x++)
@@ -20,19 +19,35 @@ public:
 				
 				if (i < (zSize + 1) * (xSize + 1))
 				{
-					indices.emplace_back((size_t)i);
+					indices.emplace_back(size_t(i));
 					if (i > 0 && i != ((zSize + 1) * (xSize + 1) - 1))
 					{
 						if ((i+1) % (xSize + 1) == 0) i++;
-						indices.emplace_back((size_t)i);						
+						indices.emplace_back(size_t(i));						
 					}
 					i++;
 				}
-
-				/*if (i <= (zSize + 1))
+			}
+		}
+		{
+			int i = 0;
+			int j = 0;
+			for (; i < (xSize + 1);)
+			{
+				indices.emplace_back(size_t(j));
+				if (j >= (xSize + 1) * (zSize + 1) - (xSize + 1) && j < (xSize + 1) * (zSize + 1))
+				{					
+					i++;
+					j = i;
+				}
+				else
 				{
-					indices.emplace_back((size_t)j);
-				}*/
+					if (j > xSize)
+					{
+						indices.emplace_back(size_t(j));
+					}
+					j = j + (xSize + 1);
+				}
 			}
 		}
 	}
