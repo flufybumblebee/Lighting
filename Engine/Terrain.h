@@ -15,8 +15,8 @@ public:
 		int width = image.GetWidth();
 		int height = image.GetHeight();
 
-		float incrementX = width / (xSize + 1);
-		float incrementY = height / (zSize + 1);
+		float incrementX = width / float(xSize + 1);
+		float incrementY = height / float(zSize + 1);
 
 		int pixelY = 0;
 		int i = 0;
@@ -25,8 +25,8 @@ public:
 			int pixelX = 0;
 			for (int x = -(xSize/2); x <= xSize/2; x++)
 			{
-				float y = image.GetPixel(int(pixelX * incrementX), int(pixelY * incrementY)).GetG()/10;
-				vertices.emplace_back((float)x, y, (float)z, (float)1);
+				float y = image.GetPixel(/*width - */int(float(pixelX) * incrementX), (height - 1) - int(float(pixelY) * incrementY)).GetG()/20.0f;
+				vertices.emplace_back((float)x, y, (float)z, 1.0f);
 				
 				if (i < (zSize + 1) * (xSize + 1))
 				{
