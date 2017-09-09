@@ -37,7 +37,7 @@ Game::Game(MainWindow& wnd)
 	grid( 1.0f ),
 	frustum( fovX, fovY, nZ, fZ ),
 	cube( 1.0f ),
-	terrain( 50,20 )
+	terrain( 100,100 )
 {}
 
 void Game::Go()

@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Vec4.h"
 #include "IndexedLineList.h"
+#include "Surface.h"
 
 class Terrain : public Model
 {
@@ -11,12 +12,21 @@ public:
 	Terrain(const int xSize, const int zSize )
 	{
 		// add array of heights and add in the loop
+		int width = image.GetWidth();
+		int height = image.GetHeight();
+
+		float incrementX = width / (xSize + 1);
+		float incrementY = height / (zSize + 1);
+
+		int pixelY = 0;
 		int i = 0;
 		for (int z = -(zSize/2); z <= zSize/2; z++)
 		{
+			int pixelX = 0;
 			for (int x = -(xSize/2); x <= xSize/2; x++)
 			{
-				vertices.emplace_back((float)x, (float)0, (float)z, (float)1);
+				float y = image.GetPixel(int(pixelX * incrementX), int(pixelY * incrementY)).GetG()/10;
+				vertices.emplace_back((float)x, y, (float)z, (float)1);
 				
 				if (i < (zSize + 1) * (xSize + 1))
 				{
@@ -28,7 +38,9 @@ public:
 					}
 					i++;
 				}
+				pixelX++;
 			}
+			pixelY++;
 		}
 		{
 			int i = 0;
@@ -66,4 +78,6 @@ private:
 
 	std::vector<Vec4> vertices;
 	std::vector<size_t> indices;
+
+	Surface image = Surface::FromFile(L"HeightMapBrittain.png");
 };
