@@ -2,8 +2,6 @@
 
 #include <vector>
 #include "Vec4.h"
-//#include "IndexedLineList.h"
-//#include "IndexedTriangleList.h"
 #include "Model.h"
 
 class Cube : public Model

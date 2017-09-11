@@ -31,6 +31,8 @@
 #include "Frustum.h"
 #include "Cube.h"
 #include "Terrain.h"
+#include "EqualateralTriangle.h"
+#include "Icosahedron.h"
 
 #include "Mat4.h"
 
@@ -62,7 +64,7 @@ private:
 	Vec3 cameraLookAt1;
 	Vec3 cameraUp1;
 
-	bool isCam0 = false;
+	bool isCam0 = true;
 	bool keyIsPressed = false;
 
 	// --------------------------------------------
@@ -93,4 +95,6 @@ private:
 	Frustum frustum;
 	Cube cube;
 	Terrain terrain;
+	EqualateralTriangle triangle;
+	Icosahedron ico;
 };

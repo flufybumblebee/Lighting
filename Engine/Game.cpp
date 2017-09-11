@@ -25,19 +25,21 @@ Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
 	gfx(wnd),
-	cameraPos(		0.0f,  0.0f,  0.0f),
-	cameraLookAt(	0.0f,  0.0f,  0.0f),
-	cameraUp(		0.0f,  0.0f,  0.0f),
-	cameraPos0(		0.0f,  0.0f, -10.0f),
-	cameraLookAt0(	0.0f,  0.0f,  0.0f),
-	cameraUp0(		0.0f,  1.0f,  0.0f),
-	cameraPos1(		3.0f,  3.0f, -10.0f),
-	cameraLookAt1(	0.0f,  0.0f,  0.0f),
-	cameraUp1(		0.0f,  1.0f,  0.0f),
-	grid( 1.0f ),
-	frustum( fovX, fovY, nZ, fZ ),
-	cube( 1.0f ),
-	terrain( 100,100 )
+	cameraPos(0.0f, 0.0f, 0.0f),
+	cameraLookAt(0.0f, 0.0f, 0.0f),
+	cameraUp(0.0f, 0.0f, 0.0f),
+	cameraPos0(0.0f, 0.0f, -3.0f),
+	cameraLookAt0(0.0f, 0.0f, 0.0f),
+	cameraUp0(0.0f, 1.0f, 0.0f),
+	cameraPos1(3.0f, 3.0f, -10.0f),
+	cameraLookAt1(0.0f, 0.0f, 0.0f),
+	cameraUp1(0.0f, 1.0f, 0.0f),
+	grid(1.0f),
+	frustum(fovX, fovY, nZ, fZ),
+	cube(1.0f),
+	terrain(100, 100),
+	triangle(1.0f),
+	ico(1.0f)
 {}
 
 void Game::Go()
@@ -348,7 +350,7 @@ void Game::ComposeFrame()
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
 	const Mat4 frustumTrans =
-		Mat4::Scaling(0.1f) *
+		Mat4::Scaling(1.0f) *
 		Mat4::Rotation(0.0f,0.0f,0.0f) *
 		Mat4::Translation(position) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
@@ -365,13 +367,20 @@ void Game::ComposeFrame()
 		Mat4::Translation(0.5f, 0.0f, 3.0f) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
+	const Mat4 triTrans =
+		Mat4::Scaling(scale) *
+		Mat4::Rotation(angle) *
+		Mat4::Translation(position) *
+		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+
 	// ---------------------------------------------------
 
 	//DrawModel(false, true, cube0Trans, cube, Colors::White);
 	//DrawModel(false, true, cube1Trans, cube, Colors::White);
-	//(true, false, gridTrans, grid, Colors::White);
+	//DrawModel(true, false, gridTrans, grid, Colors::White);
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
-	DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
+	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
+	DrawModel(false, true, triTrans, ico, Colors::White);
 	
 	// -------------------------------------------------
 
@@ -398,7 +407,19 @@ void Game::ComposeFrame()
 
 void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& lineColor )
 {
-	const Color colors[12] = {
+	const Color colors[] = {
+		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
+		Colors::Red,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
+		Colors::Yellow,
 		Colors::Magenta,
 		Colors::Purple,
 		Colors::Pink,

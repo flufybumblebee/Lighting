@@ -137,6 +137,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="EqualateralTriangle.h" />
+    <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GridModel.h" />
     <ClInclude Include="Model.h" />
@@ -152,7 +154,7 @@
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="CubeModel.h" />
-    <ClInclude Include="Diamond.h" />
+    <ClInclude Include="Octahedron.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GDIPlusManager.h" />
