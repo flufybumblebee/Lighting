@@ -393,8 +393,9 @@ void Game::ComposeFrame()
 	{
 		const float midX = vX + (vW * 0.5f);
 		const float midY = vY + (vH * 0.5f);
-		gfx.DrawLine({ midX, midY - 10 }, { midX, midY + 10 }, c);
-		gfx.DrawLine({ midX - 10, midY }, { midX + 10, midY }, c);
+		const float size = 10;
+		gfx.DrawLine({ midX, midY - size }, { midX, midY + size }, c);
+		gfx.DrawLine({ midX - size, midY }, { midX + size, midY }, c);
 	}
 
 	if (true /* viewport window */)
@@ -434,31 +435,20 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		Colors::LightGray,
 		Colors::Gray,
 		Colors::Orange,
+		Colors::Yellow,
+		Colors::Magenta,
+		Colors::Purple,
+		Colors::Pink,
+		Colors::Red,
+		Colors::Blue,
+		Colors::LightBlue,
+		Colors::LightGreen,
+		Colors::Green,
+		Colors::LightGray,
+		Colors::Gray,
+		Colors::Orange,
 		Colors::Yellow };
-
-	if (lines)
-	{
-		auto lines = model.GetLines();
-
-		for (auto i = lines.vertices.begin(),
-			end = lines.vertices.end();
-			i != end; i++)
-		{
-			*i *= trans;
-			view.Transform(*i);
-		}
-
-		for (auto i = lines.indices.begin(),
-			end = lines.indices.end();
-			i != end; std::advance(i, 2))
-		{
-			gfx.DrawLine(
-				lines.vertices[*i],
-				lines.vertices[*std::next(i)],
-				lineColor);
-		}
-	}
-
+	
 	if (triangles)
 	{
 		auto triangles = model.GetTriangles();
@@ -483,6 +473,7 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 			view.Transform(i);
 		}
 
+		int j = 0;
 		for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
 		{
 			if (!triangles.cullflags[i])
@@ -491,8 +482,31 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 					triangles.vertices[triangles.indices[i * 3 + 0]],
 					triangles.vertices[triangles.indices[i * 3 + 1]],
 					triangles.vertices[triangles.indices[i * 3 + 2]],
-					colors[i]);
+					colors[i]);				
 			}
+		}
+	}
+
+	if (lines)
+	{
+		auto lines = model.GetLines();
+
+		for (auto i = lines.vertices.begin(),
+			end = lines.vertices.end();
+			i != end; i++)
+		{
+			*i *= trans;
+			view.Transform(*i);
+		}
+
+		for (auto i = lines.indices.begin(),
+			end = lines.indices.end();
+			i != end; std::advance(i, 2))
+		{
+			gfx.DrawLine(
+				lines.vertices[*i],
+				lines.vertices[*std::next(i)],
+				lineColor);
 		}
 	}
 }
