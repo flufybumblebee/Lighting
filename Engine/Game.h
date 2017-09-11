@@ -29,9 +29,15 @@
 
 #include "Grid.h"
 #include "Frustum.h"
-#include "Cube.h"
+
 #include "Terrain.h"
+
 #include "EqualateralTriangle.h"
+
+#include "Tetrahedron.h"
+#include "Cube.h"
+#include "Octahedron.h"
+#include "Dodecahedron.h"
 #include "Icosahedron.h"
 
 #include "Mat4.h"
@@ -95,6 +101,9 @@ private:
 	Frustum frustum;
 	Cube cube;
 	Terrain terrain;
-	EqualateralTriangle triangle;
-	Icosahedron ico;
+	EqualateralTriangle tri;
+	Icosahedron icosa;
+	Octahedron octa;
+	Tetrahedron tetra;
+	Dodecahedron dodeca;
 };

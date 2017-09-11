@@ -10,13 +10,13 @@ class Octahedron : public Model
 public:
 	Octahedron(const float size)
 	{
-		const float side = size / 2.0f;
+		float side = sqrt(size) / 2.0f;
 
 		vertices.emplace_back( 0.0f,  side,  0.0f, 1.0f); // 0
-		vertices.emplace_back(-side,  0.0f,  side, 1.0f); // 1
-		vertices.emplace_back( side,  0.0f,  side, 1.0f); // 2
-		vertices.emplace_back( side,  0.0f, -side, 1.0f); // 3
-		vertices.emplace_back(-side,  0.0f, -side, 1.0f); // 4
+		vertices.emplace_back(-side,  0.0f,  0.0f, 1.0f); // 1
+		vertices.emplace_back( 0.0f,  0.0f,  side, 1.0f); // 2
+		vertices.emplace_back( side,  0.0f,  0.0f, 1.0f); // 3
+		vertices.emplace_back( 0.0f,  0.0f, -side, 1.0f); // 4
 		vertices.emplace_back( 0.0f, -side,  0.0f, 1.0f); // 5
 	}
 

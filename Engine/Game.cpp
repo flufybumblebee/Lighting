@@ -38,8 +38,11 @@ Game::Game(MainWindow& wnd)
 	frustum(fovX, fovY, nZ, fZ),
 	cube(1.0f),
 	terrain(100, 100),
-	triangle(1.0f),
-	ico(1.0f)
+	tri(1.0f),
+	icosa(1.0f),
+	octa(1.0f),
+	tetra(1.0f),
+	dodeca(1.0f)
 {}
 
 void Game::Go()
@@ -367,7 +370,7 @@ void Game::ComposeFrame()
 		Mat4::Translation(0.5f, 0.0f, 3.0f) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
-	const Mat4 triTrans =
+	const Mat4 trans =
 		Mat4::Scaling(scale) *
 		Mat4::Rotation(angle) *
 		Mat4::Translation(position) *
@@ -380,7 +383,7 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, gridTrans, grid, Colors::White);
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
-	DrawModel(false, true, triTrans, ico, Colors::White);
+	DrawModel(false, true, trans, dodeca, Colors::White);
 	
 	// -------------------------------------------------
 

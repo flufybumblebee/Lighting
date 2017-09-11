@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Dodecahedron.h" />
     <ClInclude Include="EqualateralTriangle.h" />
     <ClInclude Include="Icosahedron.h" />
     <ClInclude Include="Frustum.h" />
@@ -146,6 +147,7 @@
     <ClInclude Include="Perspective.h" />
     <ClInclude Include="PlaneModel.h" />
     <ClInclude Include="Terrain.h" />
+    <ClInclude Include="Tetrahedron.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="ViewTransform.h" />
     <ClInclude Include="ChiliException.h" />

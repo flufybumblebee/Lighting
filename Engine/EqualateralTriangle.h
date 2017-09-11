@@ -9,15 +9,15 @@
 class EqualateralTriangle : public Model
 {
 public:
-	EqualateralTriangle( const float& side )
+	EqualateralTriangle( const float& size )
 	{
-		float size = sqrt(sq(side) - sq(side / 2));
-		const float little = side/2 * tan(PI / 6);
-		const float big = size - little;
+		float side = sqrt(sq(size) - sq(size / 2));
+		const float little = size/2 * tan(PI / 6);
+		const float large = side - little;
 
-		vertices.emplace_back(0.0f, big, 0.0f, 1.0f); // 0
-		vertices.emplace_back(big, -little, 0.0f, 1.0f); // 1
-		vertices.emplace_back(-big, -little, 0.0f, 1.0f); // 2
+		vertices.emplace_back(0.0f, large, 0.0f, 1.0f); // 0
+		vertices.emplace_back(large, -little, 0.0f, 1.0f); // 1
+		vertices.emplace_back(-large, -little, 0.0f, 1.0f); // 2
 
 		indicesLines.emplace_back(0);
 		indicesLines.emplace_back(1);
