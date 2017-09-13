@@ -54,7 +54,7 @@ private:
 	void ComposeFrame();
 	void UpdateModel();
 	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& c);
-	NewModel Tesselate(const Model& model);
+	NewModel Tessellate(const Model& model);
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;

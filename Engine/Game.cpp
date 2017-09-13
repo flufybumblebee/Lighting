@@ -44,10 +44,10 @@ Game::Game(MainWindow& wnd)
 	tetra(1.0f),
 	dodeca(1.0f)
 {
-	polyhedron80 = Tesselate(icosa);
-	polyhedron320 = Tesselate(polyhedron80);
-	polyhedron1280 = Tesselate(polyhedron320);
-	polyhedron5120 = Tesselate(polyhedron1280);
+	//polyhedron80 = Tessellate(icosa);
+	//polyhedron320 = Tessellate(polyhedron80);
+	//polyhedron1280 = Tessellate(polyhedron320);
+	//polyhedron5120 = Tessellate(polyhedron1280);
 }
 
 void Game::Go()
@@ -389,7 +389,7 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	//DrawModel(false, true, trans, icosa, Colors::White);
-	DrawModel(false, true, trans, polyhedron5120, Colors::Green);
+	DrawModel(false, true, trans, icosa, Colors::Green);
 
 	// -------------------------------------------------
 
@@ -568,22 +568,32 @@ NewModel Game::Tessellate(const Model& model)
 		// -----------------------------------------
 
 		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
+		indicesLine.emplace_back(vertices.size() - 3);
+
+		indicesLine.emplace_back(vertices.size() - 3);
 		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
 
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
 
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
+		indicesLine.emplace_back(vertices.size() - 2);
+
+		indicesLine.emplace_back(vertices.size() - 2);
+		indicesLine.emplace_back(vertices.size() - 3);
+
+		indicesLine.emplace_back(vertices.size() - 3);
+		indicesLine.emplace_back(vertices.size() - 1);
+
+		indicesLine.emplace_back(vertices.size() - 1);
+		indicesLine.emplace_back(vertices.size() - 2);
+
+		indicesLine.emplace_back(vertices.size() - 2);
 		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+		
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+		indicesLine.emplace_back(vertices.size() - 1);
+
+		indicesLine.emplace_back(vertices.size() - 1);
 		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
-
-		indicesLine.emplace_back(vertices.size() - 3);
-		indicesLine.emplace_back(vertices.size() - 2);
-
-		indicesLine.emplace_back(vertices.size() - 2);
-		indicesLine.emplace_back(vertices.size() - 1);
-
-		indicesLine.emplace_back(vertices.size() - 1);
-		indicesLine.emplace_back(vertices.size() - 3);
 	}
 
 	NewModel newmodel = NewModel(vertices, indicesLine, indicesTri);
