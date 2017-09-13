@@ -42,10 +42,11 @@ Game::Game(MainWindow& wnd)
 	icosa(1.0f),
 	octa(1.0f),
 	tetra(1.0f),
-	dodeca(1.0f)
+	dodeca(1.0f),
+	lightsource( 5.0f, 5.0f, -5.0f, 1.0f )
 {
-	//polyhedron80 = Tessellate(icosa);
-	//polyhedron320 = Tessellate(polyhedron80);
+	polyhedron80 = Tessellate(icosa);
+	polyhedron320 = Tessellate(polyhedron80);
 	//polyhedron1280 = Tessellate(polyhedron320);
 	//polyhedron5120 = Tessellate(polyhedron1280);
 
@@ -386,6 +387,10 @@ void Game::ComposeFrame()
 		Mat4::Translation(position) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
+	const Mat4 lightTrans =	Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+
+	Vec4 light = lightsource * lightTrans;
+
 	// ---------------------------------------------------
 
 	//DrawModel(false, true, cube0Trans, cube, Colors::White);
@@ -394,7 +399,7 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	//DrawModel(false, true, trans, icosa, Colors::White);
-	DrawModel(false, true, trans, polyhedron1536, Colors::Green);
+	DrawModel(false, true, trans, polyhedron320, Colors::Green, Colors::White, light, Colors::White);
 
 	// -------------------------------------------------
 
@@ -420,9 +425,9 @@ void Game::ComposeFrame()
 	}
 };
 
-void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& lineColor )
+void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& lineColor, const Color& modelColor, const Vec4& lightPosition, const Color& lightColor )
 {
-	const Color colors[] = {
+	/*const Color colors[] = {
 		Colors::Magenta,
 		Colors::Purple,
 		Colors::Pink,
@@ -432,33 +437,7 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		Colors::LightGreen,
 		Colors::Green,
 		Colors::LightGray,
-		Colors::Gray/*,
-		Colors::Orange,
-		Colors::Yellow,
-		Colors::Magenta,
-		Colors::Purple,
-		Colors::Pink,
-		Colors::Red,
-		Colors::Blue,
-		Colors::LightBlue,
-		Colors::LightGreen,
-		Colors::Green,
-		Colors::LightGray,
-		Colors::Gray,
-		Colors::Orange,
-		Colors::Yellow,
-		Colors::Magenta,
-		Colors::Purple,
-		Colors::Pink,
-		Colors::Red,
-		Colors::Blue,
-		Colors::LightBlue,
-		Colors::LightGreen,
-		Colors::Green,
-		Colors::LightGray,
-		Colors::Gray,
-		Colors::Orange,
-		Colors::Yellow*/ };
+		Colors::Gray };*/
 	
 	if (triangles)
 	{
@@ -468,36 +447,42 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		{
 			i *= trans;
 		}
-
+		
+		std::vector< Color > faceColor;
 		// set cullflags
-		for (size_t i = 0, end = triangles.indices.size() / 3;
-			i < end; i++)
+		for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
 		{
 			const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
 			const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
 			const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
-			triangles.cullflags[i] = ((v1 - v0).Cross(v2 - v0)).Dot(v0) > 0;
+			const Vec3 surfaceNormal = ((v1 - v0).Cross(v2 - v0));
+			triangles.cullflags[i] = surfaceNormal.Dot(v0) > 0;
+			const Vec3 lightNormal = lightPosition.GetNormalized();
+			const float result = surfaceNormal.Dot(lightNormal);
+			const float angle = abs(atan(1 / result));
+			const float ambient = 0.1f;
+			faceColor.emplace_back( Color(
+				int(modelColor.GetR() * ambient * angle),
+				int(modelColor.GetG() * ambient * angle),
+				int(modelColor.GetB() * ambient * angle)));
 		}
 
+
 		for (auto& i : triangles.vertices)
-		{
+		{			
 			view.Transform(i);
 		}
 
-
-		int j = 0;
 		for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
 		{
-			if (j > 9) j = 0;
 			if (!triangles.cullflags[i])
 			{
 				gfx.DrawTriangle(
 					triangles.vertices[triangles.indices[i * 3 + 0]],
 					triangles.vertices[triangles.indices[i * 3 + 1]],
 					triangles.vertices[triangles.indices[i * 3 + 2]],
-					colors[j]);				
+					faceColor[i]);				
 			}
-			j++;
 		}
 	}
 

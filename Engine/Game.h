@@ -53,11 +53,13 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
-	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& c);
+	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& lineColor, const Color& modelColor, const Vec4& lightPosition, const Color& lightColor);
 	NewModel Tessellate(const Model& model);
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;
+
+	//------------------------------------------------------------
 
 	// camera matrix variables
 	Vec3 cameraPos;
@@ -98,6 +100,8 @@ private:
 	const float vW = (float)Graphics::ScreenWidth / 1 - 1;
 	const float vH = (float)Graphics::ScreenHeight / 1 - 1;
 	
+	//-------------------------------------------------------
+
 	// models
 	Grid grid;
 	Frustum frustum;
@@ -120,4 +124,6 @@ private:
 	NewModel polyhedron96;
 	NewModel polyhedron384;
 	NewModel polyhedron1536;
+	// ---------------------------------------------------------
+	Vec4 lightsource;
 };
