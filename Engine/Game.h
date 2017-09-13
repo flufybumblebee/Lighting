@@ -112,4 +112,12 @@ private:
 	NewModel polyhedron320;
 	NewModel polyhedron1280;
 	NewModel polyhedron5120;
+	NewModel polyhedron32;
+	NewModel polyhedron128;
+	NewModel polyhedron512;
+	NewModel polyhedron2048;
+	NewModel polyhedron24;
+	NewModel polyhedron96;
+	NewModel polyhedron384;
+	NewModel polyhedron1536;
 };

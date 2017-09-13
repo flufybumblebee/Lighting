@@ -48,6 +48,11 @@ Game::Game(MainWindow& wnd)
 	//polyhedron320 = Tessellate(polyhedron80);
 	//polyhedron1280 = Tessellate(polyhedron320);
 	//polyhedron5120 = Tessellate(polyhedron1280);
+
+	//polyhedron24 = Tessellate(cube);
+	//polyhedron96 = Tessellate(polyhedron24);
+	//polyhedron384 = Tessellate(polyhedron96);
+	//polyhedron1536 = Tessellate(polyhedron384);
 }
 
 void Game::Go()
@@ -389,7 +394,7 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	//DrawModel(false, true, trans, icosa, Colors::White);
-	DrawModel(false, true, trans, icosa, Colors::Green);
+	DrawModel(false, true, trans, polyhedron1536, Colors::Green);
 
 	// -------------------------------------------------
 
