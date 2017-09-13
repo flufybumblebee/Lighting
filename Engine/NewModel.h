@@ -8,14 +8,19 @@
 class NewModel : public Model
 {
 public:
+	NewModel() {}
+	NewModel( NewModel& model )
+		:
+		vertices( model.vertices ),
+		indicesLine( model.indicesLine ),
+		indicesTri( model.indicesTri )
+	{}
 	NewModel( std::vector<Vec4> vertices, std::vector<size_t> indicesLine, std::vector<size_t> indicesTri )
 		:
 		vertices( vertices ),
 		indicesLine( indicesLine ),
 		indicesTri( indicesTri )
-	{
-		
-	}
+	{}
 
 	IndexedLineList GetLines() const override
 	{

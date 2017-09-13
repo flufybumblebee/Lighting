@@ -54,7 +54,7 @@ private:
 	void ComposeFrame();
 	void UpdateModel();
 	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& c);
-	NewModel Tesselation(const Model& model);
+	NewModel Tesselate(const Model& model);
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;
@@ -108,4 +108,8 @@ private:
 	Octahedron octa;
 	Tetrahedron tetra;
 	Dodecahedron dodeca;
+	NewModel polyhedron80;
+	NewModel polyhedron320;
+	NewModel polyhedron1280;
+	NewModel polyhedron5120;
 };

@@ -43,7 +43,12 @@ Game::Game(MainWindow& wnd)
 	octa(1.0f),
 	tetra(1.0f),
 	dodeca(1.0f)
-{}
+{
+	polyhedron80 = Tesselate(icosa);
+	polyhedron320 = Tesselate(polyhedron80);
+	polyhedron1280 = Tesselate(polyhedron320);
+	polyhedron5120 = Tesselate(polyhedron1280);
+}
 
 void Game::Go()
 {
@@ -384,7 +389,7 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	//DrawModel(false, true, trans, icosa, Colors::White);
-	DrawModel(false, true, trans, Tesselation(Tesselation(Tesselation(icosa))), Colors::Green);
+	DrawModel(false, true, trans, polyhedron5120, Colors::Green);
 
 	// -------------------------------------------------
 
@@ -515,7 +520,7 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 	}
 }
 
-NewModel Game::Tesselation(const Model& model)
+NewModel Game::Tessellate(const Model& model)
 {
 	std::vector<Vec4> vertices;
 	std::vector<size_t> indicesLine;
@@ -580,7 +585,6 @@ NewModel Game::Tesselation(const Model& model)
 		indicesLine.emplace_back(vertices.size() - 1);
 		indicesLine.emplace_back(vertices.size() - 3);
 	}
-
 
 	NewModel newmodel = NewModel(vertices, indicesLine, indicesTri);
 
