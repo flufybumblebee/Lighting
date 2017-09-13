@@ -143,11 +143,13 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GridModel.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="NewModel.h" />
     <ClInclude Include="Orthographic.h" />
     <ClInclude Include="Perspective.h" />
     <ClInclude Include="PlaneModel.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Tetrahedron.h" />
+    <ClInclude Include="Triangle.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="ViewTransform.h" />
     <ClInclude Include="ChiliException.h" />

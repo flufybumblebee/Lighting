@@ -29,9 +29,7 @@
 
 #include "Grid.h"
 #include "Frustum.h"
-
 #include "Terrain.h"
-
 #include "EqualateralTriangle.h"
 
 #include "Tetrahedron.h"
@@ -41,6 +39,9 @@
 #include "Icosahedron.h"
 
 #include "Mat4.h"
+#include "NewModel.h"
+
+#include "Triangle.h"
 
 class Game
 {
@@ -53,6 +54,7 @@ private:
 	void ComposeFrame();
 	void UpdateModel();
 	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& c);
+	NewModel Tesselation(const Model& model);
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;

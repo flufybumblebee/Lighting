@@ -367,7 +367,7 @@ void Game::ComposeFrame()
 	const Mat4 cube1Trans =
 		Mat4::Scaling(scale) *
 		Mat4::Rotation(angle) *
-		Mat4::Translation(0.5f, 0.0f, 3.0f) *
+		Mat4::Translation(-1.0f, 0.0f, 0.0f) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
 	const Mat4 trans =
@@ -383,8 +383,9 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, gridTrans, grid, Colors::White);
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
-	DrawModel(false, true, trans, dodeca, Colors::White);
-	
+	//DrawModel(false, true, trans, icosa, Colors::White);
+	DrawModel(false, true, trans, Tesselation(Tesselation(Tesselation(icosa))), Colors::Green);
+
 	// -------------------------------------------------
 
 	const Color c = Colors::Yellow;
@@ -421,7 +422,7 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		Colors::LightGreen,
 		Colors::Green,
 		Colors::LightGray,
-		Colors::Gray,
+		Colors::Gray/*,
 		Colors::Orange,
 		Colors::Yellow,
 		Colors::Magenta,
@@ -447,7 +448,7 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		Colors::LightGray,
 		Colors::Gray,
 		Colors::Orange,
-		Colors::Yellow };
+		Colors::Yellow*/ };
 	
 	if (triangles)
 	{
@@ -473,17 +474,20 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 			view.Transform(i);
 		}
 
+
 		int j = 0;
 		for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
 		{
+			if (j > 9) j = 0;
 			if (!triangles.cullflags[i])
 			{
 				gfx.DrawTriangle(
 					triangles.vertices[triangles.indices[i * 3 + 0]],
 					triangles.vertices[triangles.indices[i * 3 + 1]],
 					triangles.vertices[triangles.indices[i * 3 + 2]],
-					colors[i]);				
+					colors[j]);				
 			}
+			j++;
 		}
 	}
 
@@ -509,4 +513,76 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 				lineColor);
 		}
 	}
+}
+
+NewModel Game::Tesselation(const Model& model)
+{
+	std::vector<Vec4> vertices;
+	std::vector<size_t> indicesLine;
+	std::vector<size_t> indicesTri;
+
+	for (size_t i = 0; i < model.GetTriangles().vertices.size(); i++)
+	{
+		vertices.emplace_back(model.GetTriangles().vertices[i]);
+	}
+		
+	const float radius = model.GetTriangles().vertices[0].Len();
+
+	for (size_t i = 0; i < model.GetTriangles().indices.size() / 3; i++)
+	{
+		Vec4 v0 = vertices[model.GetTriangles().indices[i * 3 + 0]];
+		Vec4 v1 = vertices[model.GetTriangles().indices[i * 3 + 1]];
+		Vec4 v2 = vertices[model.GetTriangles().indices[i * 3 + 2]];
+
+		Vec4 e0 = (v0 + ((v1 - v0) * 0.5f)).Normalize() * radius;
+		Vec4 e1 = (v1 + ((v2 - v1) * 0.5f)).Normalize() * radius;
+		Vec4 e2 = (v0 + ((v2 - v0) * 0.5f)).Normalize() * radius;
+
+		vertices.emplace_back(e0);
+		vertices.emplace_back(e1);
+		vertices.emplace_back(e2);
+
+		//---------------------------------------------------------------
+
+		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
+		indicesTri.emplace_back(vertices.size() - 3);
+		indicesTri.emplace_back(vertices.size() - 1);
+
+		indicesTri.emplace_back(vertices.size() - 1);
+		indicesTri.emplace_back(vertices.size() - 2);
+		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+
+		indicesTri.emplace_back(vertices.size() - 1);
+		indicesTri.emplace_back(vertices.size() - 3);
+		indicesTri.emplace_back(vertices.size() - 2);
+
+		indicesTri.emplace_back(vertices.size() - 3);
+		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
+		indicesTri.emplace_back(vertices.size() - 2);
+		
+		// -----------------------------------------
+
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
+
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
+
+		indicesLine.emplace_back(vertices.size() - 3);
+		indicesLine.emplace_back(vertices.size() - 2);
+
+		indicesLine.emplace_back(vertices.size() - 2);
+		indicesLine.emplace_back(vertices.size() - 1);
+
+		indicesLine.emplace_back(vertices.size() - 1);
+		indicesLine.emplace_back(vertices.size() - 3);
+	}
+
+
+	NewModel newmodel = NewModel(vertices, indicesLine, indicesTri);
+
+	return newmodel;
 }

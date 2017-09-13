@@ -60,6 +60,11 @@ public:
 	//		1);
 	//}
 
+	_Vec4 Midpoint(const _Vec4 &rhs) const
+	{
+		/*return Vec4((x - rhs.x)/2, (y - rhs.y)/2, (z - rhs.z)/2, 1.0f );*/
+		return (rhs + *this)/2;
+	}
 
 public:
 	T w;
