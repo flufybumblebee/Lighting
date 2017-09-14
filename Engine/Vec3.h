@@ -148,6 +148,16 @@ public:
 			x * rhs.y - y * rhs.x);
 	}
 
+	_Vec3	Hadamard(const _Vec3& rhs) const
+	{
+		return _Vec3( x * rhs.x, y * rhs.y, z * rhs.z );
+	}
+
+	_Vec3	Saturation()
+	{
+		return _Vec3(std::min((T)1.0, x), std::min((T)1.0, y), std::min((T)1.0, z));
+	}
+
 public:
 	T z;
 };

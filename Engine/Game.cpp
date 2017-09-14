@@ -43,10 +43,13 @@ Game::Game(MainWindow& wnd)
 	octa(1.0f),
 	tetra(1.0f),
 	dodeca(1.0f),
-	lightsource( 5.0f, 5.0f, -5.0f, 1.0f )
+	lightsource( 5.0f, 5.0f, -5.0f, 1.0f ),
+	lightX( -1.0f ),
+	lightY( -1.0f ),
+	lightZ(  1.0f )
 {
-	polyhedron80 = Tessellate(icosa);
-	polyhedron320 = Tessellate(polyhedron80);
+	//polyhedron80 = Tessellate(icosa);
+	//polyhedron320 = Tessellate(polyhedron80);
 	//polyhedron1280 = Tessellate(polyhedron320);
 	//polyhedron5120 = Tessellate(polyhedron1280);
 
@@ -340,6 +343,35 @@ void Game::UpdateModel()
 
 	//-------------------------------------------------
 
+	// lighting controls
+	const float lightSpeed = 0.1f;
+	if (wnd.kbd.KeyIsPressed('1'))
+	{
+		lightX -= lightSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('2'))
+	{
+		lightX += lightSpeed;
+	}
+	if (wnd.kbd.KeyIsPressed('3'))
+	{
+		lightY -= lightSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('4'))
+	{
+		lightY += lightSpeed;
+	}
+	if (wnd.kbd.KeyIsPressed('5'))
+	{
+		lightZ -= lightSpeed;
+	}
+	else if (wnd.kbd.KeyIsPressed('6'))
+	{
+		lightZ += lightSpeed;
+	}
+
+	//-------------------------------------------------
+
 	// Set the default camera variables to whatever camera is enabled
 	if (isCam0)
 	{
@@ -399,7 +431,13 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	//DrawModel(false, true, trans, icosa, Colors::White);
-	DrawModel(false, true, trans, polyhedron320, Colors::Green, Colors::White, light, Colors::White);
+	const Vec3 ambientColor = { 0.05f,0.05f,0.05f };
+	const Vec3 lightColor = { 1.0f,1.0f,1.0f };
+	const Vec3 modelColor = { 1.0f,1.0f,1.0f };
+	const Vec4 lightPosition = { lightX, lightY, lightZ, 1.0f };
+	//Vec3 LP = lightPosition * Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
+	Vec3 LP = Vec3(lightX, lightY, lightZ).Normalize();
+	DrawModel(false, true, trans, icosa, modelColor, ambientColor, lightColor, LP);
 
 	// -------------------------------------------------
 
@@ -425,20 +463,16 @@ void Game::ComposeFrame()
 	}
 };
 
-void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& lineColor, const Color& modelColor, const Vec4& lightPosition, const Color& lightColor )
+void Game::DrawModel( 
+	bool lines,
+	bool triangles,
+	const Mat4& trans,
+	const Model& model,
+	const Vec3& modelColor,
+	const Vec3& ambientColor,
+	const Vec3& lightColor,
+	const Vec3& lightPosition)
 {
-	/*const Color colors[] = {
-		Colors::Magenta,
-		Colors::Purple,
-		Colors::Pink,
-		Colors::Red,
-		Colors::Blue,
-		Colors::LightBlue,
-		Colors::LightGreen,
-		Colors::Green,
-		Colors::LightGray,
-		Colors::Gray };*/
-	
 	if (triangles)
 	{
 		auto triangles = model.GetTriangles();
@@ -449,6 +483,7 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 		}
 		
 		std::vector< Color > faceColor;
+
 		// set cullflags
 		for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
 		{
@@ -457,14 +492,21 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 			const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
 			const Vec3 surfaceNormal = ((v1 - v0).Cross(v2 - v0));
 			triangles.cullflags[i] = surfaceNormal.Dot(v0) > 0;
-			const Vec3 lightNormal = lightPosition.GetNormalized();
-			const float result = surfaceNormal.Dot(lightNormal);
-			const float angle = abs(atan(1 / result));
-			const float ambient = 0.1f;
-			faceColor.emplace_back( Color(
-				int(modelColor.GetR() * ambient * angle),
-				int(modelColor.GetG() * ambient * angle),
-				int(modelColor.GetB() * ambient * angle)));
+
+			// ----------------------------------------------------------
+			
+			/*const Vec3 ambientColor = { 0.2f,0.2f,0.2f };
+			const Vec3 lightColor = { 1.0f,1.0f,1.0f };
+			const Vec3 modelColor = { 1.0f,1.0f,1.0f };
+			const Vec3 lightPosition = { 0.0f, 0.0f, 1.0f };*/
+									
+			// set light intensity
+			const Vec3 diffuseColor = lightColor * std::max(0.0f,((-surfaceNormal).Dot(lightPosition)));;
+			
+			// set surface color
+			Vec3 finalColor = modelColor.Hadamard(ambientColor + diffuseColor).Saturation() * 255.0f;
+
+			faceColor.emplace_back(Color(unsigned char(finalColor.x),unsigned char(finalColor.y),unsigned char(finalColor.z)));			
 		}
 
 
@@ -505,7 +547,7 @@ void Game::DrawModel( bool lines, bool triangles, const Mat4& trans, const Model
 			gfx.DrawLine(
 				lines.vertices[*i],
 				lines.vertices[*std::next(i)],
-				lineColor);
+				Colors::White);
 		}
 	}
 }

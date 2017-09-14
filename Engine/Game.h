@@ -53,7 +53,7 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
-	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Color& lineColor, const Color& modelColor, const Vec4& lightPosition, const Color& lightColor);
+	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
 	NewModel Tessellate(const Model& model);
 private:
 	MainWindow&	wnd;
@@ -126,4 +126,8 @@ private:
 	NewModel polyhedron1536;
 	// ---------------------------------------------------------
 	Vec4 lightsource;
+
+	float lightX;
+	float lightY;
+	float lightZ;
 };
