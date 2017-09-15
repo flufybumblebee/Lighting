@@ -162,6 +162,9 @@
     <ClInclude Include="AxisUnitVectors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Vec2Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DXErr.cpp">

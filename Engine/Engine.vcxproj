@@ -151,6 +151,7 @@
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="Tetrahedron.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="Vec2Color.h" />
     <ClInclude Include="Viewport.h" />
     <ClInclude Include="ViewTransform.h" />
     <ClInclude Include="ChiliException.h" />

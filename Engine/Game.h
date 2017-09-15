@@ -45,6 +45,8 @@
 #include "Triangle.h"
 #include "AxisUnitVectors.h"
 
+#include "Vec2Color.h"
+
 class Game
 {
 public:

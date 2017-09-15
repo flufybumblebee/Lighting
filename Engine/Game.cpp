@@ -49,7 +49,7 @@ Game::Game(MainWindow& wnd)
 	lightZ(1.0f),
 	plane(1.0f)
 {
-	//polyhedron80 = Tessellate(icosa);
+	polyhedron80 = Tessellate(icosa);
 	//polyhedron320 = Tessellate(polyhedron80);
 	//polyhedron1280 = Tessellate(polyhedron320);
 	//polyhedron5120 = Tessellate(polyhedron1280);
@@ -432,15 +432,15 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	//DrawModel(false, true, trans, icosa, Colors::White);
-	const Vec3 ambientColor  = { 0.1f,0.1f,0.1f };
-	const Vec3 lightColor    = { 0.5f,0.5f,0.5f };
-	const Vec3 modelColor	 = { 0.5f,0.5f,0.5f };
+	const Vec3 ambientColor  = { 0.05f,0.05f,0.05f };
+	const Vec3 lightColor    = { 0.8f,0.8f,0.8f };
+	const Vec3 modelColor	 = { 0.0f,1.0f,1.0f };
 	const Vec4 lightPosition = { lightX, lightY, lightZ, 1.0f };
 	Vec3 LP = Vec3(lightPosition * Mat4::Camera(cameraPos, cameraLookAt, cameraUp)).Normalize();
 	//DrawModel(false, true, gridTrans, NewModel(plane.vertices,plane.GetLines().indices,plane.GetTriangles().indices), modelColor, ambientColor, lightColor, LP);
-	DrawModel(false, true, trans, icosa, modelColor, ambientColor, lightColor, LP);
+	Draw(trans, polyhedron80, modelColor, ambientColor, lightColor, LP);
 	
-	DrawModel(true, false, trans, axis, modelColor, ambientColor, lightColor, LP);
+	//DrawModel(true, false, trans, axis, modelColor, ambientColor, lightColor, LP);
 
 	// -------------------------------------------------
 
@@ -648,7 +648,9 @@ void Game::Draw(
 		i *= trans;
 	}
 
-	std::vector< Color > faceColor;
+	std::vector< Color > color0;
+	std::vector< Color > color1;
+	std::vector< Color > color2;
 
 	// set cullflags
 	for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
@@ -661,15 +663,19 @@ void Game::Draw(
 
 		// ----------------------------------------------------------
 
-
-
 		// set light intensity
-		const Vec3 diffuseColor = lightColor * std::max(0.0f, ((surfaceNormal).Dot(lightPosition)));;
+		const Vec3 diffuseColor0 = lightColor * std::max(0.0f, ((v0.GetNormalized()).Dot(lightPosition)));
+		const Vec3 diffuseColor1 = lightColor * std::max(0.0f, ((v1.GetNormalized()).Dot(lightPosition)));
+		const Vec3 diffuseColor2 = lightColor * std::max(0.0f, ((v2.GetNormalized()).Dot(lightPosition)));
 
 		// set surface color
-		Vec3 finalColor = modelColor.Hadamard(ambientColor + diffuseColor).Saturation() * 255.0f;
+		Vec3 finalColor0 = modelColor.Hadamard(ambientColor + diffuseColor0).Saturation() * 255.0f;
+		Vec3 finalColor1 = modelColor.Hadamard(ambientColor + diffuseColor1).Saturation() * 255.0f;
+		Vec3 finalColor2 = modelColor.Hadamard(ambientColor + diffuseColor2).Saturation() * 255.0f;
 
-		faceColor.emplace_back(Color(unsigned char(finalColor.x), unsigned char(finalColor.y), unsigned char(finalColor.z)));
+		color0.emplace_back(Color(unsigned char(finalColor0.x), unsigned char(finalColor0.y), unsigned char(finalColor0.z)));
+		color1.emplace_back(Color(unsigned char(finalColor1.x), unsigned char(finalColor1.y), unsigned char(finalColor1.z)));
+		color2.emplace_back(Color(unsigned char(finalColor2.x), unsigned char(finalColor2.y), unsigned char(finalColor2.z)));
 	}
 
 
@@ -682,11 +688,10 @@ void Game::Draw(
 	{
 		if (!triangles.cullflags[i])
 		{
-			gfx.DrawTriangle(
-				triangles.vertices[triangles.indices[i * 3 + 0]],
-				triangles.vertices[triangles.indices[i * 3 + 1]],
-				triangles.vertices[triangles.indices[i * 3 + 2]],
-				faceColor[i]);
+			DrawTriangleThreeColor(
+				Vec2Color(triangles.vertices[triangles.indices[i * 3 + 0]], color0[i]),
+				Vec2Color(triangles.vertices[triangles.indices[i * 3 + 1]], color1[i]),
+				Vec2Color(triangles.vertices[triangles.indices[i * 3 + 2]], color2[i]));
 		}
 	}	
 }
