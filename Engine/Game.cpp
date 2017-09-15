@@ -43,10 +43,11 @@ Game::Game(MainWindow& wnd)
 	octa(1.0f),
 	tetra(1.0f),
 	dodeca(1.0f),
-	lightsource( 5.0f, 5.0f, -5.0f, 1.0f ),
-	lightX( -1.0f ),
-	lightY( -1.0f ),
-	lightZ(  1.0f )
+	lightsource(5.0f, 5.0f, -5.0f, 1.0f),
+	lightX(-1.0f),
+	lightY(-1.0f),
+	lightZ(1.0f),
+	plane(1.0f)
 {
 	//polyhedron80 = Tessellate(icosa);
 	//polyhedron320 = Tessellate(polyhedron80);
@@ -390,9 +391,9 @@ void Game::UpdateModel()
 void Game::ComposeFrame()
 {
 	const Mat4 gridTrans =
-		Mat4::Scaling(10.0f) *
+		Mat4::Scaling(5.0f) *
 		Mat4::Rotation(0.0f,0.0f,0.0f) *
-		Mat4::Translation(position) *
+		Mat4::Translation(0.0f,0.0f,0.0f) *
 		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
 
 	const Mat4 frustumTrans =
@@ -431,13 +432,15 @@ void Game::ComposeFrame()
 	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
 	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
 	//DrawModel(false, true, trans, icosa, Colors::White);
-	const Vec3 ambientColor = { 0.05f,0.05f,0.05f };
-	const Vec3 lightColor = { 1.0f,1.0f,1.0f };
-	const Vec3 modelColor = { 1.0f,1.0f,1.0f };
+	const Vec3 ambientColor  = { 0.1f,0.1f,0.1f };
+	const Vec3 lightColor    = { 0.5f,0.5f,0.5f };
+	const Vec3 modelColor	 = { 0.5f,0.5f,0.5f };
 	const Vec4 lightPosition = { lightX, lightY, lightZ, 1.0f };
-	//Vec3 LP = lightPosition * Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
-	Vec3 LP = Vec3(lightX, lightY, lightZ).Normalize();
+	Vec3 LP = Vec3(lightPosition * Mat4::Camera(cameraPos, cameraLookAt, cameraUp)).Normalize();
+	//DrawModel(false, true, gridTrans, NewModel(plane.vertices,plane.GetLines().indices,plane.GetTriangles().indices), modelColor, ambientColor, lightColor, LP);
 	DrawModel(false, true, trans, icosa, modelColor, ambientColor, lightColor, LP);
+	
+	DrawModel(true, false, trans, axis, modelColor, ambientColor, lightColor, LP);
 
 	// -------------------------------------------------
 
@@ -495,11 +498,6 @@ void Game::DrawModel(
 
 			// ----------------------------------------------------------
 			
-			/*const Vec3 ambientColor = { 0.2f,0.2f,0.2f };
-			const Vec3 lightColor = { 1.0f,1.0f,1.0f };
-			const Vec3 modelColor = { 1.0f,1.0f,1.0f };
-			const Vec3 lightPosition = { 0.0f, 0.0f, 1.0f };*/
-									
 			// set light intensity
 			const Vec3 diffuseColor = lightColor * std::max(0.0f,((-surfaceNormal).Dot(lightPosition)));;
 			
@@ -631,4 +629,64 @@ NewModel Game::Tessellate(const Model& model)
 	NewModel newmodel = NewModel(vertices, indicesLine, indicesTri);
 
 	return newmodel;
+}
+
+
+void Game::Draw(
+	const Mat4& trans,
+	const Model& model,
+	const Vec3& modelColor,
+	const Vec3& ambientColor,
+	const Vec3& lightColor,
+	const Vec3& lightPosition)
+{
+	
+	auto triangles = model.GetTriangles();
+
+	for (auto& i : triangles.vertices)
+	{
+		i *= trans;
+	}
+
+	std::vector< Color > faceColor;
+
+	// set cullflags
+	for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+	{
+		const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
+		const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
+		const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
+		const Vec3 surfaceNormal = ((v1 - v0).Cross(v2 - v0));
+		triangles.cullflags[i] = surfaceNormal.Dot(v0) > 0;
+
+		// ----------------------------------------------------------
+
+
+
+		// set light intensity
+		const Vec3 diffuseColor = lightColor * std::max(0.0f, ((surfaceNormal).Dot(lightPosition)));;
+
+		// set surface color
+		Vec3 finalColor = modelColor.Hadamard(ambientColor + diffuseColor).Saturation() * 255.0f;
+
+		faceColor.emplace_back(Color(unsigned char(finalColor.x), unsigned char(finalColor.y), unsigned char(finalColor.z)));
+	}
+
+
+	for (auto& i : triangles.vertices)
+	{
+		view.Transform(i);
+	}
+
+	for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+	{
+		if (!triangles.cullflags[i])
+		{
+			gfx.DrawTriangle(
+				triangles.vertices[triangles.indices[i * 3 + 0]],
+				triangles.vertices[triangles.indices[i * 3 + 1]],
+				triangles.vertices[triangles.indices[i * 3 + 2]],
+				faceColor[i]);
+		}
+	}	
 }

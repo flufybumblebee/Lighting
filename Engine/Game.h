@@ -31,6 +31,7 @@
 #include "Frustum.h"
 #include "Terrain.h"
 #include "EqualateralTriangle.h"
+#include "Plane.h"
 
 #include "Tetrahedron.h"
 #include "Cube.h"
@@ -42,6 +43,7 @@
 #include "NewModel.h"
 
 #include "Triangle.h"
+#include "AxisUnitVectors.h"
 
 class Game
 {
@@ -55,6 +57,8 @@ private:
 	void UpdateModel();
 	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
 	NewModel Tessellate(const Model& model);
+
+	void Draw(const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;
@@ -124,6 +128,8 @@ private:
 	NewModel polyhedron96;
 	NewModel polyhedron384;
 	NewModel polyhedron1536;
+	Plane plane;
+	AxisUnitVectors axis;
 	// ---------------------------------------------------------
 	Vec4 lightsource;
 

@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AxisUnitVectors.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Dodecahedron.h" />
     <ClInclude Include="EqualateralTriangle.h" />

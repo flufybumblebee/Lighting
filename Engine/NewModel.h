@@ -9,6 +9,7 @@ class NewModel : public Model
 {
 public:
 	NewModel() {}
+
 	NewModel( NewModel& model )
 		:
 		vertices( model.vertices ),
