@@ -138,14 +138,8 @@
     <ClInclude Include="Frustum.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
-    <ClInclude Include="NewModel.h">
-      <Filter>Header Files\Models</Filter>
-    </ClInclude>
     <ClInclude Include="Triangle.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files\Models</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Header Files\Models</Filter>
@@ -159,11 +153,14 @@
     <ClInclude Include="CubeModel.h">
       <Filter>Header Files\Models</Filter>
     </ClInclude>
-    <ClInclude Include="AxisUnitVectors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Vec2Color.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AxisUnitVectors.h">
+      <Filter>Header Files\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\Models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,13 +3,11 @@
 #include "Vec4.h"
 #include <vector>
 #include "Model.h"
-//#include "IndexedLineList.h"
-//#include "IndexedTriangleList.h"
 
 class Grid : public Model
 {
 public:
-	Grid(float size)
+	Grid(const float& size = 1.0f )
 	{
 		const float bSize = size / 10.0f;
 
@@ -81,7 +79,7 @@ public:
 		vertices.emplace_back( (bSize * 5), 0.0f,  (bSize * 5), 1.0f); // 42
 		vertices.emplace_back( (bSize * 5), 0.0f, -(bSize * 5), 1.0f); // 43
 	}
-	IndexedLineList GetLines() const override
+	IndexedLineList GetLines() const
 	{
 		return
 		{
@@ -111,11 +109,8 @@ public:
 				42,43 }
 		};
 	}
-	IndexedTriangleList GetTriangles() const override
+	IndexedTriangleList GetTriangles() const
 	{
 		return IndexedTriangleList(vertices, { 0,1,2 });
 	}
-
-public:
-	std::vector<Vec4> vertices;
 };

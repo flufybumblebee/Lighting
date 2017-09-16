@@ -7,7 +7,7 @@
 class Cube : public Model
 {
 public:
-	Cube( const float size )
+	Cube( const float size = 1.0f )
 	{
 		const float side = size / 2.0f;
 
@@ -20,9 +20,22 @@ public:
 		vertices.emplace_back(  side, -side, side, 1.0f ); // 5
 		vertices.emplace_back( -side,  side, side, 1.0f ); // 6
 		vertices.emplace_back(  side,  side, side, 1.0f ); // 7
+
+		indicesLine = {
+			0,1, 1,3, 3,2, 2,0,
+			0,4, 1,5, 3,7, 2,6,
+			4,5, 5,7, 7,6, 6,4 };
+
+		indicesTri = {
+			0,2,1, 2,3,1,
+			1,3,5, 3,7,5,
+			2,6,3, 3,6,7,
+			4,5,7, 4,7,6,
+			0,4,6, 0,6,2,
+			0,5,4, 0,1,5 };
 	}
 
-	IndexedLineList GetLines() const override
+	/*IndexedLineList GetLines() const
 	{
 		return
 		{
@@ -33,7 +46,7 @@ public:
 		};
 	}
 
-	IndexedTriangleList GetTriangles() const override
+	IndexedTriangleList GetTriangles() const
 	{
 		return
 		{
@@ -45,7 +58,5 @@ public:
 			0,4,6, 0,6,2,
 			0,5,4, 0,1,5 }
 		};
-	}
-private:
-	std::vector< Vec4 > vertices;
+	}*/
 };

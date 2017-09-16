@@ -9,7 +9,7 @@
 class EqualateralTriangle : public Model
 {
 public:
-	EqualateralTriangle( const float& size )
+	EqualateralTriangle( const float& size = 1.0f )
 	{
 		float side = sqrt(sq(size) - sq(size / 2));
 		const float little = size/2 * tan(PI / 6);
@@ -19,31 +19,27 @@ public:
 		vertices.emplace_back(large, -little, 0.0f, 1.0f); // 1
 		vertices.emplace_back(-large, -little, 0.0f, 1.0f); // 2
 
-		indicesLines.emplace_back(0);
-		indicesLines.emplace_back(1);
-		indicesLines.emplace_back(1);
-		indicesLines.emplace_back(2);
-		indicesLines.emplace_back(2);
-		indicesLines.emplace_back(0);
+		indicesLine.emplace_back(0);
+		indicesLine.emplace_back(1);
+		indicesLine.emplace_back(1);
+		indicesLine.emplace_back(2);
+		indicesLine.emplace_back(2);
+		indicesLine.emplace_back(0);
 
-		indicesTriangles.emplace_back(0);
-		indicesTriangles.emplace_back(1);
-		indicesTriangles.emplace_back(2);
+		indicesTri.emplace_back(0);
+		indicesTri.emplace_back(1);
+		indicesTri.emplace_back(2);
 	}
 	
-	IndexedLineList GetLines() const override
+	IndexedLineList GetLines() const
 	{
-		return { vertices, indicesLines };
+		return { vertices, indicesLine };
 	}
 
-	IndexedTriangleList GetTriangles() const override
+	IndexedTriangleList GetTriangles() const
 	{
-		return { vertices, indicesTriangles };
+		return { vertices, indicesTri };
 	}
-private:
-	std::vector<Vec4> vertices;
-	std::vector<size_t> indicesLines;
-	std::vector<size_t> indicesTriangles;
 };
 
 

@@ -8,7 +8,7 @@
 class Dodecahedron : public Model
 {
 public:
-	Dodecahedron(const float& size)
+	Dodecahedron(const float& size = 1.0f)
 	{
 		const float goldenRatio = (1.0f + sqrt(5.0f)) / 2.0f;
 		const float orangeX = size;
@@ -49,7 +49,7 @@ public:
 		vertices.emplace_back( blueX, -blueY, blueZ, 1.0f); // 19
 	}
 
-	IndexedLineList GetLines() const override
+	IndexedLineList GetLines() const
 	{
 		return { vertices,{ 
 			0,1, 1,2, 2,3, 3,0, //
@@ -64,7 +64,7 @@ public:
 		} };
 	}
 
-	IndexedTriangleList GetTriangles() const override
+	IndexedTriangleList GetTriangles() const
 	{
 		return { vertices,{
 			0,8,4,
@@ -115,7 +115,5 @@ public:
 			10,14,2,
 			2,14,15	} };
 	}
-private:
-	std::vector<Vec4> vertices;
 };
 

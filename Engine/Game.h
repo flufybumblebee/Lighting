@@ -25,7 +25,7 @@
 
 #include "ViewTransform.h"
 
-#include "Model.h"
+//#include "Model.h"
 
 #include "Grid.h"
 #include "Frustum.h"
@@ -40,7 +40,7 @@
 #include "Icosahedron.h"
 
 #include "Mat4.h"
-#include "NewModel.h"
+#include "Model.h"
 
 #include "Triangle.h"
 #include "AxisUnitVectors.h"
@@ -57,32 +57,42 @@ public:
 private:
 	void ComposeFrame();
 	void UpdateModel();
-	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
-	NewModel Tessellate(const Model& model);
 
+	void Scale(const float& speed);
+	void Angle(const float& speed);
+	void Position(const float& speed);
+	void Light(const float& speed);
+	void Camera();
+
+	Model Tessellate(const Model& model);
+
+	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
 	void Draw(const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
 
 	void DrawTriangleThreeColor(const Vec2Color& v0, const Vec2Color& v1, const Vec2Color& v2);
 	void DrawFlatBottomTriangleThreeColor(const Vec2Color& A, const Vec2Color& B, const Vec2Color& C);
 	void DrawFlatTopTriangleThreeColor(const Vec2Color& A, const Vec2Color& B, const Vec2Color& C);
+
+	void DrawCrossHair(const Color& c);
+	void DrawViewport(const Color& c);
 private:
 	MainWindow&	wnd;
 	Graphics	gfx;
 
 	//------------------------------------------------------------
 
-	// camera matrix variables
-	Vec3 cameraPos;
-	Vec3 cameraLookAt;
-	Vec3 cameraUp;
+	// camera variables
+	Vec3 cameraPosition	= { 0.0f, 0.0f, 0.0f };
+	Vec3 cameraLookAt	= { 0.0f, 0.0f, 0.0f };
+	Vec3 cameraUp		= { 0.0f, 0.0f, 0.0f };
 
-	Vec3 cameraPos0;
-	Vec3 cameraLookAt0;
-	Vec3 cameraUp0;
+	Vec3 cameraPos0		= { 0.0f, 0.0f, -3.0f };
+	Vec3 cameraLookAt0	= { 0.0f, 0.0f,  0.0f };
+	Vec3 cameraUp0		= { 0.0f, 1.0f,  0.0f };
 
-	Vec3 cameraPos1;
-	Vec3 cameraLookAt1;
-	Vec3 cameraUp1;
+	Vec3 cameraPos1		= { 3.0f, 3.0f, -10.0f };
+	Vec3 cameraLookAt1	= { 0.0f, 0.0f,   0.0f };
+	Vec3 cameraUp1		= { 0.0f, 1.0f,   0.0f };
 
 	bool isCam0 = true;
 	bool keyIsPressed = false;
@@ -96,7 +106,7 @@ private:
 	Vec3 angle    = { 0.0f, 0.0f, 0.0f };
 	Vec3 position = { 0.0f, 0.0f, 0.0f };
 
-	// perspective matrix variables
+	// perspective variables
 	const float fovX = PI/2;
 	const float fovY = PI/2;
 	const float nZ = 1.0f;
@@ -104,42 +114,47 @@ private:
 	const float nW = 2 * (nZ * tan(fovX / 2));
 	const float nH = 2 * (nZ * tan(fovY / 2));
 
-	// viewport matrix variables
+	// viewport variables
 	const float vX = 0.0f;
 	const float vY = 0.0f;
-	const float vW = (float)Graphics::ScreenWidth / 1 - 1;
-	const float vH = (float)Graphics::ScreenHeight / 1 - 1;
+	const float vW = (float)Graphics::ScreenWidth  / 1.0f - 1.0f;
+	const float vH = (float)Graphics::ScreenHeight / 1.0f - 1.0f;
 	
 	//-------------------------------------------------------
 
 	// models
+	AxisUnitVectors axis;
+	Plane plane;
 	Grid grid;
 	Frustum frustum;
-	Cube cube;
 	Terrain terrain;
 	EqualateralTriangle tri;
-	Icosahedron icosa;
-	Octahedron octa;
 	Tetrahedron tetra;
+	Cube cube;
+	Octahedron octa;
 	Dodecahedron dodeca;
-	NewModel polyhedron80;
-	NewModel polyhedron320;
-	NewModel polyhedron1280;
-	NewModel polyhedron5120;
-	NewModel polyhedron32;
-	NewModel polyhedron128;
-	NewModel polyhedron512;
-	NewModel polyhedron2048;
-	NewModel polyhedron24;
-	NewModel polyhedron96;
-	NewModel polyhedron384;
-	NewModel polyhedron1536;
-	Plane plane;
-	AxisUnitVectors axis;
-	// ---------------------------------------------------------
-	Vec4 lightsource;
+	Icosahedron icosa;
+	Model polyhedron80;
+	Model polyhedron320;
+	Model polyhedron1280;
+	Model polyhedron5120;
+	Model polyhedron32;
+	Model polyhedron128;
+	Model polyhedron512;
+	Model polyhedron2048;
+	Model polyhedron24;
+	Model polyhedron96;
+	Model polyhedron384;
+	Model polyhedron1536;
 
-	float lightX;
-	float lightY;
-	float lightZ;
+	// ---------------------------------------------------------
+	
+	// light variables
+
+	Vec4 lightPosition = { -1.0f, -1.0f, 1.0f, 1.0f };
+
+	// color variables
+	const Vec3 modelColor	= { 0.0f,1.0f,1.0f };
+	const Vec3 ambientColor = { 0.1f,0.1f,0.1f };
+	const Vec3 lightColor	= { 1.0f,1.0f,1.0f };
 };

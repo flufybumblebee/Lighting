@@ -1,15 +1,12 @@
 #pragma once
 
-#include <vector>
 #include "Model.h"
-#include "Vec4.h"
-#include "IndexedLineList.h"
 #include "Surface.h"
 
 class Terrain : public Model
 {
 public:
-	Terrain(const int xSize, const int zSize )
+	Terrain(const int& xSize = 10, const int& zSize = 10 )
 	{
 		// add array of heights and add in the loop
 		int width = image.GetWidth();
@@ -25,16 +22,16 @@ public:
 			int pixelX = 0;
 			for (int x = -(xSize/2); x <= xSize/2; x++)
 			{
-				float y = image.GetPixel(/*width - */int(float(pixelX) * incrementX), (height - 1) - int(float(pixelY) * incrementY)).GetG()/20.0f;
+				float y = image.GetPixel(int(float(pixelX) * incrementX), (height - 1) - int(float(pixelY) * incrementY)).GetG()/20.0f;
 				vertices.emplace_back((float)x, y, (float)z, 1.0f);
 				
 				if (i < (zSize + 1) * (xSize + 1))
 				{
-					indices.emplace_back(size_t(i));
+					indicesLine.emplace_back(size_t(i));
 					if (i > 0 && i != ((zSize + 1) * (xSize + 1) - 1))
 					{
 						if ((i+1) % (xSize + 1) == 0) i++;
-						indices.emplace_back(size_t(i));						
+						indicesLine.emplace_back(size_t(i));
 					}
 					i++;
 				}
@@ -47,7 +44,7 @@ public:
 			int j = 0;
 			for (; i < (xSize + 1);)
 			{
-				indices.emplace_back(size_t(j));
+				indicesLine.emplace_back(size_t(j));
 				if (j >= (xSize + 1) * (zSize + 1) - (xSize + 1) && j < (xSize + 1) * (zSize + 1))
 				{					
 					i++;
@@ -57,27 +54,29 @@ public:
 				{
 					if (j > xSize)
 					{
-						indices.emplace_back(size_t(j));
+						indicesLine.emplace_back(size_t(j));
 					}
 					j = j + (xSize + 1);
 				}
 			}
 		}
-	}
 
-	IndexedLineList GetLines() const override
+		indicesTri = { 0,1,2 };
+	}
+/*
+	IndexedLineList GetLines() const
 	{		
-		return { vertices, indices };
+		return { vertices, indicesLine };
 	}
 
-	IndexedTriangleList GetTriangles() const override
+	IndexedTriangleList GetTriangles() const
 	{
-		return { vertices, indices };
-	}
+		return { vertices, indicesTri };
+	}*/
 private:
-
-	std::vector<Vec4> vertices;
-	std::vector<size_t> indices;
+	/*std::vector<Vec4> vertices;
+	std::vector<size_t> indicesLine;
+	std::vector<size_t> indicesTri;*/
 
 	Surface image = Surface::FromFile(L"HeightMapTerrain.jpg");
 };

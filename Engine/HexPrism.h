@@ -1,14 +1,11 @@
 #pragma once
 
-#include "Vec4.h"
-#include <vector>
-#include "IndexedLineList.h"
-#include "IndexedTriangleList.h"
+#include "NewModel.h"
 
-class HexPrism
+class HexPrism : public Model
 {
 public:
-	HexPrism(const float size)
+	HexPrism(const float size = 1.0f)
 	{
 		const float side = size / 2.0f;
 		
@@ -77,9 +74,29 @@ public:
 		vertices.emplace_back(v9); // 9
 		vertices.emplace_back(v10); // 10
 		vertices.emplace_back(v11); // 11
+
+		indicesLine = {
+			0,1, 1,2, 2,3, 3,4, 4,5, 5,0,		// top
+			0,6, 1,7, 2,8, 3,9, 4,10, 5,11,		// middle
+			6,7, 7,8, 8,9, 9,10, 10,11, 11,6 };	// bottom
+
+		indicesTri = {
+			0,1,2, 0,2,3,
+			0,3,4, 0,4,5,
+
+			0,7,1, 0,6,7,
+			1,8,2, 1,7,8,
+			2,9,3, 2,8,9,
+			3,10,4, 3,9,10,
+			4,11,5, 4,10,11,
+			5,6,0, 5,11,6,
+
+			6,8,7, 6,9,8,
+			6,10,9, 6,11,10 };
+
 	}
 
-	IndexedLineList GetLines() const
+	/*IndexedLineList GetLines() const
 	{
 		return
 		{
@@ -113,5 +130,5 @@ public:
 		};
 	}
 private:
-	std::vector< Vec4 > vertices;
+	std::vector< Vec4 > vertices;*/
 };

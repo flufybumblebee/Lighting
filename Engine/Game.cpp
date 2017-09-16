@@ -24,40 +24,22 @@
 Game::Game(MainWindow& wnd)
 	:
 	wnd(wnd),
-	gfx(wnd),
-	cameraPos(0.0f, 0.0f, 0.0f),
-	cameraLookAt(0.0f, 0.0f, 0.0f),
-	cameraUp(0.0f, 0.0f, 0.0f),
-	cameraPos0(0.0f, 0.0f, -3.0f),
-	cameraLookAt0(0.0f, 0.0f, 0.0f),
-	cameraUp0(0.0f, 1.0f, 0.0f),
-	cameraPos1(3.0f, 3.0f, -10.0f),
-	cameraLookAt1(0.0f, 0.0f, 0.0f),
-	cameraUp1(0.0f, 1.0f, 0.0f),
-	grid(1.0f),
-	frustum(fovX, fovY, nZ, fZ),
-	cube(1.0f),
-	terrain(100, 100),
-	tri(1.0f),
-	icosa(1.0f),
-	octa(1.0f),
-	tetra(1.0f),
-	dodeca(1.0f),
-	lightsource(5.0f, 5.0f, -5.0f, 1.0f),
-	lightX(-1.0f),
-	lightY(-1.0f),
-	lightZ(1.0f),
-	plane(1.0f)
+	gfx(wnd)
 {
-	polyhedron80 = Tessellate(icosa);
-	//polyhedron320 = Tessellate(polyhedron80);
+	//polyhedron24   = Tessellate(cube);
+	//polyhedron96   = Tessellate(polyhedron24);
+	//polyhedron384  = Tessellate(polyhedron96);
+	//polyhedron1536 = Tessellate(polyhedron384);
+	
+	//polyhedron32   = Tessellate(octa);
+	//polyhedron128  = Tessellate(polyhedron32);
+	//polyhedron512  = Tessellate(polyhedron128);
+	//polyhedron2048 = Tessellate(polyhedron512);
+
+	polyhedron80   = Tessellate(icosa);
+	//polyhedron320  = Tessellate(polyhedron80);
 	//polyhedron1280 = Tessellate(polyhedron320);
 	//polyhedron5120 = Tessellate(polyhedron1280);
-
-	//polyhedron24 = Tessellate(cube);
-	//polyhedron96 = Tessellate(polyhedron24);
-	//polyhedron384 = Tessellate(polyhedron96);
-	//polyhedron1536 = Tessellate(polyhedron384);
 }
 
 void Game::Go()
@@ -70,78 +52,141 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	//-------------------------------------------
-	// MODEL TRANSFORMS
-	
-	// scaling 
-	
-	const float scaleSpeed = 0.01f;
+	Scale(0.01f);
+	Angle(0.01f);
+	Position(0.01f);	
+	Light(0.1f);
+	Camera();	
+}
+
+void Game::ComposeFrame()
+{
+	const Mat4 trans =
+		Mat4::Scaling(scale) *
+		Mat4::Rotation(angle) *
+		Mat4::Translation(position) *
+		Mat4::Camera(cameraPosition, cameraLookAt, cameraUp);
+
+	// ---------------------------------------------------
+
+	Vec3 LP = (lightPosition * Mat4::Camera(cameraPosition, cameraLookAt, cameraUp)).Normalize();
+
+	// ---------------------------------------------------
+
+	//Draw(trans, icosa, modelColor, ambientColor, lightColor, LP);
+	DrawModel(false, true, trans, icosa, modelColor, ambientColor, lightColor, LP);
+	DrawModel(true, false, trans, axis, modelColor, ambientColor, lightColor, LP);
+
+	// -------------------------------------------------
+
+	DrawCrossHair(Colors::Yellow);
+	DrawViewport(Colors::Yellow);
+};
+
+void Game::Scale(const float& speed)
+{
 	// scale x
 	if (wnd.kbd.KeyIsPressed('T'))
 	{
-		scale.x = scale.x + scaleSpeed;
+		scale.x = scale.x + speed;
 	}
 	else if (wnd.kbd.KeyIsPressed('G'))
-	{	
-		scale.x = scale.x - scaleSpeed;
+	{
+		scale.x = scale.x - speed;
 		if (scale.x < 0.0f) { scale.x = 0.0f; }
 	}
-	
+
 	// scale y
 	if (wnd.kbd.KeyIsPressed('Y'))
 	{
-		scale.y = scale.y + scaleSpeed;
+		scale.y = scale.y + speed;
 	}
 	else if (wnd.kbd.KeyIsPressed('H'))
 	{
-		scale.y = scale.y - scaleSpeed;
+		scale.y = scale.y - speed;
 		if (scale.y < 0.0f) { scale.y = 0.0f; }
 	}
-	
+
 	// scale z
 	if (wnd.kbd.KeyIsPressed('U'))
 	{
-		scale.z = scale.z + scaleSpeed;
+		scale.z = scale.z + speed;
 	}
 	else if (wnd.kbd.KeyIsPressed('J'))
 	{
-		scale.z = scale.z - scaleSpeed;
+		scale.z = scale.z - speed;
 		if (scale.z < 0.0f) { scale.z = 0.0f; }
 	}
-	// ---------------------------------------
-	// rotation
-	
-	 const float rotSpeed = 0.02f;
-	// rotate around X
-	if( wnd.kbd.KeyIsPressed( 'Q' ) )
-	{
-		angle.x -= rotSpeed;
-	}
-	else if( wnd.kbd.KeyIsPressed( 'A' ) )
-	{
-		angle.x += rotSpeed;
-	}
-	
-	// rotate around Y
-	if( wnd.kbd.KeyIsPressed( 'W' ) )
-	{
-		angle.y -= rotSpeed;
-	}
-	else if( wnd.kbd.KeyIsPressed( 'S' ) )
-	{
-		angle.y += rotSpeed;
-	}
-	
-	// rotate around Z
-	if( wnd.kbd.KeyIsPressed( 'E' ) )
-	{
-		angle.z -= rotSpeed;
-	}
-	else if( wnd.kbd.KeyIsPressed( 'D' ) )
-	{
-		angle.z += rotSpeed;
-	}	
+}
 
+void Game::Angle(const float& speed)
+{
+	// rotate around X
+	if (wnd.kbd.KeyIsPressed('Q'))
+	{
+		angle.x -= speed;
+	}
+	else if (wnd.kbd.KeyIsPressed('A'))
+	{
+		angle.x += speed;
+	}
+
+	// rotate around Y
+	if (wnd.kbd.KeyIsPressed('W'))
+	{
+		angle.y -= speed;
+	}
+	else if (wnd.kbd.KeyIsPressed('S'))
+	{
+		angle.y += speed;
+	}
+
+	// rotate around Z
+	if (wnd.kbd.KeyIsPressed('E'))
+	{
+		angle.z -= speed;
+	}
+	else if (wnd.kbd.KeyIsPressed('D'))
+	{
+		angle.z += speed;
+	}
+}
+
+void Game::Position(const float& speed)
+{
+
+}
+
+void Game::Light(const float& speed)
+{
+	if (wnd.kbd.KeyIsPressed('1'))
+	{
+		lightPosition.x -= speed;
+	}
+	else if (wnd.kbd.KeyIsPressed('2'))
+	{
+		lightPosition.x += speed;
+	}
+	if (wnd.kbd.KeyIsPressed('3'))
+	{
+		lightPosition.y -= speed;
+	}
+	else if (wnd.kbd.KeyIsPressed('4'))
+	{
+		lightPosition.y += speed;
+	}
+	if (wnd.kbd.KeyIsPressed('5'))
+	{
+		lightPosition.z -= speed;
+	}
+	else if (wnd.kbd.KeyIsPressed('6'))
+	{
+		lightPosition.z += speed;
+	}
+}
+
+void Game::Camera()
+{
 	//------------------------------------------------
 	// CAMERA CONTROLS	
 
@@ -169,7 +214,7 @@ void Game::UpdateModel()
 
 	//-----------------------------------------
 	// camera translation
-	
+
 	const float transSpeed = 0.02f;
 	// translate along X axis
 	if (wnd.kbd.KeyIsPressed(VK_LEFT))
@@ -220,7 +265,7 @@ void Game::UpdateModel()
 	}
 
 	// translate along Z axis
-	if( wnd.kbd.KeyIsPressed( 'R' ) )
+	if (wnd.kbd.KeyIsPressed('R'))
 	{
 		if (isCam0)
 		{
@@ -231,24 +276,22 @@ void Game::UpdateModel()
 			cameraPos1.z += transSpeed;
 		}
 	}
-	else if( wnd.kbd.KeyIsPressed( 'F' ) )
+	else if (wnd.kbd.KeyIsPressed('F'))
 	{
 		if (isCam0)
 		{
 			cameraPos0.z -= transSpeed;
-	 	}
+		}
 		else
 		{
 			cameraPos1.z -= transSpeed;
 		}
-	}	
+	}
 
 	// ----------------------------------------
 
-	const float lookSpeed = 0.05f;
-
 	// cameraLookAt position
-
+	const float lookSpeed = 0.05f;
 	// X
 	if (wnd.kbd.KeyIsPressed('Z'))
 	{
@@ -321,150 +364,52 @@ void Game::UpdateModel()
 		}
 	}
 
+	//-------------------------------------------------
+
+	// camera mouse control
+
 	if (wnd.mouse.IsInWindow() && wnd.mouse.LeftIsPressed())
 	{
 		if (wnd.mouse.GetPosX() < 320)
 		{
-			cameraPos.x -= 0.01f;
+			if (isCam0) { cameraPos0.x -= 0.01f; }
+			else { cameraPos1.x -= 0.01f; }
 		}
 		else if (wnd.mouse.GetPosX() > 320)
 		{
-			cameraPos.x += 0.01f;
+			if (isCam0) { cameraPos0.x += 0.01f; }
+			else { cameraPos1.x += 0.01f; }
 		}
 
 		if (wnd.mouse.GetPosY() < 320)
 		{
-			cameraPos.y += 0.01f;
+			if (isCam0) { cameraPos0.y += 0.01f; }
+			else { cameraPos1.y += 0.01f; }
 		}
 		else if (wnd.mouse.GetPosY() > 320)
 		{
-			cameraPos.y -= 0.01f;
+
+			if (isCam0) { cameraPos0.y -= 0.01f; }
+			else { cameraPos1.y -= 0.01f; }
 		}
 	}
 
 	//-------------------------------------------------
 
-	// lighting controls
-	const float lightSpeed = 0.1f;
-	if (wnd.kbd.KeyIsPressed('1'))
-	{
-		lightX -= lightSpeed;
-	}
-	else if (wnd.kbd.KeyIsPressed('2'))
-	{
-		lightX += lightSpeed;
-	}
-	if (wnd.kbd.KeyIsPressed('3'))
-	{
-		lightY -= lightSpeed;
-	}
-	else if (wnd.kbd.KeyIsPressed('4'))
-	{
-		lightY += lightSpeed;
-	}
-	if (wnd.kbd.KeyIsPressed('5'))
-	{
-		lightZ -= lightSpeed;
-	}
-	else if (wnd.kbd.KeyIsPressed('6'))
-	{
-		lightZ += lightSpeed;
-	}
-
-	//-------------------------------------------------
-
-	// Set the default camera variables to whatever camera is enabled
+	// Set current camera
 	if (isCam0)
 	{
-		cameraPos = cameraPos0;
+		cameraPosition = cameraPos0;
 		cameraLookAt = cameraLookAt0;
 		cameraUp = cameraUp0;
 	}
 	else
 	{
-		cameraPos = cameraPos1;
+		cameraPosition = cameraPos1;
 		cameraLookAt = cameraLookAt1;
 		cameraUp = cameraUp1;
 	}
 }
-
-void Game::ComposeFrame()
-{
-	const Mat4 gridTrans =
-		Mat4::Scaling(5.0f) *
-		Mat4::Rotation(0.0f,0.0f,0.0f) *
-		Mat4::Translation(0.0f,0.0f,0.0f) *
-		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
-
-	const Mat4 frustumTrans =
-		Mat4::Scaling(1.0f) *
-		Mat4::Rotation(0.0f,0.0f,0.0f) *
-		Mat4::Translation(position) *
-		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
-	
-	const Mat4 cube0Trans =
-		Mat4::Scaling(scale) *
-		Mat4::Rotation(angle) *
-		Mat4::Translation(-0.5f, 0.0f, 3.0f) *
-		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
-
-	const Mat4 cube1Trans =
-		Mat4::Scaling(scale) *
-		Mat4::Rotation(angle) *
-		Mat4::Translation(-1.0f, 0.0f, 0.0f) *
-		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
-
-	const Mat4 trans =
-		Mat4::Scaling(scale) *
-		Mat4::Rotation(angle) *
-		Mat4::Translation(position) *
-		Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
-
-	const Mat4 lightTrans =	Mat4::Camera(cameraPos, cameraLookAt, cameraUp);
-
-	Vec4 light = lightsource * lightTrans;
-
-	// ---------------------------------------------------
-
-	//DrawModel(false, true, cube0Trans, cube, Colors::White);
-	//DrawModel(false, true, cube1Trans, cube, Colors::White);
-	//DrawModel(true, false, gridTrans, grid, Colors::White);
-	//DrawModel(true, false, frustumTrans, frustum, Colors::White);
-	//DrawModel(true, false, frustumTrans, terrain, Colors::Gray);
-	//DrawModel(false, true, trans, icosa, Colors::White);
-	const Vec3 ambientColor  = { 0.05f,0.05f,0.05f };
-	const Vec3 lightColor    = { 0.8f,0.8f,0.8f };
-	const Vec3 modelColor	 = { 0.0f,1.0f,1.0f };
-	const Vec4 lightPosition = { lightX, lightY, lightZ, 1.0f };
-	Vec3 LP = Vec3(lightPosition * Mat4::Camera(cameraPos, cameraLookAt, cameraUp)).Normalize();
-	//DrawModel(false, true, gridTrans, NewModel(plane.vertices,plane.GetLines().indices,plane.GetTriangles().indices), modelColor, ambientColor, lightColor, LP);
-	Draw(trans, polyhedron80, modelColor, ambientColor, lightColor, LP);
-	
-	//DrawModel(true, false, trans, axis, modelColor, ambientColor, lightColor, LP);
-
-	// -------------------------------------------------
-
-	const Color c = Colors::Yellow;
-
-	if (true /* cross hair */)
-	{
-		const float midX = vX + (vW * 0.5f);
-		const float midY = vY + (vH * 0.5f);
-		const float size = 10;
-		gfx.DrawLine({ midX, midY - size }, { midX, midY + size }, c);
-		gfx.DrawLine({ midX - size, midY }, { midX + size, midY }, c);
-	}
-
-	if (true /* viewport window */)
-	{		
-		// horizontal lines
-		gfx.DrawLine({ vX, vY }, { vX + vW, vY }, c);
-		gfx.DrawLine({ vX, vY + vH }, { vX + vW, vY + vH }, c);
-		// verticle lines
-		gfx.DrawLine({ vX, vY }, { vX, vY + vH }, c);
-		gfx.DrawLine({ vX + vW, vY }, { vX + vW, vY + vH }, c);
-	}
-};
 
 void Game::DrawModel( 
 	bool lines,
@@ -506,7 +451,6 @@ void Game::DrawModel(
 
 			faceColor.emplace_back(Color(unsigned char(finalColor.x),unsigned char(finalColor.y),unsigned char(finalColor.z)));			
 		}
-
 
 		for (auto& i : triangles.vertices)
 		{			
@@ -550,7 +494,7 @@ void Game::DrawModel(
 	}
 }
 
-NewModel Game::Tessellate(const Model& model)
+Model Game::Tessellate(const Model& model)
 {
 	std::vector<Vec4> vertices;
 	std::vector<size_t> indicesLine;
@@ -626,11 +570,10 @@ NewModel Game::Tessellate(const Model& model)
 		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
 	}
 
-	NewModel newmodel = NewModel(vertices, indicesLine, indicesTri);
+	Model newmodel = Model(vertices, indicesLine, indicesTri);
 
 	return newmodel;
 }
-
 
 void Game::Draw(
 	const Mat4& trans,
@@ -639,8 +582,7 @@ void Game::Draw(
 	const Vec3& ambientColor,
 	const Vec3& lightColor,
 	const Vec3& lightPosition)
-{
-	
+{	
 	auto triangles = model.GetTriangles();
 
 	for (auto& i : triangles.vertices)
@@ -677,7 +619,6 @@ void Game::Draw(
 		color1.emplace_back(Color(unsigned char(finalColor1.x), unsigned char(finalColor1.y), unsigned char(finalColor1.z)));
 		color2.emplace_back(Color(unsigned char(finalColor2.x), unsigned char(finalColor2.y), unsigned char(finalColor2.z)));
 	}
-
 
 	for (auto& i : triangles.vertices)
 	{
@@ -942,4 +883,23 @@ void Game::DrawFlatTopTriangleThreeColor(const Vec2Color& A, const Vec2Color& B,
 			gfx.PutPixel(x, y, c);
 		}
 	}
+}
+
+void Game::DrawCrossHair( const Color& c )
+{
+	const float midX = vX + (vW * 0.5f);
+	const float midY = vY + (vH * 0.5f);
+	const float size = 10;
+	gfx.DrawLine({ midX, midY - size }, { midX, midY + size }, c);
+	gfx.DrawLine({ midX - size, midY }, { midX + size, midY }, c);
+}
+
+void Game::DrawViewport(const Color& c)
+{
+	// horizontal lines
+	gfx.DrawLine({ vX, vY }, { vX + vW, vY }, c);
+	gfx.DrawLine({ vX, vY + vH }, { vX + vW, vY + vH }, c);
+	// verticle lines
+	gfx.DrawLine({ vX, vY }, { vX, vY + vH }, c);
+	gfx.DrawLine({ vX + vW, vY }, { vX + vW, vY + vH }, c);
 }

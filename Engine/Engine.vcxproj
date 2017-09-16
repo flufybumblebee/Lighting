@@ -144,7 +144,6 @@
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="GridModel.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="NewModel.h" />
     <ClInclude Include="Orthographic.h" />
     <ClInclude Include="Perspective.h" />
     <ClInclude Include="PlaneModel.h" />
