@@ -66,9 +66,21 @@ private:
 
 	Model Tessellate(const Model& model);
 
-	void DrawModel(bool lines, bool triangles, const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
-	void Draw(const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
-
+	void DrawFlat(bool lines, bool triangles, const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
+	void DrawGouraud(const Mat4& trans, const Model& model, const Vec3& modelColor, const Vec3& ambientColor, const Vec3& lightColor, const Vec3& lightPosition);
+	void DrawPhong(
+		const Mat4&		trans,
+		const Model&	model,
+		const Vec3&		modelColor,
+		const Vec3&		ambientColor,
+		const float&	ambientCoefficient,
+		const float&	diffuseCoefficient,
+		const float&	specularCoefficient,
+		const float&	specularExponent,
+		const Vec3&		lightColor,
+		const Vec3&		lightPosition,
+		const float&	lightRadius,
+		const Vec3&		cameraPosition);
 	void DrawTriangleThreeColor(const Vec2Color& v0, const Vec2Color& v1, const Vec2Color& v2);
 	void DrawFlatBottomTriangleThreeColor(const Vec2Color& A, const Vec2Color& B, const Vec2Color& C);
 	void DrawFlatTopTriangleThreeColor(const Vec2Color& A, const Vec2Color& B, const Vec2Color& C);
@@ -134,27 +146,36 @@ private:
 	Octahedron octa;
 	Dodecahedron dodeca;
 	Icosahedron icosa;
-	Model polyhedron80;
-	Model polyhedron320;
-	Model polyhedron1280;
-	Model polyhedron5120;
-	Model polyhedron32;
-	Model polyhedron128;
-	Model polyhedron512;
-	Model polyhedron2048;
+
 	Model polyhedron24;
 	Model polyhedron96;
 	Model polyhedron384;
 	Model polyhedron1536;
 
+	Model polyhedron32;
+	Model polyhedron128;
+	Model polyhedron512;
+	Model polyhedron2048;
+
+	Model polyhedron48;
+
+	Model polyhedron80;
+	Model polyhedron320;
+	Model polyhedron1280;
+	Model polyhedron5120;
 	// ---------------------------------------------------------
 	
 	// light variables
 
-	Vec4 lightPosition = { -1.0f, -1.0f, 1.0f, 1.0f };
+	Vec4 lightPosition = { 5.0f, 5.0f, -5.0f, 1.0f };
 
 	// color variables
-	const Vec3 modelColor	= { 0.0f,1.0f,1.0f };
-	const Vec3 ambientColor = { 0.1f,0.1f,0.1f };
-	const Vec3 lightColor	= { 1.0f,1.0f,1.0f };
+	const Vec3	modelColor			= { 0.0f,1.0f,1.0f };
+	const Vec3	ambientColor		= { 0.1f,0.1f,0.1f };
+	const float ambientCoefficient	= 1.0f;
+	const float diffuseCoefficient	= 1.0f;
+	const float specularCoefficient = 1.0f;
+	const float specularExponent	= 1.0f;
+	const Vec3	lightColor			= { 1.0f,1.0f,1.0f };
+	const float lightRadius			= 5.0f;
 };

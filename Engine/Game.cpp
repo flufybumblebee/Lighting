@@ -36,7 +36,9 @@ Game::Game(MainWindow& wnd)
 	//polyhedron512  = Tessellate(polyhedron128);
 	//polyhedron2048 = Tessellate(polyhedron512);
 
-	polyhedron80   = Tessellate(icosa);
+	polyhedron48	= Tessellate(dodeca);
+
+	polyhedron80	= Tessellate(icosa);
 	//polyhedron320  = Tessellate(polyhedron80);
 	//polyhedron1280 = Tessellate(polyhedron320);
 	//polyhedron5120 = Tessellate(polyhedron1280);
@@ -69,13 +71,28 @@ void Game::ComposeFrame()
 
 	// ---------------------------------------------------
 
-	Vec3 LP = (lightPosition * Mat4::Camera(cameraPosition, cameraLookAt, cameraUp)).Normalize();
+	Vec3 LP = -(lightPosition * Mat4::Camera(cameraPosition, cameraLookAt, cameraUp)).GetNormalized();
+	Vec3 LP2 = (lightPosition * Mat4::Camera(cameraPosition, cameraLookAt, cameraUp));
 
 	// ---------------------------------------------------
 
-	//Draw(trans, icosa, modelColor, ambientColor, lightColor, LP);
-	DrawModel(false, true, trans, icosa, modelColor, ambientColor, lightColor, LP);
-	DrawModel(true, false, trans, axis, modelColor, ambientColor, lightColor, LP);
+	//DrawGouraud(trans, icosa, modelColor, ambientColor, lightColor, LP);
+	//DrawFlat(false, true, trans, polyhedron80, modelColor, ambientColor, lightColor, LP);
+	DrawFlat(true, false, trans, axis, modelColor, ambientColor, lightColor, LP);
+
+	DrawPhong(
+		trans,
+		polyhedron80,
+		modelColor,
+		ambientColor,
+		ambientCoefficient,
+		diffuseCoefficient,
+		specularCoefficient,
+		specularExponent,
+		lightColor,
+		LP2,
+		lightRadius,
+		cameraPosition);
 
 	// -------------------------------------------------
 
@@ -411,7 +428,88 @@ void Game::Camera()
 	}
 }
 
-void Game::DrawModel( 
+Model Game::Tessellate(const Model& model)
+{
+	std::vector<Vec4> vertices;
+	std::vector<size_t> indicesLine;
+	std::vector<size_t> indicesTri;
+
+	for (size_t i = 0; i < model.GetTriangles().vertices.size(); i++)
+	{
+		vertices.emplace_back(model.GetTriangles().vertices[i]);
+	}
+		
+	const float radius = model.GetTriangles().vertices[0].Len();
+
+	for (size_t i = 0; i < model.GetTriangles().indices.size() / 3; i++)
+	{
+		Vec4 v0 = vertices[model.GetTriangles().indices[i * 3 + 0]];
+		Vec4 v1 = vertices[model.GetTriangles().indices[i * 3 + 1]];
+		Vec4 v2 = vertices[model.GetTriangles().indices[i * 3 + 2]];
+
+		Vec4 e0 = (v0 + ((v1 - v0) * 0.5f)).Normalize() * radius;
+		Vec4 e1 = (v1 + ((v2 - v1) * 0.5f)).Normalize() * radius;
+		Vec4 e2 = (v0 + ((v2 - v0) * 0.5f)).Normalize() * radius;
+
+		vertices.emplace_back(e0);
+		vertices.emplace_back(e1);
+		vertices.emplace_back(e2);
+
+		//---------------------------------------------------------------
+
+		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
+		indicesTri.emplace_back(vertices.size() - 3);
+		indicesTri.emplace_back(vertices.size() - 1);
+
+		indicesTri.emplace_back(vertices.size() - 1);
+		indicesTri.emplace_back(vertices.size() - 2);
+		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+
+		indicesTri.emplace_back(vertices.size() - 1);
+		indicesTri.emplace_back(vertices.size() - 3);
+		indicesTri.emplace_back(vertices.size() - 2);
+
+		indicesTri.emplace_back(vertices.size() - 3);
+		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
+		indicesTri.emplace_back(vertices.size() - 2);
+		
+		// -----------------------------------------
+
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
+		indicesLine.emplace_back(vertices.size() - 3);
+
+		indicesLine.emplace_back(vertices.size() - 3);
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
+
+
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
+		indicesLine.emplace_back(vertices.size() - 2);
+
+		indicesLine.emplace_back(vertices.size() - 2);
+		indicesLine.emplace_back(vertices.size() - 3);
+
+		indicesLine.emplace_back(vertices.size() - 3);
+		indicesLine.emplace_back(vertices.size() - 1);
+
+		indicesLine.emplace_back(vertices.size() - 1);
+		indicesLine.emplace_back(vertices.size() - 2);
+
+		indicesLine.emplace_back(vertices.size() - 2);
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+		
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
+		indicesLine.emplace_back(vertices.size() - 1);
+
+		indicesLine.emplace_back(vertices.size() - 1);
+		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
+	}
+
+	Model newmodel = Model(vertices, indicesLine, indicesTri);
+
+	return newmodel;
+}
+
+void Game::DrawFlat( 
 	bool lines,
 	bool triangles,
 	const Mat4& trans,
@@ -494,88 +592,8 @@ void Game::DrawModel(
 	}
 }
 
-Model Game::Tessellate(const Model& model)
-{
-	std::vector<Vec4> vertices;
-	std::vector<size_t> indicesLine;
-	std::vector<size_t> indicesTri;
 
-	for (size_t i = 0; i < model.GetTriangles().vertices.size(); i++)
-	{
-		vertices.emplace_back(model.GetTriangles().vertices[i]);
-	}
-		
-	const float radius = model.GetTriangles().vertices[0].Len();
-
-	for (size_t i = 0; i < model.GetTriangles().indices.size() / 3; i++)
-	{
-		Vec4 v0 = vertices[model.GetTriangles().indices[i * 3 + 0]];
-		Vec4 v1 = vertices[model.GetTriangles().indices[i * 3 + 1]];
-		Vec4 v2 = vertices[model.GetTriangles().indices[i * 3 + 2]];
-
-		Vec4 e0 = (v0 + ((v1 - v0) * 0.5f)).Normalize() * radius;
-		Vec4 e1 = (v1 + ((v2 - v1) * 0.5f)).Normalize() * radius;
-		Vec4 e2 = (v0 + ((v2 - v0) * 0.5f)).Normalize() * radius;
-
-		vertices.emplace_back(e0);
-		vertices.emplace_back(e1);
-		vertices.emplace_back(e2);
-
-		//---------------------------------------------------------------
-
-		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
-		indicesTri.emplace_back(vertices.size() - 3);
-		indicesTri.emplace_back(vertices.size() - 1);
-
-		indicesTri.emplace_back(vertices.size() - 1);
-		indicesTri.emplace_back(vertices.size() - 2);
-		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
-
-		indicesTri.emplace_back(vertices.size() - 1);
-		indicesTri.emplace_back(vertices.size() - 3);
-		indicesTri.emplace_back(vertices.size() - 2);
-
-		indicesTri.emplace_back(vertices.size() - 3);
-		indicesTri.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
-		indicesTri.emplace_back(vertices.size() - 2);
-		
-		// -----------------------------------------
-
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
-		indicesLine.emplace_back(vertices.size() - 3);
-
-		indicesLine.emplace_back(vertices.size() - 3);
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
-
-
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 1]);
-		indicesLine.emplace_back(vertices.size() - 2);
-
-		indicesLine.emplace_back(vertices.size() - 2);
-		indicesLine.emplace_back(vertices.size() - 3);
-
-		indicesLine.emplace_back(vertices.size() - 3);
-		indicesLine.emplace_back(vertices.size() - 1);
-
-		indicesLine.emplace_back(vertices.size() - 1);
-		indicesLine.emplace_back(vertices.size() - 2);
-
-		indicesLine.emplace_back(vertices.size() - 2);
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
-		
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 2]);
-		indicesLine.emplace_back(vertices.size() - 1);
-
-		indicesLine.emplace_back(vertices.size() - 1);
-		indicesLine.emplace_back(model.GetTriangles().indices[i * 3 + 0]);
-	}
-
-	Model newmodel = Model(vertices, indicesLine, indicesTri);
-
-	return newmodel;
-}
-
-void Game::Draw(
+void Game::DrawGouraud(
 	const Mat4& trans,
 	const Model& model,
 	const Vec3& modelColor,
@@ -604,7 +622,7 @@ void Game::Draw(
 		triangles.cullflags[i] = surfaceNormal.Dot(v0) > 0;
 
 		// ----------------------------------------------------------
-
+		
 		// set light intensity
 		const Vec3 diffuseColor0 = lightColor * std::max(0.0f, ((v0.GetNormalized()).Dot(lightPosition)));
 		const Vec3 diffuseColor1 = lightColor * std::max(0.0f, ((v1.GetNormalized()).Dot(lightPosition)));
@@ -635,6 +653,163 @@ void Game::Draw(
 				Vec2Color(triangles.vertices[triangles.indices[i * 3 + 2]], color2[i]));
 		}
 	}	
+}
+
+void Game::DrawPhong(
+	const Mat4&		trans,
+	const Model&	model,
+	const Vec3&		modelColor,
+	const Vec3&		ambientColor,
+	const float&	ambientCoefficient,
+	const float &	diffuseCoefficient,
+	const float&	specularCoefficient,
+	const float&	specularExponent,
+	const Vec3&		lightColor,
+	const Vec3&		lightPosition,
+	const float&	lightRadius,
+	const Vec3&		cameraPosition )
+{
+	auto triangles = model.GetTriangles();
+
+	for (auto& i : triangles.vertices)
+	{
+		i *= trans;
+	}
+
+	std::vector< Color > color0;
+	std::vector< Color > color1;
+	std::vector< Color > color2;
+
+	// set cullflags
+	for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+	{
+		const Vec3& v0 = triangles.vertices[triangles.indices[i * 3 + 0]];
+		const Vec3& v1 = triangles.vertices[triangles.indices[i * 3 + 1]];
+		const Vec3& v2 = triangles.vertices[triangles.indices[i * 3 + 2]];
+		const Vec3 surfaceNormal = ((v1 - v0).Cross(v2 - v0));
+		triangles.cullflags[i] = surfaceNormal.Dot(v0) > 0;
+
+		// ----------------------------------------------------------
+		
+		// Output color variable
+		Vec3 I0,I1,I2;
+		
+		// distance equals the distance from the light to the surface
+		const float distance0 = (v0 - lightPosition).Len();
+		const float distance1 = (v1 - lightPosition).Len();
+		const float distance2 = (v2 - lightPosition).Len();
+
+		// calculate attenuation
+		const float Att0 = 1 - sq(distance0 / lightRadius);
+		const float Att1 = 1 - sq(distance1 / lightRadius);
+		const float Att2 = 1 - sq(distance2 / lightRadius);
+
+		// normalise and make constant reused variables
+		const Vec3 LN = lightPosition.GetNormalized();
+		const Vec3 v0N = v0.GetNormalized();
+		const Vec3 v1N = v1.GetNormalized();
+		const Vec3 v2N = v2.GetNormalized();
+
+		// calculate reflection vector
+		const Vec3 r0 = ((v0N * LN.Dot(v0N)) * 2) - LN;
+		const Vec3 r1 = ((v1N * LN.Dot(v1N)) * 2) - LN;
+		const Vec3 r2 = ((v2N * LN.Dot(v2N)) * 2) - LN;
+		
+		//----------------------------------------------------------------
+
+		I0.x =
+			(ambientColor.x * ambientCoefficient) + 
+			(Att0 * lightColor.x * diffuseCoefficient * 
+				std::max(0.0f, v0N.Dot(LN)) +
+			(Att0 * lightColor.x * specularCoefficient *
+				pow(cameraPosition.Dot(r0), specularExponent)));
+
+		I0.y =
+			(ambientColor.y * ambientCoefficient) +
+			(Att0 * lightColor.y * diffuseCoefficient *
+				std::max(0.0f, v0N.Dot(LN)) +
+			(Att0 * lightColor.y * specularCoefficient *
+				pow(cameraPosition.Dot(r0), specularExponent)));
+
+		I0.z =
+			(ambientColor.z * ambientCoefficient) +
+			(Att0 * lightColor.z * diffuseCoefficient *
+				std::max(0.0f, v0N.Dot(LN)) +
+			(Att0 * lightColor.z * specularCoefficient *
+				pow(cameraPosition.Dot(r0), specularExponent)));
+
+		//-------------------------------------------------------------
+
+		I1.x =
+			(ambientColor.x * ambientCoefficient) +
+			(Att1 * lightColor.x * diffuseCoefficient *
+				std::max(0.0f, v1N.Dot(LN)) +
+			(Att1 * lightColor.x * specularCoefficient *
+				pow(cameraPosition.Dot(r1), specularExponent)));
+		
+		I1.y =
+			(ambientColor.y * ambientCoefficient) +
+			(Att1 * lightColor.y * diffuseCoefficient *
+				std::max(0.0f, v1N.Dot(LN)) +
+			(Att1 * lightColor.y * specularCoefficient *
+				pow(cameraPosition.Dot(r1), specularExponent)));
+
+		I1.z =
+			(ambientColor.z * ambientCoefficient) +
+			(Att1 * lightColor.z * diffuseCoefficient *
+				std::max(0.0f, v1N.Dot(LN)) +
+			(Att1 * lightColor.z * specularCoefficient *
+				pow(cameraPosition.Dot(r1), specularExponent)));
+
+		//-------------------------------------------------------------------------
+
+		I2.x =
+			(ambientColor.x * ambientCoefficient) +
+			(Att2 * lightColor.x * diffuseCoefficient *
+				std::max(0.0f, v2N.Dot(LN)) +
+			(Att2 * lightColor.x * specularCoefficient *
+				pow(cameraPosition.Dot(r2), specularExponent)));
+
+		I2.y =
+			(ambientColor.y * ambientCoefficient) +
+			(Att2 * lightColor.y * diffuseCoefficient *
+				std::max(0.0f, v2N.Dot(LN)) +
+			(Att2 * lightColor.y * specularCoefficient *
+				pow(cameraPosition.Dot(r2), specularExponent)));
+
+		I2.z =
+			(ambientColor.z * ambientCoefficient) +
+			(Att2 * lightColor.z * diffuseCoefficient *
+				std::max(0.0f, v2N.Dot(LN)) +
+			(Att2 * lightColor.z * specularCoefficient *
+				pow(cameraPosition.Dot(r2), specularExponent)));
+
+		// set surface color
+		Vec3 finalColor0 = Vec3((modelColor.x * I0.x), (modelColor.y * I0.y), (modelColor.z * I0.z)) * 255.0f;
+		Vec3 finalColor1 = Vec3((modelColor.x * I1.x), (modelColor.y * I1.y), (modelColor.z * I1.z)) * 255.0f;
+		Vec3 finalColor2 = Vec3((modelColor.x * I2.x), (modelColor.y * I2.y), (modelColor.z * I2.z)) * 255.0f;
+
+		// store into color vector as a color data type
+		color0.emplace_back(Color(unsigned char(finalColor0.x), unsigned char(finalColor0.y), unsigned char(finalColor0.z)));
+		color1.emplace_back(Color(unsigned char(finalColor1.x), unsigned char(finalColor1.y), unsigned char(finalColor1.z)));
+		color2.emplace_back(Color(unsigned char(finalColor2.x), unsigned char(finalColor2.y), unsigned char(finalColor2.z)));
+	}
+
+	for (auto& i : triangles.vertices)
+	{
+		view.Transform(i);
+	}
+
+	for (size_t i = 0, end = triangles.indices.size() / 3; i < end; i++)
+	{
+		if (!triangles.cullflags[i])
+		{
+			DrawTriangleThreeColor(
+				Vec2Color(triangles.vertices[triangles.indices[i * 3 + 0]], color0[i]),
+				Vec2Color(triangles.vertices[triangles.indices[i * 3 + 1]], color1[i]),
+				Vec2Color(triangles.vertices[triangles.indices[i * 3 + 2]], color2[i]));
+		}
+	}
 }
 
 void Game::DrawTriangleThreeColor(const Vec2Color& v0, const Vec2Color& v1, const Vec2Color& v2)
@@ -789,7 +964,10 @@ void Game::DrawFlatBottomTriangleThreeColor(const Vec2Color& A, const Vec2Color&
 
 			const Color c = Color(red, green, blue);
 
-			gfx.PutPixel(x, y, c);
+			if (x >= 0 && x < 640 && y >= 0 && y < 640)
+			{
+				gfx.PutPixel(x, y, c);
+			}
 		}
 	}
 }
@@ -880,7 +1058,10 @@ void Game::DrawFlatTopTriangleThreeColor(const Vec2Color& A, const Vec2Color& B,
 
 			const Color c = Color(red, green, blue);
 
-			gfx.PutPixel(x, y, c);
+			if (x >= 0 && x < 640 && y >= 0 && y < 640)
+			{
+				gfx.PutPixel(x, y, c);
+			}
 		}
 	}
 }

@@ -47,26 +47,17 @@ public:
 		vertices.emplace_back(-blueX,  blueY, blueZ, 1.0f); // 17
 		vertices.emplace_back( blueX,  blueY, blueZ, 1.0f); // 18
 		vertices.emplace_back( blueX, -blueY, blueZ, 1.0f); // 19
-	}
 
-	IndexedLineList GetLines() const
-	{
-		return { vertices,{ 
+		indicesLine = {
 			0,1, 1,2, 2,3, 3,0, //
 			4,5, 5,6, 6,7, 7,4, // cube (orange)
 			0,4, 1,5, 2,6, 3,7, //
-		
+
 			8,9, 9,10, 10,11, 11,8, // x axis plane (pink)
-
 			12,13, 13,14, 14,15, 15,12, // z axis plane (green)
-
-			16,17, 17,18, 18,19, 19,16 // y axis plane (blue)
-		} };
-	}
-
-	IndexedTriangleList GetTriangles() const
-	{
-		return { vertices,{
+			16,17, 17,18, 18,19, 19,16 }; // y axis plane (blue)
+	
+		indicesTri = {
 			0,8,4,
 			0,4,12,
 			12,4,13,
@@ -82,7 +73,7 @@ public:
 			0,12,3,
 			0,3,16,
 			16,3,19,
-			
+
 			3,11,10,
 			3,10,19,
 			19,10,2,
@@ -90,7 +81,7 @@ public:
 			11,7,18,
 			11,18,10,
 			10,18,6,
-		
+
 			9,5,17,
 			9,17,8,
 			8,17,4,
@@ -113,7 +104,7 @@ public:
 
 			10,6,14,
 			10,14,2,
-			2,14,15	} };
+			2,14,15 };	
 	}
 };
 

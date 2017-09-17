@@ -147,26 +147,36 @@ public:
 			z * rhs.x - x * rhs.z,
 			x * rhs.y - y * rhs.x);
 	}
-
 	_Vec3	Hadamard(const _Vec3& rhs) const
 	{
 		return _Vec3( x * rhs.x, y * rhs.y, z * rhs.z );
 	}
-
 	_Vec3	Saturation()
 	{
 		return _Vec3(std::min((T)1.0, x), std::min((T)1.0, y), std::min((T)1.0, z));
 	}
-
+	
 public:
 	T z;
 };
 
-//template<typename T>
-//T Dot(const _Vec3<T>& lhs, const _Vec3<T>& rhs) const
-//{
-//	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
-//}
+template<typename T>
+_Vec3<T> Lerp(const _Vec3<T>& normalA, const _Vec3<T>& normalB, const T& alpha)
+{
+	return _Vec3<T>((normalA * alpha) + (normalB * (1 - alpha)));
+}
+
+template<typename T>
+_Vec3<T> LerpNormalise(const _Vec3<T>& normalA, const _Vec3<T>& normalB, const T& alpha )
+{
+	return _Vec3<T>((normalA * alpha) + (normalB * (1 - alpha))).Normalise();
+}
+
+template<typename T>
+T Dot(const _Vec3<T>& lhs, const _Vec3<T>& rhs)
+{
+	return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+}
 
 template<typename T>
 _Vec3<T> Cross(const _Vec3<T>& lhs, const _Vec3<T>& rhs)
